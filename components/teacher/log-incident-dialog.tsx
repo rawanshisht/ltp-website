@@ -56,7 +56,7 @@ export function LogIncidentDialog({ students, subjects, teacherId }: LogIncident
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive"><AlertTriangle className="h-4 w-4" />Log Incident</Button>
+        <Button><AlertTriangle className="h-4 w-4" />Log Incident</Button>
       </DialogTrigger>
       <DialogContent className="max-w-lg">
         <DialogHeader><DialogTitle>Log Incident</DialogTitle></DialogHeader>
@@ -109,7 +109,7 @@ export function LogIncidentDialog({ students, subjects, teacherId }: LogIncident
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading || !studentId} variant="destructive">
+            <Button type="submit" disabled={loading || !studentId}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Log Incident
             </Button>

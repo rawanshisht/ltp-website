@@ -351,8 +351,8 @@ model ClassMaterial {
   teacherId String
   subjectId String
   title     String
-  fileUrl   String
-  fileKey   String
+  fileUrl   String?
+  fileKey   String?
   createdAt DateTime @default(now())
 
   teacher Teacher @relation(fields: [teacherId], references: [id])

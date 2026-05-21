@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/lib/utils";
+import { DeadlineFilters } from "@/components/teacher/deadline-filters";
 
 export const dynamic = "force-dynamic";
 
@@ -71,20 +72,11 @@ export default async function TeacherDeadlinesPage({
     <div>
       <Header title="Deadlines" description="Homework submission tracking — click a title to mark students" />
 
-      {/* Filters */}
-      <form className="flex flex-wrap gap-3 mb-6">
-        <select name="subject" defaultValue={subjectId ?? ""} className="h-9 rounded-md border border-[--border] bg-white px-3 text-sm">
-          <option value="">All subjects</option>
-          {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-        <select name="status" defaultValue={status ?? ""} className="h-9 rounded-md border border-[--border] bg-white px-3 text-sm">
-          <option value="">Pending / Overdue</option>
-          <option value="handed">All handed</option>
-          <option value="all">All</option>
-        </select>
-        <button type="submit" className="h-9 px-4 rounded-md bg-[--primary] text-white text-sm font-medium">Filter</button>
-        <a href="/teacher/deadlines" className="h-9 px-4 rounded-md border border-[--border] text-sm flex items-center hover:bg-slate-50">Clear</a>
-      </form>
+      <DeadlineFilters
+        subjects={subjects}
+        currentSubjectId={subjectId ?? ""}
+        currentStatus={status ?? ""}
+      />
 
       <Card>
         <CardContent className="p-0">

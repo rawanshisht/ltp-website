@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { put } from "@vercel/blob";
+import { storeFile } from "@/lib/file-storage";
 import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
@@ -21,11 +21,13 @@ export async function POST(req: Request) {
   let fileKey: string | undefined;
 
   if (file && file.size > 0) {
-    const blob = await put(`assignments/${Date.now()}-${file.name}`, file, {
-      access: "public",
-    });
-    fileUrl = blob.url;
-    fileKey = blob.pathname;
+    try {
+      const stored = await storeFile(file, "assignments");
+      fileUrl = stored.url;
+      fileKey = stored.key;
+    } catch {
+      // File upload failed — create assignment without file
+    }
   }
 
   const teacher = await prisma.teacher.findUnique({ where: { userId: session!.user.id } });

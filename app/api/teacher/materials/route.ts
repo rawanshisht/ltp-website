@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { put } from "@vercel/blob";
+import { storeFile } from "@/lib/file-storage";
 import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
@@ -12,14 +12,23 @@ export async function POST(req: Request) {
   const title = formData.get("title") as string;
   const subjectId = formData.get("subjectId") as string;
   const teacherId = formData.get("teacherId") as string;
-  const file = formData.get("file") as File;
+  const file = formData.get("file") as File | null;
 
-  if (!file || file.size === 0) return NextResponse.json({ error: "File required" }, { status: 400 });
+  let fileUrl: string | undefined;
+  let fileKey: string | undefined;
 
-  const blob = await put(`materials/${Date.now()}-${file.name}`, file, { access: "public" });
+  if (file && file.size > 0) {
+    try {
+      const stored = await storeFile(file, "materials");
+      fileUrl = stored.url;
+      fileKey = stored.key;
+    } catch (e) {
+      return NextResponse.json({ error: "File upload failed." }, { status: 500 });
+    }
+  }
 
   const material = await prisma.classMaterial.create({
-    data: { title, subjectId, teacherId, fileUrl: blob.url, fileKey: blob.pathname },
+    data: { title, subjectId, teacherId, fileUrl, fileKey },
   });
 
   revalidatePath("/teacher/materials");

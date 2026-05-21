@@ -85,15 +85,19 @@ export default async function ParentMaterialsPage({
                         </TableCell>
                         <TableCell className="text-[--muted-foreground]">{formatDate(m.createdAt)}</TableCell>
                         <TableCell>
-                          <a
-                            href={m.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-[--primary] hover:underline"
-                          >
-                            <Download className="h-3 w-3" />
-                            Download
-                          </a>
+                          {m.fileUrl ? (
+                            <a
+                              href={m.fileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-sm text-[--primary] hover:underline"
+                            >
+                              <Download className="h-3 w-3" />
+                              Download
+                            </a>
+                          ) : (
+                            <span className="text-xs text-slate-400">No file</span>
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}

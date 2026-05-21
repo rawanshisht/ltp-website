@@ -5,13 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UploadMaterialDialog } from "@/components/teacher/upload-material-dialog";
+import { MaterialFilters } from "@/components/teacher/material-filters";
 import { FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-export default async function TeacherMaterialsPage() {
+export default async function TeacherMaterialsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ subject?: string }>;
+}) {
   const session = await auth();
+  const { subject: subjectId } = await searchParams;
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -21,7 +27,10 @@ export default async function TeacherMaterialsPage() {
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
 
   const materials = await prisma.classMaterial.findMany({
-    where: { teacherId: teacher!.id },
+    where: {
+      teacherId: teacher!.id,
+      ...(subjectId && { subjectId }),
+    },
     include: { subject: true },
     orderBy: { createdAt: "desc" },
   });
@@ -34,11 +43,15 @@ export default async function TeacherMaterialsPage() {
         actions={<UploadMaterialDialog subjects={subjects} teacherId={teacher!.id} />}
       />
 
+      <MaterialFilters subjects={subjects} currentSubjectId={subjectId ?? ""} />
+
       <Card>
         <CardHeader><CardTitle>Uploaded Materials</CardTitle></CardHeader>
         <CardContent>
           {materials.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No materials uploaded yet.</p>
+            <p className="text-sm text-[--muted-foreground]">
+              No materials{subjectId ? " for this subject" : ""} uploaded yet.
+            </p>
           ) : (
             <Table>
               <TableHeader>
@@ -63,15 +76,19 @@ export default async function TeacherMaterialsPage() {
                     </TableCell>
                     <TableCell className="text-[--muted-foreground]">{formatDate(m.createdAt)}</TableCell>
                     <TableCell>
-                      <a
-                        href={m.fileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-[--primary] hover:underline"
-                      >
-                        <Download className="h-3 w-3" />
-                        Download
-                      </a>
+                      {m.fileUrl ? (
+                        <a
+                          href={m.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm text-blue-700 hover:underline"
+                        >
+                          <Download className="h-3 w-3" />
+                          Download
+                        </a>
+                      ) : (
+                        <span className="text-xs text-slate-400">No file</span>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

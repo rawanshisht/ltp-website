@@ -45,7 +45,6 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Assignments", href: "/teacher/assignments", icon: ClipboardList },
     { label: "Behaviour", href: "/teacher/behaviour", icon: Activity },
     { label: "Attendance", href: "/teacher/attendance", icon: CalendarCheck },
-    { label: "Progress", href: "/teacher/progress", icon: TrendingUp },
     { label: "Class Materials", href: "/teacher/materials", icon: FolderOpen },
     { label: "Incidents", href: "/teacher/incidents", icon: AlertTriangle },
     { label: "Deadlines", href: "/teacher/deadlines", icon: ClipboardList },
