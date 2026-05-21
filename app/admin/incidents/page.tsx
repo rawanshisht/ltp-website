@@ -3,7 +3,10 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { IncidentFilters } from "@/components/admin/incident-filters";
 import { formatDate } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 function severityVariant(s: string) {
   if (s === "MAJOR") return "destructive";
@@ -57,21 +60,11 @@ export default async function AdminIncidentsPage({
         </div>
       </div>
 
-      {/* Filters */}
-      <form className="flex flex-wrap gap-3 mb-6">
-        <select name="student" defaultValue={studentId ?? ""} className="h-9 rounded-md border border-[--border] bg-white px-3 text-sm">
-          <option value="">All students</option>
-          {students.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-        <select name="severity" defaultValue={severity ?? ""} className="h-9 rounded-md border border-[--border] bg-white px-3 text-sm">
-          <option value="">All severities</option>
-          <option value="MINOR">Minor</option>
-          <option value="MODERATE">Moderate</option>
-          <option value="MAJOR">Major</option>
-        </select>
-        <button type="submit" className="h-9 px-4 rounded-md bg-[--primary] text-white text-sm font-medium">Filter</button>
-        <a href="/admin/incidents" className="h-9 px-4 rounded-md border border-[--border] text-sm flex items-center">Clear</a>
-      </form>
+      <IncidentFilters
+        students={students}
+        currentStudentId={studentId ?? ""}
+        currentSeverity={severity ?? ""}
+      />
 
       <Card>
         <CardHeader><CardTitle>All Incidents ({incidents.length})</CardTitle></CardHeader>
