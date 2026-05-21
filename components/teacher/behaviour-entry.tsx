@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Loader2, Save } from "lucide-react";
+import { Loader2, Save, Star } from "lucide-react";
 import type { Subject, Student, Behaviour } from "@prisma/client";
 
 type StudentWithBehaviour = Student & { behaviours: Behaviour[] };
@@ -20,6 +20,32 @@ interface BehaviourEntryProps {
   teacherId: string;
   selectedSubjectId: string;
   selectedDate: string;
+}
+
+function StarRating({ value, onChange }: { value: number; onChange: (v: number) => void }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          onMouseEnter={() => setHover(n)}
+          onMouseLeave={() => setHover(0)}
+          onClick={() => onChange(n)}
+          className="p-0.5 transition-colors"
+        >
+          <Star
+            className={`h-5 w-5 transition-colors ${
+              n <= (hover || value)
+                ? "fill-amber-400 text-amber-400"
+                : "fill-none text-slate-300"
+            }`}
+          />
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export function BehaviourEntry({
@@ -33,19 +59,25 @@ export function BehaviourEntry({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [scoreMap, setScoreMap] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    studentsWithBehaviour.forEach((s) => {
-      initial[s.id] = s.behaviours[0]?.score?.toString() ?? "3";
-    });
-    return initial;
+  const [behaviourMap, setBehaviourMap] = useState<Record<string, number>>(() => {
+    const m: Record<string, number> = {};
+    studentsWithBehaviour.forEach((s) => { m[s.id] = s.behaviours[0]?.behaviourStars ?? 3; });
+    return m;
+  });
+  const [attentiveMap, setAttentiveMap] = useState<Record<string, number>>(() => {
+    const m: Record<string, number> = {};
+    studentsWithBehaviour.forEach((s) => { m[s.id] = s.behaviours[0]?.attentiveStars ?? 3; });
+    return m;
+  });
+  const [engagementMap, setEngagementMap] = useState<Record<string, number>>(() => {
+    const m: Record<string, number> = {};
+    studentsWithBehaviour.forEach((s) => { m[s.id] = s.behaviours[0]?.engagementStars ?? 3; });
+    return m;
   });
   const [noteMap, setNoteMap] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    studentsWithBehaviour.forEach((s) => {
-      initial[s.id] = s.behaviours[0]?.note ?? "";
-    });
-    return initial;
+    const m: Record<string, string> = {};
+    studentsWithBehaviour.forEach((s) => { m[s.id] = s.behaviours[0]?.note ?? ""; });
+    return m;
   });
   const [saving, setSaving] = useState(false);
 
@@ -66,7 +98,9 @@ export function BehaviourEntry({
         date: selectedDate,
         records: studentsWithBehaviour.map((s) => ({
           studentId: s.id,
-          score: parseInt(scoreMap[s.id] ?? "3"),
+          behaviourStars: behaviourMap[s.id] ?? 3,
+          attentiveStars: attentiveMap[s.id] ?? 3,
+          engagementStars: engagementMap[s.id] ?? 3,
           note: noteMap[s.id] || null,
         })),
       }),
@@ -115,7 +149,9 @@ export function BehaviourEntry({
                 <TableHeader>
                   <TableRow>
                     <TableHead>Student</TableHead>
-                    <TableHead>Score (1–5)</TableHead>
+                    <TableHead>Behaviour</TableHead>
+                    <TableHead>Attentive</TableHead>
+                    <TableHead>Engagement</TableHead>
                     <TableHead>Note (visible to parent)</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -124,19 +160,22 @@ export function BehaviourEntry({
                     <TableRow key={student.id}>
                       <TableCell className="font-medium">{student.name}</TableCell>
                       <TableCell>
-                        <Select
-                          value={scoreMap[student.id] ?? "3"}
-                          onValueChange={(v) => setScoreMap((prev) => ({ ...prev, [student.id]: v }))}
-                        >
-                          <SelectTrigger className="w-20">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {[1, 2, 3, 4, 5].map((n) => (
-                              <SelectItem key={n} value={n.toString()}>{n}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <StarRating
+                          value={behaviourMap[student.id] ?? 3}
+                          onChange={(v) => setBehaviourMap((prev) => ({ ...prev, [student.id]: v }))}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <StarRating
+                          value={attentiveMap[student.id] ?? 3}
+                          onChange={(v) => setAttentiveMap((prev) => ({ ...prev, [student.id]: v }))}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <StarRating
+                          value={engagementMap[student.id] ?? 3}
+                          onChange={(v) => setEngagementMap((prev) => ({ ...prev, [student.id]: v }))}
+                        />
                       </TableCell>
                       <TableCell>
                         <Textarea

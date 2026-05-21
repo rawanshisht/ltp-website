@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { MarksEntry } from "@/components/teacher/marks-entry";
 
+export const dynamic = "force-dynamic";
+
 export default async function TeacherMarksPage({
   searchParams,
 }: {

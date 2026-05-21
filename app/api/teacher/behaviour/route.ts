@@ -10,7 +10,13 @@ export async function POST(req: Request) {
     subjectId: string;
     teacherId: string;
     date: string;
-    records: { studentId: string; score: number; note: string | null }[];
+    records: {
+      studentId: string;
+      behaviourStars: number;
+      attentiveStars: number;
+      engagementStars: number;
+      note: string | null;
+    }[];
   };
 
   const lessonDate = new Date(date);
@@ -19,8 +25,23 @@ export async function POST(req: Request) {
     records.map((r) =>
       prisma.behaviour.upsert({
         where: { studentId_subjectId_lessonDate: { studentId: r.studentId, subjectId, lessonDate } },
-        update: { score: r.score, note: r.note, teacherId },
-        create: { studentId: r.studentId, subjectId, teacherId, lessonDate, score: r.score, note: r.note },
+        update: {
+          behaviourStars: r.behaviourStars,
+          attentiveStars: r.attentiveStars,
+          engagementStars: r.engagementStars,
+          note: r.note,
+          teacherId,
+        },
+        create: {
+          studentId: r.studentId,
+          subjectId,
+          teacherId,
+          lessonDate,
+          behaviourStars: r.behaviourStars,
+          attentiveStars: r.attentiveStars,
+          engagementStars: r.engagementStars,
+          note: r.note,
+        },
       })
     )
   );

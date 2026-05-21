@@ -16,6 +16,11 @@ import {
   BarChart3,
   LogOut,
   ChevronRight,
+  FolderOpen,
+  TrendingUp,
+  AlertTriangle,
+  FileCheck,
+  Upload,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import type { Role } from "@prisma/client";
@@ -24,8 +29,13 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
   PARENT: [
     { label: "Dashboard", href: "/parent", icon: LayoutDashboard },
     { label: "Subjects & Marks", href: "/parent/subjects", icon: BookOpen },
+    { label: "Progress", href: "/parent/progress", icon: TrendingUp },
     { label: "Behaviour", href: "/parent/behaviour", icon: Activity },
     { label: "Attendance", href: "/parent/attendance", icon: CalendarCheck },
+    { label: "Assessments", href: "/parent/assessments", icon: FileCheck },
+    { label: "Class Materials", href: "/parent/materials", icon: FolderOpen },
+    { label: "Homework", href: "/parent/homework", icon: Upload },
+    { label: "Incidents", href: "/parent/incidents", icon: AlertTriangle },
     { label: "Deadlines", href: "/parent/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/parent/notices", icon: Bell },
   ],
@@ -35,6 +45,9 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Assignments", href: "/teacher/assignments", icon: ClipboardList },
     { label: "Behaviour", href: "/teacher/behaviour", icon: Activity },
     { label: "Attendance", href: "/teacher/attendance", icon: CalendarCheck },
+    { label: "Progress", href: "/teacher/progress", icon: TrendingUp },
+    { label: "Class Materials", href: "/teacher/materials", icon: FolderOpen },
+    { label: "Incidents", href: "/teacher/incidents", icon: AlertTriangle },
     { label: "Deadlines", href: "/teacher/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/teacher/notices", icon: Bell },
   ],
@@ -44,6 +57,8 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Students", href: "/admin/students", icon: Users },
     { label: "Behaviour", href: "/admin/behaviour", icon: Activity },
     { label: "Attendance", href: "/admin/attendance", icon: BarChart3 },
+    { label: "Assessments", href: "/admin/assessments", icon: FileCheck },
+    { label: "Incidents", href: "/admin/incidents", icon: AlertTriangle },
   ],
 };
 

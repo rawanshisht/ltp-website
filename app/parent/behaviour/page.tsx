@@ -7,10 +7,25 @@ import { Badge } from "@/components/ui/badge";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { formatDate } from "@/lib/utils";
 
-function scoreVariant(score: number) {
-  if (score >= 4) return "success";
-  if (score >= 3) return "warning";
-  return "destructive";
+function starDisplay(n: number) {
+  return "★".repeat(n) + "☆".repeat(5 - n);
+}
+
+function avgStars(records: { behaviourStars: number; attentiveStars: number; engagementStars: number }[], field: "behaviourStars" | "attentiveStars" | "engagementStars") {
+  if (!records.length) return 0;
+  return records.reduce((s, r) => s + r[field], 0) / records.length;
+}
+
+function MiniBarChart({ value, max = 5, color }: { value: number; max?: number; color: string }) {
+  const pct = Math.round((value / max) * 100);
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-xs font-medium w-8 text-right">{value.toFixed(1)}</span>
+    </div>
+  );
 }
 
 export default async function ParentBehaviourPage({
@@ -35,34 +50,46 @@ export default async function ParentBehaviourPage({
     orderBy: { lessonDate: "desc" },
   });
 
-  const bySubject = behaviours.reduce<Record<string, typeof behaviours>>(
-    (acc, b) => {
-      const key = b.subject.name;
-      acc[key] = acc[key] ?? [];
-      acc[key].push(b);
-      return acc;
-    },
-    {}
-  );
+  const bySubject = behaviours.reduce<Record<string, typeof behaviours>>((acc, b) => {
+    const key = b.subject.name;
+    acc[key] = acc[key] ?? [];
+    acc[key].push(b);
+    return acc;
+  }, {});
 
   return (
     <div>
       <Header
-        title="Behaviour & Attainment"
+        title="Behaviour"
         description={`Behaviour records for ${selected.name}`}
         actions={<ChildSwitcher children={children} selectedId={selected.id} />}
       />
 
-      {/* Per-subject averages */}
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 mb-6">
+      {/* Per-subject summary cards with bar charts */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">
         {Object.entries(bySubject).map(([subject, records]) => {
-          const avg = (records.reduce((s, r) => s + r.score, 0) / records.length).toFixed(1);
+          const avgB = avgStars(records, "behaviourStars");
+          const avgA = avgStars(records, "attentiveStars");
+          const avgE = avgStars(records, "engagementStars");
           return (
             <Card key={subject}>
-              <CardContent className="p-4">
-                <p className="text-sm text-[--muted-foreground] mb-1">{subject}</p>
-                <p className="text-2xl font-bold">{avg}<span className="text-sm font-normal text-[--muted-foreground]">/5</span></p>
-                <p className="text-xs text-[--muted-foreground]">{records.length} records</p>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base">{subject}</CardTitle>
+                <p className="text-xs text-[--muted-foreground]">{records.length} sessions</p>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div>
+                  <p className="text-xs text-[--muted-foreground] mb-1">Behaviour</p>
+                  <MiniBarChart value={avgB} color="bg-blue-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-[--muted-foreground] mb-1">Attentive</p>
+                  <MiniBarChart value={avgA} color="bg-emerald-500" />
+                </div>
+                <div>
+                  <p className="text-xs text-[--muted-foreground] mb-1">Engagement</p>
+                  <MiniBarChart value={avgE} color="bg-amber-500" />
+                </div>
               </CardContent>
             </Card>
           );
@@ -71,9 +98,7 @@ export default async function ParentBehaviourPage({
 
       {/* Full log */}
       <Card>
-        <CardHeader>
-          <CardTitle>Behaviour Log</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle>Detailed Behaviour Log</CardTitle></CardHeader>
         <CardContent>
           {behaviours.length === 0 ? (
             <p className="text-sm text-[--muted-foreground]">No behaviour records yet.</p>
@@ -83,21 +108,27 @@ export default async function ParentBehaviourPage({
                 <TableRow>
                   <TableHead>Date</TableHead>
                   <TableHead>Subject</TableHead>
-                  <TableHead>Score</TableHead>
+                  <TableHead>Behaviour</TableHead>
+                  <TableHead>Attentive</TableHead>
+                  <TableHead>Engagement</TableHead>
                   <TableHead>Teacher Note</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {behaviours.map((b) => (
                   <TableRow key={b.id}>
-                    <TableCell className="text-[--muted-foreground]">{formatDate(b.lessonDate)}</TableCell>
+                    <TableCell className="text-[--muted-foreground] whitespace-nowrap">{formatDate(b.lessonDate)}</TableCell>
                     <TableCell className="font-medium">{b.subject.name}</TableCell>
                     <TableCell>
-                      <Badge variant={scoreVariant(b.score)}>{b.score}/5</Badge>
+                      <span className="text-amber-400 tracking-tight">{starDisplay(b.behaviourStars)}</span>
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground] italic">
-                      {b.note ?? "—"}
+                    <TableCell>
+                      <span className="text-amber-400 tracking-tight">{starDisplay(b.attentiveStars)}</span>
                     </TableCell>
+                    <TableCell>
+                      <span className="text-amber-400 tracking-tight">{starDisplay(b.engagementStars)}</span>
+                    </TableCell>
+                    <TableCell className="text-[--muted-foreground] italic">{b.note ?? "—"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

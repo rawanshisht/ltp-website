@@ -7,6 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CreateAssignmentDialog } from "@/components/teacher/create-assignment-dialog";
 import { formatDate } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function TeacherAssignmentsPage() {
   const session = await auth();
 

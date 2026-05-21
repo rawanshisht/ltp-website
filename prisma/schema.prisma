@@ -54,6 +54,12 @@ enum GCSEGrade {
   U
 }
 
+enum IncidentSeverity {
+  MINOR
+  MODERATE
+  MAJOR
+}
+
 // ─── Auth (NextAuth adapter) ──────────────────────────────────────────────────
 
 model User {
@@ -63,6 +69,7 @@ model User {
   email         String    @unique
   password      String
   role          Role
+  phone         String?
   emailVerified DateTime?
   image         String?
   createdAt     DateTime  @default(now())
@@ -127,13 +134,15 @@ model Subject {
   type      SubjectType
   createdAt DateTime    @default(now())
 
-  teacherSubjects TeacherSubject[]
-  studentSubjects StudentSubject[]
-  assignments     Assignment[]
-  behaviours      Behaviour[]
-  attendances     Attendance[]
-  predictedGrades PredictedGrade[]
-  notices         Notice[]
+  teacherSubjects  TeacherSubject[]
+  studentSubjects  StudentSubject[]
+  assignments      Assignment[]
+  behaviours       Behaviour[]
+  attendances      Attendance[]
+  predictedGrades  PredictedGrade[]
+  notices          Notice[]
+  classMaterials   ClassMaterial[]
+  incidentLogs     IncidentLog[]
 }
 
 model Teacher {
@@ -141,14 +150,16 @@ model Teacher {
   userId    String   @unique
   createdAt DateTime @default(now())
 
-  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teacherSubjects TeacherSubject[]
-  teacherClasses  TeacherClass[]
-  assignments     Assignment[]
-  behaviours      Behaviour[]
-  attendances     Attendance[]
-  predictedGrades PredictedGrade[]
-  notices         Notice[]
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teacherSubjects  TeacherSubject[]
+  teacherClasses   TeacherClass[]
+  assignments      Assignment[]
+  behaviours       Behaviour[]
+  attendances      Attendance[]
+  predictedGrades  PredictedGrade[]
+  notices          Notice[]
+  classMaterials   ClassMaterial[]
+  incidentLogs     IncidentLog[]
 }
 
 model TeacherSubject {
@@ -188,13 +199,15 @@ model Student {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  class           Class            @relation(fields: [classId], references: [id])
-  parentStudents  ParentStudent[]
-  studentSubjects StudentSubject[]
-  marks           StudentMark[]
-  behaviours      Behaviour[]
-  attendances     Attendance[]
-  predictedGrades PredictedGrade[]
+  class                Class                @relation(fields: [classId], references: [id])
+  parentStudents       ParentStudent[]
+  studentSubjects      StudentSubject[]
+  marks                StudentMark[]
+  behaviours           Behaviour[]
+  attendances          Attendance[]
+  predictedGrades      PredictedGrade[]
+  incidentLogs         IncidentLog[]
+  homeworkSubmissions  HomeworkSubmission[]
 }
 
 model ParentStudent {
@@ -235,9 +248,10 @@ model Assignment {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
-  subject Subject       @relation(fields: [subjectId], references: [id])
-  teacher Teacher       @relation(fields: [teacherId], references: [id])
-  marks   StudentMark[]
+  subject             Subject              @relation(fields: [subjectId], references: [id])
+  teacher             Teacher              @relation(fields: [teacherId], references: [id])
+  marks               StudentMark[]
+  homeworkSubmissions HomeworkSubmission[]
 }
 
 model StudentMark {
@@ -255,18 +269,36 @@ model StudentMark {
   @@unique([studentId, assignmentId])
 }
 
+// ─── Homework submissions (parent/student uploads) ────────────────────────────
+
+model HomeworkSubmission {
+  id           String   @id @default(cuid())
+  studentId    String
+  assignmentId String
+  fileUrl      String
+  fileKey      String
+  submittedAt  DateTime @default(now())
+
+  student    Student    @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, assignmentId])
+}
+
 // ─── Behaviour ────────────────────────────────────────────────────────────────
 
 model Behaviour {
-  id         String   @id @default(cuid())
-  studentId  String
-  subjectId  String
-  teacherId  String
-  lessonDate DateTime
-  score      Int
-  note       String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id               String   @id @default(cuid())
+  studentId        String
+  subjectId        String
+  teacherId        String
+  lessonDate       DateTime
+  behaviourStars   Int      @default(3)
+  attentiveStars   Int      @default(3)
+  engagementStars  Int      @default(3)
+  note             String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   subject Subject @relation(fields: [subjectId], references: [id])
@@ -310,6 +342,40 @@ model PredictedGrade {
   teacher Teacher @relation(fields: [teacherId], references: [id])
 
   @@unique([studentId, subjectId])
+}
+
+// ─── Class materials ──────────────────────────────────────────────────────────
+
+model ClassMaterial {
+  id        String   @id @default(cuid())
+  teacherId String
+  subjectId String
+  title     String
+  fileUrl   String
+  fileKey   String
+  createdAt DateTime @default(now())
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+}
+
+// ─── Incident log ─────────────────────────────────────────────────────────────
+
+model IncidentLog {
+  id          String           @id @default(cuid())
+  studentId   String
+  teacherId   String
+  subjectId   String?
+  date        DateTime
+  title       String
+  description String
+  severity    IncidentSeverity @default(MINOR)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  student Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher Teacher  @relation(fields: [teacherId], references: [id])
+  subject Subject? @relation(fields: [subjectId], references: [id])
 }
 
 // ─── Notices ──────────────────────────────────────────────────────────────────

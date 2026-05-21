@@ -46,7 +46,7 @@ export default async function ParentDashboard({
       }),
       prisma.behaviour.findMany({
         where: { studentId: selected.id },
-        select: { score: true, subjectId: true },
+        select: { behaviourStars: true, attentiveStars: true, engagementStars: true, subjectId: true },
       }),
       prisma.attendance.findMany({
         where: { studentId: selected.id },
@@ -72,7 +72,7 @@ export default async function ParentDashboard({
   const presentCount = attendances.filter((a) => a.status === "PRESENT").length;
   const avgBehaviour =
     behaviours.length > 0
-      ? (behaviours.reduce((s, b) => s + b.score, 0) / behaviours.length).toFixed(1)
+      ? (behaviours.reduce((s, b) => s + b.behaviourStars + b.attentiveStars + b.engagementStars, 0) / (behaviours.length * 3)).toFixed(1)
       : "—";
 
   const className =

@@ -11,7 +11,7 @@ export default async function AdminDashboard() {
       prisma.student.count({ where: { isActive: true } }),
       prisma.teacher.count(),
       prisma.subject.count(),
-      prisma.behaviour.aggregate({ _avg: { score: true } }),
+      prisma.behaviour.aggregate({ _avg: { behaviourStars: true, attentiveStars: true, engagementStars: true } }),
       prisma.student.findMany({
         where: { isActive: true },
         include: { class: true, studentSubjects: { where: { droppedAt: null } } },
@@ -43,7 +43,9 @@ export default async function AdminDashboard() {
         <StatCard label="Subjects" value={subjectCount} icon={BookOpen} color="green" />
         <StatCard
           label="Avg Behaviour"
-          value={behaviourAvgData._avg.score ? `${behaviourAvgData._avg.score.toFixed(1)}/5` : "—"}
+          value={behaviourAvgData._avg.behaviourStars
+            ? `${(((behaviourAvgData._avg.behaviourStars ?? 0) + (behaviourAvgData._avg.attentiveStars ?? 0) + (behaviourAvgData._avg.engagementStars ?? 0)) / 3).toFixed(1)}/5`
+            : "—"}
           icon={Activity}
           color="amber"
         />
