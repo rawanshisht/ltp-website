@@ -38,12 +38,17 @@ function severityVariant(s: string) {
 
 export function IncidentsTable({ incidents, students, subjects }: IncidentsTableProps) {
   const router = useRouter();
-  const [filter, setFilter] = useState("");
+
+  // Filters
+  const [studentFilter, setStudentFilter] = useState("");
+  const [subjectFilter, setSubjectFilter] = useState("all");
+  const [dateFilter, setDateFilter] = useState("");
+
+  // Edit state
   const [editing, setEditing] = useState<Incident | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Edit form state
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [editSeverity, setEditSeverity] = useState<"MINOR" | "MODERATE" | "MAJOR">("MINOR");
@@ -94,26 +99,55 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
     router.refresh();
   }
 
-  const filtered = filter.trim()
-    ? incidents.filter((inc) =>
-        inc.student.name.toLowerCase().includes(filter.toLowerCase())
-      )
-    : incidents;
+  const filtered = incidents.filter((inc) => {
+    if (studentFilter.trim() && !inc.student.name.toLowerCase().includes(studentFilter.toLowerCase())) return false;
+    if (subjectFilter !== "all" && inc.subject?.id !== subjectFilter) return false;
+    if (dateFilter) {
+      const incDate = new Date(inc.date).toISOString().split("T")[0];
+      if (incDate !== dateFilter) return false;
+    }
+    return true;
+  });
+
+  const hasFilter = studentFilter.trim() || subjectFilter !== "all" || dateFilter;
 
   return (
     <>
       {/* Filter bar */}
-      <div className="mb-4">
+      <div className="flex flex-wrap gap-3 mb-4">
         <Input
-          placeholder="Filter by student name…"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="max-w-xs"
+          placeholder="Search student name…"
+          value={studentFilter}
+          onChange={(e) => setStudentFilter(e.target.value)}
+          className="w-48"
         />
+
+        <Select value={subjectFilter} onValueChange={setSubjectFilter}>
+          <SelectTrigger className="w-44">
+            <SelectValue placeholder="All subjects" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All subjects</SelectItem>
+            {subjects.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+          </SelectContent>
+        </Select>
+
+        <Input
+          type="date"
+          className="w-40 h-9"
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+        />
+
+        {hasFilter && (
+          <Button variant="outline" onClick={() => { setStudentFilter(""); setSubjectFilter("all"); setDateFilter(""); }}>
+            Clear
+          </Button>
+        )}
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-[--muted-foreground]">No incidents{filter ? " matching filter" : ""}.</p>
+        <p className="text-sm text-[--muted-foreground]">No incidents{hasFilter ? " matching filter" : ""}.</p>
       ) : (
         <Table>
           <TableHeader>
