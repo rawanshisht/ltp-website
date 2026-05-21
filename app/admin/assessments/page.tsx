@@ -3,8 +3,11 @@ import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AssessmentSubjectFilter } from "@/components/admin/assessment-subject-filter";
 import { formatDate } from "@/lib/utils";
 import { Calendar } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 export default async function AdminAssessmentsPage({
   searchParams,
@@ -71,15 +74,7 @@ export default async function AdminAssessmentsPage({
     <div>
       <Header title="Assessments" description="Assessment schedule — end of June summer break" />
 
-      {/* Filter */}
-      <form className="flex gap-3 mb-6">
-        <select name="subject" defaultValue={subjectId ?? ""} className="h-9 rounded-md border border-[--border] bg-white px-3 text-sm">
-          <option value="">All subjects</option>
-          {subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-        <button type="submit" className="h-9 px-4 rounded-md bg-[--primary] text-white text-sm font-medium">Filter</button>
-        <a href="/admin/assessments" className="h-9 px-4 rounded-md border border-[--border] text-sm flex items-center">Clear</a>
-      </form>
+      <AssessmentSubjectFilter subjects={subjects} currentSubjectId={subjectId ?? ""} />
 
       <Card className="mb-6">
         <CardHeader>
