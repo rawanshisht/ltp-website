@@ -5,8 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
-import { gradeLabel } from "@/lib/utils";
-import { formatDate } from "@/lib/utils";
+import { gradeLabel, formatDate } from "@/lib/utils";
+
+export const dynamic = "force-dynamic";
 
 export default async function ParentSubjectsPage({
   searchParams,
@@ -30,9 +31,7 @@ export default async function ParentSubjectsPage({
       subject: {
         include: {
           assignments: {
-            include: {
-              marks: { where: { studentId: selected.id } },
-            },
+            include: { marks: { where: { studentId: selected.id } } },
           },
           predictedGrades: { where: { studentId: selected.id } },
         },
@@ -56,12 +55,8 @@ export default async function ParentSubjectsPage({
           );
           const marksWithValues = marks.filter((m) => m.marks !== null);
           const totalEarned = marksWithValues.reduce((s, m) => s + (m.marks ?? 0), 0);
-          const totalPossible = marksWithValues.reduce(
-            (s, m) => s + m.assignment.maxMarks,
-            0
-          );
-          const average =
-            totalPossible > 0 ? Math.round((totalEarned / totalPossible) * 100) : null;
+          const totalPossible = marksWithValues.reduce((s, m) => s + m.assignment.maxMarks, 0);
+          const average = totalPossible > 0 ? Math.round((totalEarned / totalPossible) * 100) : null;
           const predictedGrade = subject.predictedGrades[0];
 
           return (
@@ -109,12 +104,13 @@ export default async function ParentSubjectsPage({
                     <TableBody>
                       {subject.assignments.map((assignment) => {
                         const mark = assignment.marks[0];
+                        const isAssessment = assignment.type === "ASSESSMENT";
                         return (
                           <TableRow key={assignment.id}>
                             <TableCell className="font-medium">{assignment.title}</TableCell>
                             <TableCell>
-                              <Badge variant={assignment.type === "ASSESSMENT" ? "destructive" : "secondary"}>
-                                {assignment.type}
+                              <Badge variant={isAssessment ? "secondary" : "outline"}>
+                                {isAssessment ? "Assessment" : "Homework"}
                               </Badge>
                             </TableCell>
                             <TableCell className="text-[--muted-foreground]">
@@ -126,16 +122,14 @@ export default async function ParentSubjectsPage({
                                 : "—"}
                             </TableCell>
                             <TableCell>
-                              {mark ? (
-                                <Badge
-                                  variant={
-                                    mark.handedStatus === "HANDED"
-                                      ? "success"
-                                      : mark.handedStatus === "OVERDUE"
-                                      ? "destructive"
-                                      : "secondary"
-                                  }
-                                >
+                              {isAssessment ? (
+                                <span className="text-[--muted-foreground] text-sm">—</span>
+                              ) : mark ? (
+                                <Badge variant={
+                                  mark.handedStatus === "HANDED" ? "success"
+                                  : mark.handedStatus === "OVERDUE" ? "destructive"
+                                  : "secondary"
+                                }>
                                   {mark.handedStatus}
                                 </Badge>
                               ) : (

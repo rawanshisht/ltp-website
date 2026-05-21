@@ -29,7 +29,6 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
   PARENT: [
     { label: "Dashboard", href: "/parent", icon: LayoutDashboard },
     { label: "Subjects & Marks", href: "/parent/subjects", icon: BookOpen },
-    { label: "Progress", href: "/parent/progress", icon: TrendingUp },
     { label: "Behaviour", href: "/parent/behaviour", icon: Activity },
     { label: "Attendance", href: "/parent/attendance", icon: CalendarCheck },
     { label: "Assessments", href: "/parent/assessments", icon: FileCheck },
