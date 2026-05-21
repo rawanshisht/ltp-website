@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function PATCH(req: Request) {
   const session = await auth();
@@ -13,5 +14,6 @@ export async function PATCH(req: Request) {
     data: { handedStatus },
   });
 
+  revalidatePath("/teacher/deadlines");
   return NextResponse.json({ ok: true });
 }

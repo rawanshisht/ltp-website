@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
 import { put } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -21,5 +22,6 @@ export async function POST(req: Request) {
     data: { title, subjectId, teacherId, fileUrl: blob.url, fileKey: blob.pathname },
   });
 
+  revalidatePath("/teacher/materials");
   return NextResponse.json({ id: material.id });
 }

@@ -22,6 +22,7 @@ interface MarksEntryProps {
   selectedAssignment: AssignmentWithSubject | null;
   studentsWithMarks: StudentWithMark[];
   teacherId: string;
+  isAssessmentMode: boolean;
 }
 
 export function MarksEntry({
@@ -30,6 +31,7 @@ export function MarksEntry({
   selectedAssignment,
   studentsWithMarks,
   teacherId,
+  isAssessmentMode,
 }: MarksEntryProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,13 +41,6 @@ export function MarksEntry({
     const initial: Record<string, string> = {};
     studentsWithMarks.forEach((s) => {
       initial[s.id] = s.marks[0]?.marks?.toString() ?? "";
-    });
-    return initial;
-  });
-  const [statusMap, setStatusMap] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    studentsWithMarks.forEach((s) => {
-      initial[s.id] = s.marks[0]?.handedStatus ?? "PENDING";
     });
     return initial;
   });
@@ -67,10 +62,10 @@ export function MarksEntry({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         assignmentId: selectedAssignment.id,
+        isAssessment: isAssessmentMode,
         marks: studentsWithMarks.map((s) => ({
           studentId: s.id,
           marks: marksMap[s.id] ? parseFloat(marksMap[s.id]) : null,
-          handedStatus: statusMap[s.id],
         })),
       }),
     });
@@ -79,10 +74,29 @@ export function MarksEntry({
     router.refresh();
   }
 
+  const modeParam = isAssessmentMode ? "?mode=assessment" : "";
+  const subjectParam = searchParams.get("subject");
+
   return (
     <div className="space-y-6">
+      {/* Mode tabs */}
+      <div className="flex gap-2 border-b border-[--border] pb-1">
+        <a
+          href={`/teacher/marks${subjectParam ? `?subject=${subjectParam}` : ""}`}
+          className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${!isAssessmentMode ? "bg-[--primary] text-white" : "text-[--muted-foreground] hover:text-[--foreground]"}`}
+        >
+          Homework
+        </a>
+        <a
+          href={`/teacher/marks?mode=assessment${subjectParam ? `&subject=${subjectParam}` : ""}`}
+          className={`px-4 py-2 text-sm font-medium rounded-t-md transition-colors ${isAssessmentMode ? "bg-[--primary] text-white" : "text-[--muted-foreground] hover:text-[--foreground]"}`}
+        >
+          Assessments
+        </a>
+      </div>
+
       <Card>
-        <CardHeader><CardTitle>Select Assignment</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Select {isAssessmentMode ? "Assessment" : "Assignment"}</CardTitle></CardHeader>
         <CardContent className="flex gap-4 flex-wrap">
           <div className="space-y-1.5 min-w-48">
             <Label>Subject</Label>
@@ -95,9 +109,9 @@ export function MarksEntry({
           </div>
           {assignments.length > 0 && (
             <div className="space-y-1.5 min-w-64">
-              <Label>Assignment</Label>
+              <Label>{isAssessmentMode ? "Assessment" : "Assignment"}</Label>
               <Select value={searchParams.get("assignment") ?? ""} onValueChange={(v) => navigate("assignment", v)}>
-                <SelectTrigger><SelectValue placeholder="Select assignment" /></SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={`Select ${isAssessmentMode ? "assessment" : "assignment"}`} /></SelectTrigger>
                 <SelectContent>
                   {assignments.map((a) => (
                     <SelectItem key={a.id} value={a.id}>
@@ -118,7 +132,11 @@ export function MarksEntry({
               <div>
                 <CardTitle>{selectedAssignment.title}</CardTitle>
                 <p className="text-sm text-[--muted-foreground] mt-1">
-                  {selectedAssignment.subject.name} · Max: {selectedAssignment.maxMarks} marks · Due: {formatDate(selectedAssignment.deadline)}
+                  {selectedAssignment.subject.name} · Max: {selectedAssignment.maxMarks} marks
+                  {!isAssessmentMode && ` · Due: ${formatDate(selectedAssignment.deadline)}`}
+                  {isAssessmentMode && (
+                    <Badge variant="secondary" className="ml-2">Face-to-face</Badge>
+                  )}
                 </p>
               </div>
               <Button onClick={handleSave} disabled={saving}>
@@ -136,45 +154,40 @@ export function MarksEntry({
                   <TableRow>
                     <TableHead>Student</TableHead>
                     <TableHead>Marks (/{selectedAssignment.maxMarks})</TableHead>
-                    <TableHead>Status</TableHead>
+                    {!isAssessmentMode && <TableHead>%</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {studentsWithMarks.map((student) => (
-                    <TableRow key={student.id}>
-                      <TableCell className="font-medium">{student.name}</TableCell>
-                      <TableCell>
-                        <Input
-                          type="number"
-                          min="0"
-                          max={selectedAssignment.maxMarks}
-                          className="w-24"
-                          value={marksMap[student.id] ?? ""}
-                          onChange={(e) =>
-                            setMarksMap((prev) => ({ ...prev, [student.id]: e.target.value }))
-                          }
-                          placeholder="—"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={statusMap[student.id] ?? "PENDING"}
-                          onValueChange={(v) =>
-                            setStatusMap((prev) => ({ ...prev, [student.id]: v }))
-                          }
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="PENDING">Pending</SelectItem>
-                            <SelectItem value="HANDED">Handed</SelectItem>
-                            <SelectItem value="OVERDUE">Overdue</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {studentsWithMarks.map((student) => {
+                    const val = marksMap[student.id] ?? "";
+                    const pct = val && selectedAssignment.maxMarks
+                      ? Math.round((parseFloat(val) / selectedAssignment.maxMarks) * 100)
+                      : null;
+                    return (
+                      <TableRow key={student.id}>
+                        <TableCell className="font-medium">{student.name}</TableCell>
+                        <TableCell>
+                          <Input
+                            type="number"
+                            min="0"
+                            max={selectedAssignment.maxMarks}
+                            step="0.5"
+                            className="w-24"
+                            value={val}
+                            onChange={(e) =>
+                              setMarksMap((prev) => ({ ...prev, [student.id]: e.target.value }))
+                            }
+                            placeholder="—"
+                          />
+                        </TableCell>
+                        {!isAssessmentMode && (
+                          <TableCell className="text-[--muted-foreground] text-sm">
+                            {pct !== null ? `${pct}%` : "—"}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
@@ -185,7 +198,7 @@ export function MarksEntry({
       {!selectedAssignment && searchParams.get("subject") && (
         <Card>
           <CardContent className="p-8 text-center text-[--muted-foreground] text-sm">
-            Select an assignment to enter marks.
+            Select {isAssessmentMode ? "an assessment" : "an assignment"} to enter marks.
           </CardContent>
         </Card>
       )}

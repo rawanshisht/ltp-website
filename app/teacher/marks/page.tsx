@@ -8,10 +8,12 @@ export const dynamic = "force-dynamic";
 export default async function TeacherMarksPage({
   searchParams,
 }: {
-  searchParams: Promise<{ assignment?: string; subject?: string }>;
+  searchParams: Promise<{ assignment?: string; subject?: string; mode?: string }>;
 }) {
   const session = await auth();
-  const { assignment: assignmentId, subject: subjectId } = await searchParams;
+  const { assignment: assignmentId, subject: subjectId, mode } = await searchParams;
+
+  const isAssessmentMode = mode === "assessment";
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -30,7 +32,11 @@ export default async function TeacherMarksPage({
 
   const assignments = subjectId
     ? await prisma.assignment.findMany({
-        where: { teacherId: teacher!.id, subjectId },
+        where: {
+          teacherId: teacher!.id,
+          subjectId,
+          type: isAssessmentMode ? "ASSESSMENT" : "HOMEWORK",
+        },
         include: { subject: true },
         orderBy: { deadline: "desc" },
       })
@@ -60,13 +66,17 @@ export default async function TeacherMarksPage({
 
   return (
     <div>
-      <Header title="Enter Marks" description="Record student marks per assignment" />
+      <Header
+        title="Enter Marks"
+        description="Record student marks per assignment"
+      />
       <MarksEntry
         subjects={subjects}
         assignments={assignments}
         selectedAssignment={selectedAssignment}
         studentsWithMarks={studentsWithMarks}
         teacherId={teacher!.id}
+        isAssessmentMode={isAssessmentMode}
       />
     </div>
   );

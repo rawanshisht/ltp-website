@@ -43,8 +43,12 @@ export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignment
 
     setLoading(false);
     setOpen(false);
-    // push triggers a full server component re-render, more reliable than refresh alone
-    router.push("/teacher/assignments");
+    setTitle("");
+    setSubjectId("");
+    setMaxMarks("");
+    setDeadline("");
+    setFile(null);
+    router.refresh();
   }
 
   return (

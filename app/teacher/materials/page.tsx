@@ -8,6 +8,8 @@ import { UploadMaterialDialog } from "@/components/teacher/upload-material-dialo
 import { FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function TeacherMaterialsPage() {
   const session = await auth();
 
