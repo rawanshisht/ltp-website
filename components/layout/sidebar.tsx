@@ -34,9 +34,9 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Assessments", href: "/parent/assessments", icon: FileCheck },
     { label: "Class Materials", href: "/parent/materials", icon: FolderOpen },
     { label: "Homework", href: "/parent/homework", icon: Upload },
-    { label: "Incidents", href: "/parent/incidents", icon: AlertTriangle },
     { label: "Deadlines", href: "/parent/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/parent/notices", icon: Bell },
+    { label: "Incidents", href: "/parent/incidents", icon: AlertTriangle },
   ],
   TEACHER: [
     { label: "Dashboard", href: "/teacher", icon: LayoutDashboard },
@@ -45,9 +45,9 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Behaviour", href: "/teacher/behaviour", icon: Activity },
     { label: "Attendance", href: "/teacher/attendance", icon: CalendarCheck },
     { label: "Class Materials", href: "/teacher/materials", icon: FolderOpen },
-    { label: "Incidents", href: "/teacher/incidents", icon: AlertTriangle },
     { label: "Deadlines", href: "/teacher/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/teacher/notices", icon: Bell },
+    { label: "Incidents", href: "/teacher/incidents", icon: AlertTriangle },
   ],
   ADMIN: [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -72,8 +72,8 @@ export function Sidebar({ role, userName }: SidebarProps) {
   const roleLabel = role === "PARENT" ? "Parent" : role === "TEACHER" ? "Teacher" : "Admin";
   const roleColor =
     role === "PARENT" ? "bg-blue-100 text-blue-700" :
-    role === "TEACHER" ? "bg-emerald-100 text-emerald-700" :
-    "bg-purple-100 text-purple-700";
+      role === "TEACHER" ? "bg-emerald-100 text-emerald-700" :
+        "bg-purple-100 text-purple-700";
 
   return (
     <aside className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
