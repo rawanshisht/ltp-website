@@ -180,7 +180,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
                   onClick={() => toggleSubject(s.id)}
                   className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
                     selectedSubjects.includes(s.id)
-                      ? "bg-blue-800 text-white border-blue-800"
+                      ? "bg-[#00dcde] text-[#0f172a] border-[#00dcde]"
                       : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
                   }`}
                 >

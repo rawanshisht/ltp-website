@@ -71,16 +71,16 @@ export function Sidebar({ role, userName }: SidebarProps) {
 
   const roleLabel = role === "PARENT" ? "Parent" : role === "TEACHER" ? "Teacher" : "Admin";
   const roleColor =
-    role === "PARENT" ? "bg-blue-100 text-blue-700" :
-      role === "TEACHER" ? "bg-emerald-100 text-emerald-700" :
-        "bg-purple-100 text-purple-700";
+    role === "PARENT" ? "bg-cyan-100 text-cyan-800" :
+      role === "TEACHER" ? "bg-orange-100 text-orange-800" :
+        "bg-pink-100 text-pink-800";
 
   return (
     <aside className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
       {/* Logo */}
       <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-200">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-800">
-          <GraduationCap className="h-5 w-5 text-white" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#00dcde]">
+          <GraduationCap className="h-5 w-5 text-[#0f172a]" />
         </div>
         <div>
           <p className="text-sm font-bold text-slate-900">LTP Centre</p>
@@ -100,7 +100,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive
-                      ? "bg-blue-800 text-white"
+                      ? "bg-[#00dcde] text-[#0f172a]"
                       : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
                   )}
                 >

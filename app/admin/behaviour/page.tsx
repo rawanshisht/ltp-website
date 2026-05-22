@@ -54,7 +54,7 @@ export default async function AdminBehaviourPage() {
                 <CardContent className="space-y-2">
                   <div>
                     <p className="text-xs text-[--muted-foreground] mb-1">Behaviour</p>
-                    <MiniBarChart value={avgB} color="bg-blue-500" />
+                    <MiniBarChart value={avgB} color="bg-[#00dcde]" />
                   </div>
                   <div>
                     <p className="text-xs text-[--muted-foreground] mb-1">Attentive</p>

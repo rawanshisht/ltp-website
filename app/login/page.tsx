@@ -38,12 +38,12 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 to-slate-100 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[--background] p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[--primary] shadow-lg mb-4">
-            <GraduationCap className="h-8 w-8 text-white" />
+            <GraduationCap className="h-8 w-8 text-[--primary-foreground]" />
           </div>
           <h1 className="text-2xl font-bold text-[--foreground]">LTP Learning Centre</h1>
           <p className="text-sm text-[--muted-foreground] mt-1">Homeschool Management Portal</p>

@@ -11,11 +11,11 @@ interface StatCardProps {
 }
 
 const colorMap = {
-  blue: "bg-blue-50 text-blue-600",
+  blue: "bg-cyan-50 text-cyan-700",
   green: "bg-green-50 text-green-600",
-  amber: "bg-amber-50 text-amber-600",
+  amber: "bg-orange-50 text-orange-700",
   red: "bg-red-50 text-red-600",
-  purple: "bg-purple-50 text-purple-600",
+  purple: "bg-pink-50 text-pink-700",
 };
 
 export function StatCard({ label, value, icon: Icon, trend, color = "blue" }: StatCardProps) {

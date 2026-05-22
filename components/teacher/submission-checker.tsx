@@ -40,7 +40,7 @@ export function SubmissionChecker({ markId, isHandedIn, isOverdue }: SubmissionC
           type="checkbox"
           checked={checked}
           onChange={toggle}
-          className="h-4 w-4 rounded accent-blue-600 cursor-pointer"
+          className="h-4 w-4 rounded accent-cyan-600 cursor-pointer"
         />
       )}
       <span className={`text-sm ${checked ? "text-green-600 font-medium" : isOverdue ? "text-red-500" : "text-[--muted-foreground]"}`}>

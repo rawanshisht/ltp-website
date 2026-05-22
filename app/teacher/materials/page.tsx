@@ -81,7 +81,7 @@ export default async function TeacherMaterialsPage({
                           href={m.fileUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-blue-700 hover:underline"
+                          className="inline-flex items-center gap-1 text-sm text-cyan-700 hover:underline"
                         >
                           <Download className="h-3 w-3" />
                           Download

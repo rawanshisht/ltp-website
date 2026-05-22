@@ -73,21 +73,21 @@ export default async function ParentProgressPage({
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="rounded-xl bg-blue-50 p-4">
-          <p className="text-xs text-blue-600 mb-1">Subjects</p>
-          <p className="text-2xl font-bold text-blue-700">{enrollments.length}</p>
+        <div className="rounded-xl bg-cyan-50 p-4">
+          <p className="text-xs text-cyan-700 mb-1">Subjects</p>
+          <p className="text-2xl font-bold text-cyan-800">{enrollments.length}</p>
         </div>
         <div className="rounded-xl bg-green-50 p-4">
           <p className="text-xs text-green-600 mb-1">Attendance</p>
           <p className="text-2xl font-bold text-green-700">{attendancePercent(present, attendances.length)}%</p>
         </div>
-        <div className="rounded-xl bg-amber-50 p-4">
-          <p className="text-xs text-amber-600 mb-1">Avg Behaviour</p>
-          <p className="text-2xl font-bold text-amber-700">{overallAvgBehaviour ?? "—"}/5</p>
+        <div className="rounded-xl bg-orange-50 p-4">
+          <p className="text-xs text-orange-700 mb-1">Avg Behaviour</p>
+          <p className="text-2xl font-bold text-orange-800">{overallAvgBehaviour ?? "—"}/5</p>
         </div>
-        <div className="rounded-xl bg-purple-50 p-4">
-          <p className="text-xs text-purple-600 mb-1">Predicted Grades</p>
-          <p className="text-2xl font-bold text-purple-700">{predictedGrades.length}</p>
+        <div className="rounded-xl bg-pink-50 p-4">
+          <p className="text-xs text-pink-700 mb-1">Predicted Grades</p>
+          <p className="text-2xl font-bold text-pink-800">{predictedGrades.length}</p>
         </div>
       </div>
 

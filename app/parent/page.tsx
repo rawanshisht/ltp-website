@@ -99,10 +99,10 @@ export default async function ParentDashboard({
       />
 
       {/* Child info banner */}
-      <div className="mb-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-        <p className="text-blue-100 text-sm mb-1">Currently viewing</p>
-        <h2 className="text-xl font-bold">{selected.name}</h2>
-        <p className="text-blue-200 text-sm mt-1">{className} Class · {enrollments.length} subjects</p>
+      <div className="mb-6 rounded-xl bg-[#00dcde] p-6">
+        <p className="text-[#0f172a]/70 text-sm mb-1">Currently viewing</p>
+        <h2 className="text-xl font-bold text-[#0f172a]">{selected.name}</h2>
+        <p className="text-[#0f172a]/60 text-sm mt-1">{className} Class · {enrollments.length} subjects</p>
       </div>
 
       {/* Stats */}
