@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AddStudentDialog } from "@/components/admin/add-student-dialog";
+import { EditStudentDialog } from "@/components/admin/edit-student-dialog";
 import { Phone, Mail } from "lucide-react";
 
 export default async function AdminStudentsPage({
@@ -66,6 +67,7 @@ export default async function AdminStudentsPage({
                 <TableHead>Parent / Guardian</TableHead>
                 <TableHead>Contact</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead className="w-12"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -127,6 +129,14 @@ export default async function AdminStudentsPage({
                     <Badge variant={s.isActive ? "success" : "secondary"}>
                       {s.isActive ? "Active" : "Inactive"}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <EditStudentDialog
+                      student={s}
+                      subjects={subjects}
+                      classes={classes}
+                      parents={parents}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
