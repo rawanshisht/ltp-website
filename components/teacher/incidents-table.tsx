@@ -33,7 +33,7 @@ interface IncidentsTableProps {
 function severityVariant(s: string) {
   if (s === "MAJOR") return "destructive";
   if (s === "MODERATE") return "warning";
-  return "secondary";
+  return "success";
 }
 
 export function IncidentsTable({ incidents, students, subjects }: IncidentsTableProps) {
@@ -134,7 +134,7 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
 
         <Input
           type="date"
-          className="w-40 h-9"
+          className="w-40"
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
         />

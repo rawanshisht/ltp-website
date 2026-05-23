@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 function severityVariant(s: string) {
   if (s === "MAJOR") return "destructive";
   if (s === "MODERATE") return "warning";
-  return "secondary";
+  return "success";
 }
 
 export default async function AdminIncidentsPage({

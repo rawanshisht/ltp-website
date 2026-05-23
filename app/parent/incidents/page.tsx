@@ -10,7 +10,7 @@ import { formatDate } from "@/lib/utils";
 function severityVariant(s: string) {
   if (s === "MAJOR") return "destructive";
   if (s === "MODERATE") return "warning";
-  return "secondary";
+  return "success";
 }
 
 export default async function ParentIncidentsPage({
