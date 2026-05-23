@@ -71,10 +71,12 @@ export default async function ParentAttendancePage({
             <AttendanceDonut present={present} absent={absent} late={late} />
           </CardContent>
         </Card>
-        <Card>
+        <Card className="flex flex-col">
           <CardHeader><CardTitle>Attendance by Subject</CardTitle></CardHeader>
-          <CardContent>
-            <AttendanceBarChart data={subjectAttendanceData} />
+          <CardContent className="flex-1 flex flex-col justify-center">
+            <div className="w-full">
+              <AttendanceBarChart data={subjectAttendanceData} />
+            </div>
           </CardContent>
         </Card>
       </div>
