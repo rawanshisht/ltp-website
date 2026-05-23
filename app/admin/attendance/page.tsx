@@ -68,7 +68,7 @@ export default async function AdminAttendancePage() {
         <Card>
           <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
           <CardContent>
-            <StudentAttendanceChart data={studentAttendanceData} />
+            <StudentAttendanceChart data={studentAttendanceData} students={students} />
           </CardContent>
         </Card>
       </div>

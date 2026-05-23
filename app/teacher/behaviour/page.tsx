@@ -15,16 +15,10 @@ export default async function TeacherBehaviourPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: {
-        include: { class: { include: { students: true } } },
-      },
     },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const classStudentIds = teacher!.teacherClasses.flatMap((tc) =>
-    tc.class.students.map((s) => s.id)
-  );
 
   const lessonDate = date ? new Date(date) : new Date();
   const startOfDay = new Date(lessonDate);
@@ -36,7 +30,7 @@ export default async function TeacherBehaviourPage({
     subjectId
       ? await prisma.student.findMany({
           where: {
-            id: { in: classStudentIds },
+            isActive: true,
             studentSubjects: { some: { subjectId, droppedAt: null } },
           },
           include: {

@@ -10,8 +10,23 @@ interface DataPoint {
   pct: number;
 }
 
-export function StudentAttendanceChart({ data }: { data: DataPoint[] }) {
+interface StudentInfo {
+  name: string;
+}
+
+export function StudentAttendanceChart({
+  data,
+  students = [],
+}: {
+  data: DataPoint[];
+  students?: StudentInfo[];
+}) {
   const [selected, setSelected] = useState("all");
+
+  // Merge names from records + all active students for a complete dropdown
+  const allNames = Array.from(
+    new Set([...students.map((s) => s.name), ...data.map((d) => d.fullName)])
+  ).sort();
 
   const filtered =
     selected === "all"
@@ -27,15 +42,19 @@ export function StudentAttendanceChart({ data }: { data: DataPoint[] }) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All students</SelectItem>
-            {data.map((d) => (
-              <SelectItem key={d.fullName} value={d.fullName}>{d.fullName}</SelectItem>
+            {allNames.map((name) => (
+              <SelectItem key={name} value={name}>{name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      <div className={selected === "all" ? "max-h-[400px] overflow-y-auto" : undefined}>
-        <AttendanceBarChart data={filtered} />
-      </div>
+      {filtered.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-8 text-center">No records yet for this student.</p>
+      ) : (
+        <div className={selected === "all" ? "max-h-[400px] overflow-y-auto" : undefined}>
+          <AttendanceBarChart data={filtered} />
+        </div>
+      )}
     </div>
   );
 }

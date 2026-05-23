@@ -22,9 +22,6 @@ export default async function TeacherAttendancePage({
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const classStudentIds = teacher!.teacherClasses.flatMap((tc) =>
-    tc.class.students.map((s) => s.id)
-  );
 
   const sessionDate = date ? new Date(date) : new Date();
   const startOfDay = new Date(sessionDate);
@@ -36,7 +33,7 @@ export default async function TeacherAttendancePage({
     subjectId
       ? await prisma.student.findMany({
           where: {
-            id: { in: classStudentIds },
+            isActive: true,
             studentSubjects: { some: { subjectId, droppedAt: null } },
           },
           include: {

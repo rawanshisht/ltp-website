@@ -12,8 +12,23 @@ interface DataPoint {
   engagement: number;
 }
 
-export function StudentBehaviourChart({ data }: { data: DataPoint[] }) {
+interface StudentInfo {
+  name: string;
+}
+
+export function StudentBehaviourChart({
+  data,
+  students = [],
+}: {
+  data: DataPoint[];
+  students?: StudentInfo[];
+}) {
   const [selected, setSelected] = useState("all");
+
+  // Merge names from records + all active students for a complete dropdown
+  const allNames = Array.from(
+    new Set([...students.map((s) => s.name), ...data.map((d) => d.fullName)])
+  ).sort();
 
   const filtered =
     selected === "all"
@@ -34,13 +49,15 @@ export function StudentBehaviourChart({ data }: { data: DataPoint[] }) {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All students</SelectItem>
-            {data.map((d) => (
-              <SelectItem key={d.fullName} value={d.fullName}>{d.fullName}</SelectItem>
+            {allNames.map((name) => (
+              <SelectItem key={name} value={name}>{name}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      {needsScroll ? (
+      {filtered.length === 0 ? (
+        <p className="text-sm text-muted-foreground py-8 text-center">No records yet for this student.</p>
+      ) : needsScroll ? (
         <div className="overflow-x-auto">
           <div style={{ minWidth: scrollWidth }}>
             <BehaviourBarChart data={filtered} />

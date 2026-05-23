@@ -63,7 +63,7 @@ export default async function AdminBehaviourPage() {
         <Card className="mb-6">
           <CardHeader><CardTitle>School-wide Behaviour Overview</CardTitle></CardHeader>
           <CardContent>
-            <StudentBehaviourChart data={behaviourChartData} />
+            <StudentBehaviourChart data={behaviourChartData} students={students} />
           </CardContent>
         </Card>
       )}
