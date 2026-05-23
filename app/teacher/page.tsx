@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, BookOpen, ClipboardList, Bell } from "lucide-react";
 import { formatDate, gradeLabel, attendancePercent } from "@/lib/utils";
+import { BehaviourBarChart } from "@/components/charts/behaviour-bar-chart";
+import { AttendanceBarChart } from "@/components/charts/enrollment-bar-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +150,42 @@ export default async function TeacherDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Student charts */}
+      {students.length > 0 && (() => {
+        const attendanceData = students.map((s) => ({
+          name: s.name.split(" ")[0],
+          pct: attendancePercent(
+            s.attendances.filter((a) => a.status === "PRESENT").length,
+            s.attendances.length
+          ),
+        }));
+        const behaviourData = students
+          .filter((s) => s.behaviours.length > 0)
+          .map((s) => {
+            const n = s.behaviours.length;
+            return {
+              name: s.name.split(" ")[0],
+              behaviour: parseFloat((s.behaviours.reduce((sum, r) => sum + r.behaviourStars, 0) / n).toFixed(1)),
+              attentive: parseFloat((s.behaviours.reduce((sum, r) => sum + r.attentiveStars, 0) / n).toFixed(1)),
+              engagement: parseFloat((s.behaviours.reduce((sum, r) => sum + r.engagementStars, 0) / n).toFixed(1)),
+            };
+          });
+        return (
+          <div className="grid gap-6 md:grid-cols-2 mb-8">
+            <Card>
+              <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
+              <CardContent><AttendanceBarChart data={attendanceData} /></CardContent>
+            </Card>
+            {behaviourData.length > 0 && (
+              <Card>
+                <CardHeader><CardTitle>Behaviour by Student</CardTitle></CardHeader>
+                <CardContent><BehaviourBarChart data={behaviourData} /></CardContent>
+              </Card>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Student Progress */}
       <h2 className="text-lg font-semibold text-(--foreground) mb-4">Student Progress</h2>

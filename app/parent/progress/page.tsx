@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { gradeLabel, attendancePercent, formatDate } from "@/lib/utils";
+import { MarksBarChart } from "@/components/charts/marks-bar-chart";
 
 function starAvg(records: { behaviourStars: number; attentiveStars: number; engagementStars: number }[]) {
   if (!records.length) return null;
@@ -63,6 +64,16 @@ export default async function ParentProgressPage({
   const present = attendances.filter((a) => a.status === "PRESENT").length;
   const overallAvgBehaviour = starAvg(behaviours);
 
+  const marksChartData = enrollments.flatMap((en) => {
+    const marksWithValues = en.subject.assignments.flatMap((a) =>
+      a.marks.filter((m) => m.marks !== null).map((m) => ({ marks: m.marks!, maxMarks: a.maxMarks }))
+    );
+    const earned = marksWithValues.reduce((s, m) => s + m.marks, 0);
+    const possible = marksWithValues.reduce((s, m) => s + m.maxMarks, 0);
+    if (possible === 0) return [];
+    return [{ subject: en.subject.name, avg: Math.round((earned / possible) * 100) }];
+  });
+
   return (
     <div>
       <Header
@@ -90,6 +101,15 @@ export default async function ParentProgressPage({
           <p className="text-2xl font-bold text-pink-800">{predictedGrades.length}</p>
         </div>
       </div>
+
+      {marksChartData.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader><CardTitle>Average Marks by Subject</CardTitle></CardHeader>
+          <CardContent>
+            <MarksBarChart data={marksChartData} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Per-subject breakdown */}
       <div className="space-y-6">

@@ -6,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { formatDate } from "@/lib/utils";
+import { BehaviourBarChart } from "@/components/charts/behaviour-bar-chart";
 
 function starDisplay(n: number) {
   return "★".repeat(n) + "☆".repeat(5 - n);
@@ -57,6 +58,13 @@ export default async function ParentBehaviourPage({
     return acc;
   }, {});
 
+  const behaviourChartData = Object.entries(bySubject).map(([name, records]) => ({
+    name,
+    behaviour: parseFloat((avgStars(records, "behaviourStars")).toFixed(1)),
+    attentive: parseFloat((avgStars(records, "attentiveStars")).toFixed(1)),
+    engagement: parseFloat((avgStars(records, "engagementStars")).toFixed(1)),
+  }));
+
   return (
     <div>
       <Header
@@ -64,6 +72,15 @@ export default async function ParentBehaviourPage({
         description={`Behaviour records for ${selected.name}`}
         actions={<ChildSwitcher children={children} selectedId={selected.id} />}
       />
+
+      {behaviourChartData.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader><CardTitle>Behaviour Overview by Subject</CardTitle></CardHeader>
+          <CardContent>
+            <BehaviourBarChart data={behaviourChartData} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Per-subject summary cards with bar charts */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 mb-6">

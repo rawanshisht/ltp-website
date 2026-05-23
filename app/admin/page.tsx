@@ -4,6 +4,7 @@ import { StatCard } from "@/components/layout/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, BookOpen, UserCog, Activity } from "lucide-react";
+import { EnrollmentBarChart } from "@/components/charts/enrollment-bar-chart";
 
 export default async function AdminDashboard() {
   const [studentCount, teacherCount, subjectCount, behaviourAvgData, recentStudents] =
@@ -55,31 +56,21 @@ export default async function AdminDashboard() {
         {/* Class breakdown */}
         <Card>
           <CardHeader><CardTitle>Students by Class</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            {classCounts.map((c) => (
-              <div key={c.id} className="flex items-center justify-between">
-                <span className="text-sm font-medium">{classLabel(c.name)}</span>
-                <Badge variant="secondary">{c._count.students} students</Badge>
-              </div>
-            ))}
+          <CardContent>
+            <EnrollmentBarChart
+              data={classCounts.map((c) => ({ name: classLabel(c.name), count: c._count.students }))}
+            />
           </CardContent>
         </Card>
 
         {/* Subject enrollment */}
         <Card>
           <CardHeader><CardTitle>Subject Enrollments</CardTitle></CardHeader>
-          <CardContent className="space-y-3">
-            {subjectEnrollments.map((s) => (
-              <div key={s.id} className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{s.name}</span>
-                  <Badge variant={s.type === "CORE" ? "default" : "secondary"} className="text-xs">
-                    {s.type}
-                  </Badge>
-                </div>
-                <Badge variant="outline">{s._count.studentSubjects} students</Badge>
-              </div>
-            ))}
+          <CardContent>
+            <EnrollmentBarChart
+              data={subjectEnrollments.map((s) => ({ name: s.name, count: s._count.studentSubjects }))}
+              height={Math.max(200, subjectEnrollments.length * 32)}
+            />
           </CardContent>
         </Card>
 

@@ -8,6 +8,8 @@ import { StatCard } from "@/components/layout/stat-card";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { formatDate, attendancePercent } from "@/lib/utils";
 import { CalendarCheck, CalendarX, Clock } from "lucide-react";
+import { AttendanceDonut } from "@/components/charts/attendance-donut";
+import { AttendanceBarChart } from "@/components/charts/enrollment-bar-chart";
 
 export default async function ParentAttendancePage({
   searchParams,
@@ -36,6 +38,17 @@ export default async function ParentAttendancePage({
   const late = attendances.filter((a) => a.status === "LATE").length;
   const total = attendances.length;
 
+  const bySubject = attendances.reduce<Record<string, { present: number; total: number }>>((acc, a) => {
+    const key = a.subject.name;
+    acc[key] = acc[key] ?? { present: 0, total: 0 };
+    acc[key].total++;
+    if (a.status === "PRESENT") acc[key].present++;
+    return acc;
+  }, {});
+  const subjectAttendanceData = Object.entries(bySubject)
+    .map(([name, { present, total }]) => ({ name, pct: Math.round((present / total) * 100) }))
+    .sort((a, b) => b.pct - a.pct);
+
   return (
     <div>
       <Header
@@ -49,6 +62,21 @@ export default async function ParentAttendancePage({
         <StatCard label="Present" value={present} icon={CalendarCheck} color="green" />
         <StatCard label="Absent" value={absent} icon={CalendarX} color="red" />
         <StatCard label="Late" value={late} icon={Clock} color="amber" />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 mb-6">
+        <Card>
+          <CardHeader><CardTitle>Attendance Breakdown</CardTitle></CardHeader>
+          <CardContent>
+            <AttendanceDonut present={present} absent={absent} late={late} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Attendance by Subject</CardTitle></CardHeader>
+          <CardContent>
+            <AttendanceBarChart data={subjectAttendanceData} />
+          </CardContent>
+        </Card>
       </div>
 
       <Card>

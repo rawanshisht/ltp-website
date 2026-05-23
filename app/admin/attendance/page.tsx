@@ -5,6 +5,8 @@ import { StatCard } from "@/components/layout/stat-card";
 import { AttendanceRecordsTable } from "@/components/admin/attendance-records-table";
 import { attendancePercent } from "@/lib/utils";
 import { CalendarCheck, CalendarX, Clock, Users } from "lucide-react";
+import { AttendanceDonut } from "@/components/charts/attendance-donut";
+import { AttendanceBarChart } from "@/components/charts/enrollment-bar-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,17 @@ export default async function AdminAttendancePage() {
   const absent = attendances.filter((a) => a.status === "ABSENT").length;
   const late = attendances.filter((a) => a.status === "LATE").length;
 
+  const byStudent = attendances.reduce<Record<string, { present: number; total: number }>>((acc, a) => {
+    const key = a.student.name;
+    acc[key] = acc[key] ?? { present: 0, total: 0 };
+    acc[key].total++;
+    if (a.status === "PRESENT") acc[key].present++;
+    return acc;
+  }, {});
+  const studentAttendanceData = Object.entries(byStudent)
+    .map(([name, { present, total }]) => ({ name, pct: Math.round((present / total) * 100) }))
+    .sort((a, b) => b.pct - a.pct);
+
   return (
     <div>
       <Header title="Attendance Dashboard" description="School-wide attendance analytics" />
@@ -32,6 +45,21 @@ export default async function AdminAttendancePage() {
         <StatCard label="Present" value={present} icon={CalendarCheck} color="green" trend={`${attendancePercent(present, attendances.length)}%`} />
         <StatCard label="Absent" value={absent} icon={CalendarX} color="red" />
         <StatCard label="Late" value={late} icon={Clock} color="amber" />
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 mb-6">
+        <Card>
+          <CardHeader><CardTitle>Attendance Breakdown</CardTitle></CardHeader>
+          <CardContent>
+            <AttendanceDonut present={present} absent={absent} late={late} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
+          <CardContent>
+            <AttendanceBarChart data={studentAttendanceData} />
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
