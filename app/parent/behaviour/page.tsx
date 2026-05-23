@@ -75,19 +75,19 @@ export default async function ParentBehaviourPage({
             <Card key={subject}>
               <CardHeader className="pb-2">
                 <CardTitle className="text-base">{subject}</CardTitle>
-                <p className="text-xs text-[--muted-foreground]">{records.length} sessions</p>
+                <p className="text-xs text-(--muted-foreground)">{records.length} sessions</p>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div>
-                  <p className="text-xs text-[--muted-foreground] mb-1">Behaviour</p>
+                  <p className="text-xs text-(--muted-foreground) mb-1">Behaviour</p>
                   <MiniBarChart value={avgB} color="bg-[#00dcde]" />
                 </div>
                 <div>
-                  <p className="text-xs text-[--muted-foreground] mb-1">Attentive</p>
+                  <p className="text-xs text-(--muted-foreground) mb-1">Attentive</p>
                   <MiniBarChart value={avgA} color="bg-emerald-500" />
                 </div>
                 <div>
-                  <p className="text-xs text-[--muted-foreground] mb-1">Engagement</p>
+                  <p className="text-xs text-(--muted-foreground) mb-1">Engagement</p>
                   <MiniBarChart value={avgE} color="bg-amber-500" />
                 </div>
               </CardContent>
@@ -101,7 +101,7 @@ export default async function ParentBehaviourPage({
         <CardHeader><CardTitle>Detailed Behaviour Log</CardTitle></CardHeader>
         <CardContent>
           {behaviours.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No behaviour records yet.</p>
+            <p className="text-sm text-(--muted-foreground)">No behaviour records yet.</p>
           ) : (
             <Table>
               <TableHeader>
@@ -117,7 +117,7 @@ export default async function ParentBehaviourPage({
               <TableBody>
                 {behaviours.map((b) => (
                   <TableRow key={b.id}>
-                    <TableCell className="text-[--muted-foreground] whitespace-nowrap">{formatDate(b.lessonDate)}</TableCell>
+                    <TableCell className="text-(--muted-foreground) whitespace-nowrap">{formatDate(b.lessonDate)}</TableCell>
                     <TableCell className="font-medium">{b.subject.name}</TableCell>
                     <TableCell>
                       <span className="text-amber-400 tracking-tight">{starDisplay(b.behaviourStars)}</span>
@@ -128,7 +128,7 @@ export default async function ParentBehaviourPage({
                     <TableCell>
                       <span className="text-amber-400 tracking-tight">{starDisplay(b.engagementStars)}</span>
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground] italic">{b.note ?? "—"}</TableCell>
+                    <TableCell className="text-(--muted-foreground) italic">{b.note ?? "—"}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

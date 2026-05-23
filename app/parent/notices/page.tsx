@@ -65,8 +65,8 @@ export default async function ParentNoticesPage({
           {notices.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
-                <Bell className="h-8 w-8 mx-auto text-[--muted-foreground] mb-3" />
-                <p className="text-[--muted-foreground]">No notices yet.</p>
+                <Bell className="h-8 w-8 mx-auto text-(--muted-foreground) mb-3" />
+                <p className="text-(--muted-foreground)">No notices yet.</p>
               </CardContent>
             </Card>
           ) : (
@@ -84,7 +84,7 @@ export default async function ParentNoticesPage({
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-[--foreground] whitespace-pre-line">{notice.body}</p>
+                  <p className="text-sm text-(--foreground) whitespace-pre-line">{notice.body}</p>
                 </CardContent>
               </Card>
             ))

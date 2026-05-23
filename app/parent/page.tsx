@@ -35,7 +35,7 @@ export default async function ParentDashboard({
   if (!parent || parent.parentStudents.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-[--muted-foreground]">No children linked to your account. Contact admin.</p>
+        <p className="text-(--muted-foreground)">No children linked to your account. Contact admin.</p>
       </div>
     );
   }
@@ -125,7 +125,7 @@ export default async function ParentDashboard({
           <CardHeader><CardTitle>Predicted GCSE Grades</CardTitle></CardHeader>
           <CardContent>
             {predictedGrades.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No predicted grades yet.</p>
+              <p className="text-sm text-(--muted-foreground)">No predicted grades yet.</p>
             ) : (
               <div className="space-y-2">
                 {predictedGrades.map((pg) => (
@@ -143,14 +143,14 @@ export default async function ParentDashboard({
           <CardHeader><CardTitle>Upcoming Homework Deadlines</CardTitle></CardHeader>
           <CardContent>
             {upcomingDeadlines.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No upcoming deadlines.</p>
+              <p className="text-sm text-(--muted-foreground)">No upcoming deadlines.</p>
             ) : (
               <div className="space-y-3">
                 {upcomingDeadlines.map((m) => (
                   <div key={m.id} className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-sm font-medium">{m.assignment.title}</p>
-                      <p className="text-xs text-[--muted-foreground]">{m.assignment.subject.name}</p>
+                      <p className="text-xs text-(--muted-foreground)">{m.assignment.subject.name}</p>
                     </div>
                     <Badge variant="warning">{formatDate(m.assignment.deadline)}</Badge>
                   </div>
@@ -162,7 +162,7 @@ export default async function ParentDashboard({
       </div>
 
       {/* Per-subject progress */}
-      <h2 className="text-lg font-semibold text-[--foreground] mb-4">Subject Progress</h2>
+      <h2 className="text-lg font-semibold text-(--foreground) mb-4">Subject Progress</h2>
       <div className="space-y-6">
         {enrollments.map((en) => {
           const subject = en.subject;
@@ -190,22 +190,22 @@ export default async function ParentDashboard({
                   <div className="flex gap-4 text-sm">
                     {avg !== null && (
                       <div className="text-center">
-                        <p className="text-xs text-[--muted-foreground]">Average</p>
+                        <p className="text-xs text-(--muted-foreground)">Average</p>
                         <Badge variant={avg >= 70 ? "success" : avg >= 50 ? "warning" : "destructive"}>{avg}%</Badge>
                       </div>
                     )}
                     {predictedGrade && (
                       <div className="text-center">
-                        <p className="text-xs text-[--muted-foreground]">GCSE Predicted</p>
+                        <p className="text-xs text-(--muted-foreground)">GCSE Predicted</p>
                         <Badge variant="default">{gradeLabel(predictedGrade.grade)}</Badge>
                       </div>
                     )}
                     <div className="text-center">
-                      <p className="text-xs text-[--muted-foreground]">Attendance</p>
+                      <p className="text-xs text-(--muted-foreground)">Attendance</p>
                       <p className="font-bold">{attendancePercent(subjectPresent, subjectAttendances.length)}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-[--muted-foreground]">Behaviour</p>
+                      <p className="text-xs text-(--muted-foreground)">Behaviour</p>
                       <p className="font-bold">{avgBeh ?? "—"}/5</p>
                     </div>
                   </div>
@@ -213,7 +213,7 @@ export default async function ParentDashboard({
               </CardHeader>
               <CardContent>
                 {subject.assignments.length === 0 ? (
-                  <p className="text-sm text-[--muted-foreground]">No assignments yet.</p>
+                  <p className="text-sm text-(--muted-foreground)">No assignments yet.</p>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -237,7 +237,7 @@ export default async function ParentDashboard({
                                 {isAssessment ? "Assessment" : "Homework"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-[--muted-foreground]">{formatDate(a.deadline)}</TableCell>
+                            <TableCell className="text-(--muted-foreground)">{formatDate(a.deadline)}</TableCell>
                             <TableCell>
                               {mark?.marks !== null && mark?.marks !== undefined
                                 ? `${mark.marks}/${a.maxMarks}`
@@ -245,7 +245,7 @@ export default async function ParentDashboard({
                             </TableCell>
                             <TableCell>
                               {isAssessment ? (
-                                <span className="text-[--muted-foreground] text-sm">—</span>
+                                <span className="text-(--muted-foreground) text-sm">—</span>
                               ) : mark ? (
                                 <Badge variant={
                                   mark.handedStatus === "HANDED" ? "success"
@@ -269,7 +269,7 @@ export default async function ParentDashboard({
           );
         })}
         {enrollments.length === 0 && (
-          <Card><CardContent className="p-8 text-center text-[--muted-foreground]">Not enrolled in any subjects yet.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-(--muted-foreground)">Not enrolled in any subjects yet.</CardContent></Card>
         )}
       </div>
     </div>

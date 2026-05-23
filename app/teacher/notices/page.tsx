@@ -33,7 +33,7 @@ export default async function TeacherNoticesPage() {
       <div className="space-y-4">
         {teacher!.notices.length === 0 ? (
           <Card>
-            <CardContent className="p-8 text-center text-[--muted-foreground] text-sm">
+            <CardContent className="p-8 text-center text-(--muted-foreground) text-sm">
               No notices posted yet.
             </CardContent>
           </Card>

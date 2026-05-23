@@ -46,7 +46,7 @@ export default async function AdminStudentsPage({
           <div className="flex items-center gap-2">
             <a
               href={showInactive ? "/admin/students" : "/admin/students?inactive=true"}
-              className="text-sm text-[--primary] hover:underline"
+              className="text-sm text-(--primary) hover:underline"
             >
               {showInactive ? "Show active only" : "Show inactive"}
             </a>
@@ -84,7 +84,7 @@ export default async function AdminStudentsPage({
                   </TableCell>
                   <TableCell>
                     {s.parentStudents.length === 0 ? (
-                      <span className="text-[--muted-foreground]">—</span>
+                      <span className="text-(--muted-foreground)">—</span>
                     ) : (
                       <div className="space-y-1">
                         {s.parentStudents.map((ps) => (
@@ -97,14 +97,14 @@ export default async function AdminStudentsPage({
                   </TableCell>
                   <TableCell>
                     {s.parentStudents.length === 0 ? (
-                      <span className="text-[--muted-foreground]">—</span>
+                      <span className="text-(--muted-foreground)">—</span>
                     ) : (
                       <div className="space-y-1">
                         {s.parentStudents.map((ps) => (
                           <div key={ps.parent.id} className="space-y-0.5">
                             <a
                               href={`mailto:${ps.parent.user.email}`}
-                              className="flex items-center gap-1 text-xs text-[--primary] hover:underline"
+                              className="flex items-center gap-1 text-xs text-(--primary) hover:underline"
                             >
                               <Mail className="h-3 w-3" />
                               {ps.parent.user.email}
@@ -112,7 +112,7 @@ export default async function AdminStudentsPage({
                             {ps.parent.user.phone && (
                               <a
                                 href={`tel:${ps.parent.user.phone}`}
-                                className="flex items-center gap-1 text-xs text-[--muted-foreground] hover:text-[--foreground]"
+                                className="flex items-center gap-1 text-xs text-(--muted-foreground) hover:text-(--foreground)"
                               >
                                 <Phone className="h-3 w-3" />
                                 {ps.parent.user.phone}
@@ -132,7 +132,7 @@ export default async function AdminStudentsPage({
               ))}
               {students.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-[--muted-foreground] py-8">
+                  <TableCell colSpan={6} className="text-center text-(--muted-foreground) py-8">
                     No students found.
                   </TableCell>
                 </TableRow>

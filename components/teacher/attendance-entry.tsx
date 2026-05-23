@@ -118,7 +118,7 @@ export function AttendanceEntry({
           </CardHeader>
           <CardContent>
             {studentsWithAttendance.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No students enrolled in this subject from your classes.</p>
+              <p className="text-sm text-(--muted-foreground)">No students enrolled in this subject from your classes.</p>
             ) : (
               <Table>
                 <TableHeader>
@@ -141,7 +141,7 @@ export function AttendanceEntry({
                                 "rounded-full px-3 py-1 text-xs font-medium border transition-all",
                                 statusMap[student.id] === status
                                   ? statusStyles[status]
-                                  : "bg-[--secondary] text-[--muted-foreground] border-transparent hover:bg-slate-200"
+                                  : "bg-(--secondary) text-(--muted-foreground) border-transparent hover:bg-slate-200"
                               )}
                             >
                               {status}

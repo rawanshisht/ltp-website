@@ -38,7 +38,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[--background] p-4">
+    <div className="flex min-h-screen items-center justify-center bg-(--background) p-4">
       <div className="w-full max-w-md">
         <Card className="overflow-hidden">
           {/* Branded teal header */}
@@ -52,7 +52,7 @@ export default function LoginPage() {
 
           {/* Form */}
           <CardContent className="p-8">
-            <p className="text-[--muted-foreground] text-sm mb-6">Sign in to your account to continue.</p>
+            <p className="text-(--muted-foreground) text-sm mb-6">Sign in to your account to continue.</p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-1.5">
                 <Label htmlFor="email">Email</Label>
@@ -80,7 +80,7 @@ export default function LoginPage() {
               </div>
 
               {error && (
-                <p className="text-sm text-[--destructive] bg-red-50 rounded-md px-3 py-2">{error}</p>
+                <p className="text-sm text-(--destructive) bg-red-50 rounded-md px-3 py-2">{error}</p>
               )}
 
               <Button type="submit" className="w-full mt-2" disabled={loading}>

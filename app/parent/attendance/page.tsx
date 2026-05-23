@@ -57,7 +57,7 @@ export default async function ParentAttendancePage({
         </CardHeader>
         <CardContent>
           {attendances.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No attendance records yet.</p>
+            <p className="text-sm text-(--muted-foreground)">No attendance records yet.</p>
           ) : (
             <Table>
               <TableHeader>
@@ -70,7 +70,7 @@ export default async function ParentAttendancePage({
               <TableBody>
                 {attendances.map((a) => (
                   <TableRow key={a.id}>
-                    <TableCell className="text-[--muted-foreground]">{formatDate(a.sessionDate)}</TableCell>
+                    <TableCell className="text-(--muted-foreground)">{formatDate(a.sessionDate)}</TableCell>
                     <TableCell className="font-medium">{a.subject.name}</TableCell>
                     <TableCell>
                       <Badge

@@ -47,7 +47,7 @@ export default async function AdminAssessmentsPage({
       <TableRow>
         <TableCell>
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-[--muted-foreground]" />
+            <Calendar className="h-4 w-4 text-(--muted-foreground)" />
             <span className="font-medium">{a.title}</span>
           </div>
         </TableCell>
@@ -57,7 +57,7 @@ export default async function AdminAssessmentsPage({
             {formatDate(a.deadline)}
           </Badge>
         </TableCell>
-        <TableCell className="text-[--muted-foreground]">
+        <TableCell className="text-(--muted-foreground)">
           {a.teacher.user.firstName} {a.teacher.user.lastName}
         </TableCell>
         <TableCell>
@@ -79,11 +79,11 @@ export default async function AdminAssessmentsPage({
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Upcoming Assessments</CardTitle>
-          <p className="text-sm text-[--muted-foreground]">End of June — before summer break</p>
+          <p className="text-sm text-(--muted-foreground)">End of June — before summer break</p>
         </CardHeader>
         <CardContent>
           {upcoming.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No upcoming assessments.</p>
+            <p className="text-sm text-(--muted-foreground)">No upcoming assessments.</p>
           ) : (
             <Table>
               <TableHeader>

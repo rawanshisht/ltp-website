@@ -119,7 +119,7 @@ export default async function ParentProgressPage({
                   <div className="flex gap-4 text-sm">
                     {avg !== null && (
                       <div className="text-center">
-                        <p className="text-xs text-[--muted-foreground]">Average</p>
+                        <p className="text-xs text-(--muted-foreground)">Average</p>
                         <Badge variant={avg >= 70 ? "success" : avg >= 50 ? "warning" : "destructive"}>
                           {avg}%
                         </Badge>
@@ -127,16 +127,16 @@ export default async function ParentProgressPage({
                     )}
                     {predictedGrade && (
                       <div className="text-center">
-                        <p className="text-xs text-[--muted-foreground]">GCSE Predicted</p>
+                        <p className="text-xs text-(--muted-foreground)">GCSE Predicted</p>
                         <Badge variant="default">{gradeLabel(predictedGrade.grade)}</Badge>
                       </div>
                     )}
                     <div className="text-center">
-                      <p className="text-xs text-[--muted-foreground]">Attendance</p>
+                      <p className="text-xs text-(--muted-foreground)">Attendance</p>
                       <p className="font-bold">{attendancePercent(subjectPresent, subjectAttendances.length)}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xs text-[--muted-foreground]">Behaviour</p>
+                      <p className="text-xs text-(--muted-foreground)">Behaviour</p>
                       <p className="font-bold">{avgBeh ?? "—"}/5</p>
                     </div>
                   </div>
@@ -144,7 +144,7 @@ export default async function ParentProgressPage({
               </CardHeader>
               <CardContent>
                 {subject.assignments.length === 0 ? (
-                  <p className="text-sm text-[--muted-foreground]">No assignments yet.</p>
+                  <p className="text-sm text-(--muted-foreground)">No assignments yet.</p>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -165,7 +165,7 @@ export default async function ParentProgressPage({
                             <TableCell>
                               <Badge variant={a.type === "ASSESSMENT" ? "destructive" : "secondary"}>{a.type}</Badge>
                             </TableCell>
-                            <TableCell className="text-[--muted-foreground]">{formatDate(a.deadline)}</TableCell>
+                            <TableCell className="text-(--muted-foreground)">{formatDate(a.deadline)}</TableCell>
                             <TableCell>
                               {mark?.marks !== null && mark?.marks !== undefined
                                 ? `${mark.marks}/${a.maxMarks}`

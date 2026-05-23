@@ -147,7 +147,7 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-[--muted-foreground]">No incidents{hasFilter ? " matching filter" : ""}.</p>
+        <p className="text-sm text-(--muted-foreground)">No incidents{hasFilter ? " matching filter" : ""}.</p>
       ) : (
         <Table>
           <TableHeader>
@@ -164,7 +164,7 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
           <TableBody>
             {filtered.map((inc) => (
               <TableRow key={inc.id}>
-                <TableCell className="text-[--muted-foreground] whitespace-nowrap">{formatDate(inc.date)}</TableCell>
+                <TableCell className="text-(--muted-foreground) whitespace-nowrap">{formatDate(inc.date)}</TableCell>
                 <TableCell className="font-medium">{inc.student.name}</TableCell>
                 <TableCell>{inc.title}</TableCell>
                 <TableCell>{inc.subject?.name ?? "—"}</TableCell>
@@ -173,7 +173,7 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
                     {inc.severity.charAt(0) + inc.severity.slice(1).toLowerCase()}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-[--muted-foreground] text-sm max-w-xs truncate">{inc.description}</TableCell>
+                <TableCell className="text-(--muted-foreground) text-sm max-w-xs truncate">{inc.description}</TableCell>
                 <TableCell>
                   <div className="flex gap-1">
                     <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(inc)}>

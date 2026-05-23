@@ -81,9 +81,9 @@ export default async function TeacherDeadlinesPage({
       <Card>
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground] p-6">No assignments found.</p>
+            <p className="text-sm text-(--muted-foreground) p-6">No assignments found.</p>
           ) : (
-            <ul className="divide-y divide-[--border]">
+            <ul className="divide-y divide-(--border)">
               {filtered.map((a) => (
                 <li key={a.id}>
                   <Link
@@ -91,10 +91,10 @@ export default async function TeacherDeadlinesPage({
                     className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors group"
                   >
                     <div>
-                      <p className="font-medium text-[--foreground] group-hover:text-[--primary] transition-colors">
+                      <p className="font-medium text-(--foreground) group-hover:text-(--primary) transition-colors">
                         {a.title}
                       </p>
-                      <p className="text-xs text-[--muted-foreground] mt-0.5">
+                      <p className="text-xs text-(--muted-foreground) mt-0.5">
                         {a.subject.name} · Due {formatDate(a.deadline)}
                       </p>
                     </div>
@@ -108,7 +108,7 @@ export default async function TeacherDeadlinesPage({
                       {a.pending > 0 && (
                         <Badge variant="secondary">{a.pending} pending</Badge>
                       )}
-                      <ChevronRight className="h-4 w-4 text-[--muted-foreground]" />
+                      <ChevronRight className="h-4 w-4 text-(--muted-foreground)" />
                     </div>
                   </Link>
                 </li>

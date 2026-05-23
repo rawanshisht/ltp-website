@@ -89,10 +89,10 @@ export default async function AdminDashboard() {
           <CardContent>
             <div className="space-y-2">
               {recentStudents.map((s) => (
-                <div key={s.id} className="flex items-center justify-between py-2 border-b border-[--border] last:border-0">
+                <div key={s.id} className="flex items-center justify-between py-2 border-b border-(--border) last:border-0">
                   <div>
                     <p className="text-sm font-medium">{s.name}</p>
-                    <p className="text-xs text-[--muted-foreground]">{classLabel(s.class.name)}</p>
+                    <p className="text-xs text-(--muted-foreground)">{classLabel(s.class.name)}</p>
                   </div>
                   <Badge variant="secondary">{s.studentSubjects.length} subjects</Badge>
                 </div>

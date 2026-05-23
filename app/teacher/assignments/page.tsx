@@ -66,7 +66,7 @@ export default async function TeacherAssignmentsPage({
         <CardHeader><CardTitle>Homework ({homework.length})</CardTitle></CardHeader>
         <CardContent>
           {homework.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No homework assignments{subjectId ? " for this subject" : ""}.</p>
+            <p className="text-sm text-(--muted-foreground)">No homework assignments{subjectId ? " for this subject" : ""}.</p>
           ) : (
             <AssignmentTable assignments={homework} />
           )}
@@ -77,11 +77,11 @@ export default async function TeacherAssignmentsPage({
       <Card>
         <CardHeader>
           <CardTitle>Assessments ({assessments.length})</CardTitle>
-          <p className="text-xs text-[--muted-foreground] mt-1">Face-to-face — marks entered here</p>
+          <p className="text-xs text-(--muted-foreground) mt-1">Face-to-face — marks entered here</p>
         </CardHeader>
         <CardContent>
           {assessments.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No assessments{subjectId ? " for this subject" : ""}.</p>
+            <p className="text-sm text-(--muted-foreground)">No assessments{subjectId ? " for this subject" : ""}.</p>
           ) : (
             <AssignmentTable assignments={assessments} isAssessment />
           )}
@@ -136,12 +136,12 @@ function AssignmentTable({ assignments, isAssessment = false }: { assignments: A
               </TableCell>
               <TableCell>
                 {a.fileUrl ? (
-                  <a href={a.fileUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-[--primary] hover:underline">View</a>
+                  <a href={a.fileUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-(--primary) hover:underline">View</a>
                 ) : "—"}
               </TableCell>
               <TableCell className="text-sm">
                 {isAssessment ? (
-                  <span className="text-[--muted-foreground]">{marked}/{a.marks.length} marked</span>
+                  <span className="text-(--muted-foreground)">{marked}/{a.marks.length} marked</span>
                 ) : (
                   <>
                     <span className="text-green-600">{handed} handed</span>

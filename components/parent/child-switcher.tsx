@@ -29,7 +29,7 @@ export function ChildSwitcher({ children, selectedId }: ChildSwitcherProps) {
 
   return (
     <div className="flex items-center gap-2">
-      <Users className="h-4 w-4 text-[--muted-foreground]" />
+      <Users className="h-4 w-4 text-(--muted-foreground)" />
       <Select value={selectedId} onValueChange={handleChange}>
         <SelectTrigger className="w-44">
           <SelectValue placeholder="Select child" />

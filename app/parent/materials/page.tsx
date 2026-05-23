@@ -53,7 +53,7 @@ export default async function ParentMaterialsPage({
       />
 
       {Object.keys(bySubject).length === 0 ? (
-        <Card><CardContent className="p-8 text-center text-[--muted-foreground]">No materials uploaded yet.</CardContent></Card>
+        <Card><CardContent className="p-8 text-center text-(--muted-foreground)">No materials uploaded yet.</CardContent></Card>
       ) : (
         <div className="space-y-6">
           {Object.entries(bySubject).map(([subject, items]) => (
@@ -76,21 +76,21 @@ export default async function ParentMaterialsPage({
                       <TableRow key={m.id}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <FileText className="h-4 w-4 text-[--muted-foreground]" />
+                            <FileText className="h-4 w-4 text-(--muted-foreground)" />
                             <span className="font-medium">{m.title}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-[--muted-foreground]">
+                        <TableCell className="text-(--muted-foreground)">
                           {m.teacher.user.firstName} {m.teacher.user.lastName}
                         </TableCell>
-                        <TableCell className="text-[--muted-foreground]">{formatDate(m.createdAt)}</TableCell>
+                        <TableCell className="text-(--muted-foreground)">{formatDate(m.createdAt)}</TableCell>
                         <TableCell>
                           {m.fileUrl ? (
                             <a
                               href={m.fileUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-sm text-[--primary] hover:underline"
+                              className="inline-flex items-center gap-1 text-sm text-(--primary) hover:underline"
                             >
                               <Download className="h-3 w-3" />
                               Download

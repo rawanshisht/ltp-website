@@ -49,19 +49,19 @@ export default async function AdminBehaviourPage() {
               <Card key={name}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">{name}</CardTitle>
-                  <p className="text-xs text-[--muted-foreground]">{records.length} sessions</p>
+                  <p className="text-xs text-(--muted-foreground)">{records.length} sessions</p>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div>
-                    <p className="text-xs text-[--muted-foreground] mb-1">Behaviour</p>
+                    <p className="text-xs text-(--muted-foreground) mb-1">Behaviour</p>
                     <MiniBarChart value={avgB} color="bg-[#00dcde]" />
                   </div>
                   <div>
-                    <p className="text-xs text-[--muted-foreground] mb-1">Attentive</p>
+                    <p className="text-xs text-(--muted-foreground) mb-1">Attentive</p>
                     <MiniBarChart value={avgA} color="bg-emerald-500" />
                   </div>
                   <div>
-                    <p className="text-xs text-[--muted-foreground] mb-1">Engagement</p>
+                    <p className="text-xs text-(--muted-foreground) mb-1">Engagement</p>
                     <MiniBarChart value={avgE} color="bg-amber-500" />
                   </div>
                 </CardContent>

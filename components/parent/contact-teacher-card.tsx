@@ -40,11 +40,11 @@ export function ContactTeacherCard({ teachers, childName }: { teachers: Teacher[
         {selected && (
           <div className="space-y-3 pt-1">
             <div>
-              <p className="text-xs text-[--muted-foreground]">Teaches</p>
+              <p className="text-xs text-(--muted-foreground)">Teaches</p>
               <p className="text-sm">{selected.subjects.join(", ")}</p>
             </div>
             <div>
-              <p className="text-xs text-[--muted-foreground]">Email</p>
+              <p className="text-xs text-(--muted-foreground)">Email</p>
               <p className="text-sm font-mono break-all">{selected.email}</p>
             </div>
             <Button className="w-full" asChild>

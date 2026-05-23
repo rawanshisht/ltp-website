@@ -51,7 +51,7 @@ export default async function ParentDeadlinesPage({
           <CardHeader><CardTitle>Upcoming Deadlines</CardTitle></CardHeader>
           <CardContent>
             {upcoming.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No upcoming deadlines.</p>
+              <p className="text-sm text-(--muted-foreground)">No upcoming deadlines.</p>
             ) : (
               <Table>
                 <TableHeader>
@@ -87,7 +87,7 @@ export default async function ParentDeadlinesPage({
           <CardHeader><CardTitle>Past Assignments</CardTitle></CardHeader>
           <CardContent>
             {past.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No past assignments.</p>
+              <p className="text-sm text-(--muted-foreground)">No past assignments.</p>
             ) : (
               <Table>
                 <TableHeader>
@@ -106,10 +106,10 @@ export default async function ParentDeadlinesPage({
                       <TableRow key={m.id}>
                         <TableCell className="font-medium">{m.assignment.title}</TableCell>
                         <TableCell>{m.assignment.subject.name}</TableCell>
-                        <TableCell className="text-[--muted-foreground]">{formatDate(m.assignment.deadline)}</TableCell>
+                        <TableCell className="text-(--muted-foreground)">{formatDate(m.assignment.deadline)}</TableCell>
                         <TableCell>
                           {isAssessment ? (
-                            <span className="text-[--muted-foreground] text-sm">—</span>
+                            <span className="text-(--muted-foreground) text-sm">—</span>
                           ) : (
                             <Badge variant={
                               m.handedStatus === "HANDED" ? "success"

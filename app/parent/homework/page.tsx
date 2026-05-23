@@ -55,7 +55,7 @@ export default async function ParentHomeworkPage({
         <CardHeader><CardTitle>Homework Assignments</CardTitle></CardHeader>
         <CardContent>
           {marks.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No homework assignments yet.</p>
+            <p className="text-sm text-(--muted-foreground)">No homework assignments yet.</p>
           ) : (
             <Table>
               <TableHeader>
@@ -89,13 +89,13 @@ export default async function ParentHomeworkPage({
                             href={a.fileUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-sm text-[--primary] hover:underline"
+                            className="inline-flex items-center gap-1 text-sm text-(--primary) hover:underline"
                           >
                             <Download className="h-3 w-3" />
                             Download
                           </a>
                         ) : (
-                          <span className="text-[--muted-foreground] text-sm">—</span>
+                          <span className="text-(--muted-foreground) text-sm">—</span>
                         )}
                       </TableCell>
                       <TableCell>

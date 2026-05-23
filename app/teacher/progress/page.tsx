@@ -75,15 +75,15 @@ export default async function TeacherProgressPage() {
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <CardTitle>{student.name}</CardTitle>
-                    <p className="text-sm text-[--muted-foreground] mt-0.5">{classLabel(student.class.name)}</p>
+                    <p className="text-sm text-(--muted-foreground) mt-0.5">{classLabel(student.class.name)}</p>
                   </div>
                   <div className="flex gap-4 text-sm">
                     <div className="text-center">
-                      <p className="text-[--muted-foreground] text-xs">Attendance</p>
+                      <p className="text-(--muted-foreground) text-xs">Attendance</p>
                       <p className="font-bold text-lg">{attendancePercent(present, totalSessions)}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[--muted-foreground] text-xs">Avg Behaviour</p>
+                      <p className="text-(--muted-foreground) text-xs">Avg Behaviour</p>
                       <p className="font-bold text-lg">{avgBehaviour ?? "—"}/5</p>
                     </div>
                   </div>
@@ -91,7 +91,7 @@ export default async function TeacherProgressPage() {
               </CardHeader>
               <CardContent>
                 {student.studentSubjects.length === 0 ? (
-                  <p className="text-sm text-[--muted-foreground]">Not enrolled in any of your subjects.</p>
+                  <p className="text-sm text-(--muted-foreground)">Not enrolled in any of your subjects.</p>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -118,7 +118,7 @@ export default async function TeacherProgressPage() {
                         return (
                           <TableRow key={ss.subjectId}>
                             <TableCell className="font-medium">{ss.subject.name}</TableCell>
-                            <TableCell className="text-[--muted-foreground]">
+                            <TableCell className="text-(--muted-foreground)">
                               {ss.subject.assignments.length} total, {subjectMarks.length} marked
                             </TableCell>
                             <TableCell>
@@ -142,7 +142,7 @@ export default async function TeacherProgressPage() {
           );
         })}
         {students.length === 0 && (
-          <Card><CardContent className="p-8 text-center text-[--muted-foreground]">No students in your classes.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-(--muted-foreground)">No students in your classes.</CardContent></Card>
         )}
       </div>
     </div>

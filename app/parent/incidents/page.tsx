@@ -46,7 +46,7 @@ export default async function ParentIncidentsPage({
       {incidents.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
-            <p className="text-[--muted-foreground]">No incidents recorded.</p>
+            <p className="text-(--muted-foreground)">No incidents recorded.</p>
           </CardContent>
         </Card>
       ) : (
@@ -67,7 +67,7 @@ export default async function ParentIncidentsPage({
               <TableBody>
                 {incidents.map((inc) => (
                   <TableRow key={inc.id}>
-                    <TableCell className="text-[--muted-foreground] whitespace-nowrap">{formatDate(inc.date)}</TableCell>
+                    <TableCell className="text-(--muted-foreground) whitespace-nowrap">{formatDate(inc.date)}</TableCell>
                     <TableCell className="font-medium">{inc.title}</TableCell>
                     <TableCell>{inc.subject?.name ?? "—"}</TableCell>
                     <TableCell>
@@ -75,10 +75,10 @@ export default async function ParentIncidentsPage({
                         {inc.severity.charAt(0) + inc.severity.slice(1).toLowerCase()}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground]">
+                    <TableCell className="text-(--muted-foreground)">
                       {inc.teacher.user.firstName} {inc.teacher.user.lastName}
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground] text-sm">{inc.description}</TableCell>
+                    <TableCell className="text-(--muted-foreground) text-sm">{inc.description}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

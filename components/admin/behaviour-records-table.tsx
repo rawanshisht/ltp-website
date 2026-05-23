@@ -76,7 +76,7 @@ export function BehaviourRecordsTable({ records, subjects, students }: Behaviour
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-[--muted-foreground] py-4">No records match the current filter.</p>
+        <p className="text-sm text-(--muted-foreground) py-4">No records match the current filter.</p>
       ) : (
         <Table>
           <TableHeader>
@@ -96,12 +96,12 @@ export function BehaviourRecordsTable({ records, subjects, students }: Behaviour
               <TableRow key={b.id}>
                 <TableCell className="font-medium">{b.student.name}</TableCell>
                 <TableCell>{b.subject.name}</TableCell>
-                <TableCell className="text-[--muted-foreground]">{formatDate(b.lessonDate)}</TableCell>
+                <TableCell className="text-(--muted-foreground)">{formatDate(b.lessonDate)}</TableCell>
                 <TableCell><span className="text-amber-400 text-sm">{starDisplay(b.behaviourStars)}</span></TableCell>
                 <TableCell><span className="text-amber-400 text-sm">{starDisplay(b.attentiveStars)}</span></TableCell>
                 <TableCell><span className="text-amber-400 text-sm">{starDisplay(b.engagementStars)}</span></TableCell>
-                <TableCell className="text-[--muted-foreground]">{b.teacher.user.firstName} {b.teacher.user.lastName}</TableCell>
-                <TableCell className="text-[--muted-foreground] italic">{b.note ?? "—"}</TableCell>
+                <TableCell className="text-(--muted-foreground)">{b.teacher.user.firstName} {b.teacher.user.lastName}</TableCell>
+                <TableCell className="text-(--muted-foreground) italic">{b.note ?? "—"}</TableCell>
               </TableRow>
             ))}
           </TableBody>

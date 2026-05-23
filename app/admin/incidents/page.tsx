@@ -70,7 +70,7 @@ export default async function AdminIncidentsPage({
         <CardHeader><CardTitle>All Incidents ({incidents.length})</CardTitle></CardHeader>
         <CardContent>
           {incidents.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground] py-4">No incidents found.</p>
+            <p className="text-sm text-(--muted-foreground) py-4">No incidents found.</p>
           ) : (
             <Table>
               <TableHeader>
@@ -87,7 +87,7 @@ export default async function AdminIncidentsPage({
               <TableBody>
                 {incidents.map((inc) => (
                   <TableRow key={inc.id}>
-                    <TableCell className="text-[--muted-foreground] whitespace-nowrap">{formatDate(inc.date)}</TableCell>
+                    <TableCell className="text-(--muted-foreground) whitespace-nowrap">{formatDate(inc.date)}</TableCell>
                     <TableCell className="font-medium">{inc.student.name}</TableCell>
                     <TableCell>{inc.title}</TableCell>
                     <TableCell>{inc.subject?.name ?? "—"}</TableCell>
@@ -96,10 +96,10 @@ export default async function AdminIncidentsPage({
                         {inc.severity.charAt(0) + inc.severity.slice(1).toLowerCase()}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground]">
+                    <TableCell className="text-(--muted-foreground)">
                       {inc.teacher.user.firstName} {inc.teacher.user.lastName}
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground] text-sm max-w-xs">
+                    <TableCell className="text-(--muted-foreground) text-sm max-w-xs">
                       {inc.description}
                     </TableCell>
                   </TableRow>

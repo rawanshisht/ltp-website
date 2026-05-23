@@ -45,7 +45,7 @@ export default async function AdminTeachersPage() {
               {teachers.map((t) => (
                 <TableRow key={t.id}>
                   <TableCell className="font-medium">{t.user.firstName} {t.user.lastName}</TableCell>
-                  <TableCell className="text-[--muted-foreground]">{t.user.email}</TableCell>
+                  <TableCell className="text-(--muted-foreground)">{t.user.email}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {t.teacherSubjects.map((ts) => (
@@ -64,7 +64,7 @@ export default async function AdminTeachersPage() {
               ))}
               {teachers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-[--muted-foreground] py-8">
+                  <TableCell colSpan={4} className="text-center text-(--muted-foreground) py-8">
                     No teachers yet. Add one above.
                   </TableCell>
                 </TableRow>

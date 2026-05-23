@@ -89,8 +89,8 @@ export function AddTeacherDialog({ subjects, classes }: AddTeacherDialogProps) {
                   onClick={() => toggleSubject(s.id)}
                   className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
                     selectedSubjects.includes(s.id)
-                      ? "bg-[--primary] text-white border-[--primary]"
-                      : "bg-white border-[--border] text-[--foreground] hover:bg-[--secondary]"
+                      ? "bg-(--primary) text-[#0f172a] border-(--primary)"
+                      : "bg-white border-(--border) text-(--foreground) hover:bg-(--secondary)"
                   }`}
                 >
                   {s.name}
@@ -108,8 +108,8 @@ export function AddTeacherDialog({ subjects, classes }: AddTeacherDialogProps) {
                   onClick={() => toggleClass(c.id)}
                   className={`rounded-full px-3 py-1 text-xs font-medium border transition-colors ${
                     selectedClasses.includes(c.id)
-                      ? "bg-[--primary] text-white border-[--primary]"
-                      : "bg-white border-[--border] text-[--foreground] hover:bg-[--secondary]"
+                      ? "bg-(--primary) text-[#0f172a] border-(--primary)"
+                      : "bg-white border-(--border) text-(--foreground) hover:bg-(--secondary)"
                   }`}
                 >
                   {classLabel(c.name)}

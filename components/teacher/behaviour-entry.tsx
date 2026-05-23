@@ -143,7 +143,7 @@ export function BehaviourEntry({
           </CardHeader>
           <CardContent>
             {studentsWithBehaviour.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No students enrolled in this subject from your classes.</p>
+              <p className="text-sm text-(--muted-foreground)">No students enrolled in this subject from your classes.</p>
             ) : (
               <Table>
                 <TableHeader>

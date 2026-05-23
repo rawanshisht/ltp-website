@@ -31,7 +31,7 @@ export default async function TeacherDashboard() {
   });
 
   if (!teacher) {
-    return <p className="text-[--muted-foreground]">Teacher profile not set up. Contact admin.</p>;
+    return <p className="text-(--muted-foreground)">Teacher profile not set up. Contact admin.</p>;
   }
 
   const subjects = teacher.teacherSubjects.map((ts) => ts.subject);
@@ -131,16 +131,16 @@ export default async function TeacherDashboard() {
           </CardHeader>
           <CardContent>
             {recentNotices.length === 0 ? (
-              <p className="text-sm text-[--muted-foreground]">No notices posted yet.</p>
+              <p className="text-sm text-(--muted-foreground)">No notices posted yet.</p>
             ) : (
               <div className="space-y-3">
                 {recentNotices.map((n) => (
-                  <div key={n.id} className="flex items-start justify-between gap-2 py-2 border-b border-[--border] last:border-0">
+                  <div key={n.id} className="flex items-start justify-between gap-2 py-2 border-b border-(--border) last:border-0">
                     <div>
                       <p className="text-sm font-medium">{n.title}</p>
-                      <p className="text-xs text-[--muted-foreground]">{n.subject.name}</p>
+                      <p className="text-xs text-(--muted-foreground)">{n.subject.name}</p>
                     </div>
-                    <span className="text-xs text-[--muted-foreground]">{formatDate(n.createdAt)}</span>
+                    <span className="text-xs text-(--muted-foreground)">{formatDate(n.createdAt)}</span>
                   </div>
                 ))}
               </div>
@@ -150,7 +150,7 @@ export default async function TeacherDashboard() {
       </div>
 
       {/* Student Progress */}
-      <h2 className="text-lg font-semibold text-[--foreground] mb-4">Student Progress</h2>
+      <h2 className="text-lg font-semibold text-(--foreground) mb-4">Student Progress</h2>
       <div className="space-y-6">
         {students.map((student) => {
           const present = student.attendances.filter((a) => a.status === "PRESENT").length;
@@ -163,15 +163,15 @@ export default async function TeacherDashboard() {
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <CardTitle>{student.name}</CardTitle>
-                    <p className="text-sm text-[--muted-foreground] mt-0.5">{classLabel(student.class.name)}</p>
+                    <p className="text-sm text-(--muted-foreground) mt-0.5">{classLabel(student.class.name)}</p>
                   </div>
                   <div className="flex gap-4 text-sm">
                     <div className="text-center">
-                      <p className="text-[--muted-foreground] text-xs">Attendance</p>
+                      <p className="text-(--muted-foreground) text-xs">Attendance</p>
                       <p className="font-bold text-lg">{attendancePercent(present, totalSessions)}%</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-[--muted-foreground] text-xs">Avg Behaviour</p>
+                      <p className="text-(--muted-foreground) text-xs">Avg Behaviour</p>
                       <p className="font-bold text-lg">{avgBehaviour ?? "—"}/5</p>
                     </div>
                   </div>
@@ -179,7 +179,7 @@ export default async function TeacherDashboard() {
               </CardHeader>
               <CardContent>
                 {student.studentSubjects.length === 0 ? (
-                  <p className="text-sm text-[--muted-foreground]">Not enrolled in any of your subjects.</p>
+                  <p className="text-sm text-(--muted-foreground)">Not enrolled in any of your subjects.</p>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -206,7 +206,7 @@ export default async function TeacherDashboard() {
                         return (
                           <TableRow key={ss.subjectId}>
                             <TableCell className="font-medium">{ss.subject.name}</TableCell>
-                            <TableCell className="text-[--muted-foreground]">
+                            <TableCell className="text-(--muted-foreground)">
                               {ss.subject.assignments.length} total, {subjectMarks.length} marked
                             </TableCell>
                             <TableCell>
@@ -230,7 +230,7 @@ export default async function TeacherDashboard() {
           );
         })}
         {students.length === 0 && (
-          <Card><CardContent className="p-8 text-center text-[--muted-foreground]">No students in your classes.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-(--muted-foreground)">No students in your classes.</CardContent></Card>
         )}
       </div>
     </div>

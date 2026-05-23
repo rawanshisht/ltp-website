@@ -24,9 +24,9 @@ export function StatCard({ label, value, icon: Icon, trend, color = "blue" }: St
       <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-[--muted-foreground]">{label}</p>
-            <p className="mt-1 text-2xl font-bold text-[--foreground]">{value}</p>
-            {trend && <p className="mt-1 text-xs text-[--muted-foreground]">{trend}</p>}
+            <p className="text-sm text-(--muted-foreground)">{label}</p>
+            <p className="mt-1 text-2xl font-bold text-(--foreground)">{value}</p>
+            {trend && <p className="mt-1 text-xs text-(--muted-foreground)">{trend}</p>}
           </div>
           <div className={cn("flex h-11 w-11 items-center justify-center rounded-xl", colorMap[color])}>
             <Icon className="h-5 w-5" />

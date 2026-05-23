@@ -12,7 +12,7 @@ const badgeVariants = cva(
         warning: "bg-orange-100 text-orange-800",
         destructive: "bg-red-100 text-red-800",
         secondary: "bg-slate-100 text-slate-700",
-        outline: "border border-[--border] text-[--foreground]",
+        outline: "border border-(--border) text-(--foreground)",
         pink: "bg-pink-100 text-pink-900",
       },
     },

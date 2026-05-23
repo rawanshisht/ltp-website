@@ -45,7 +45,7 @@ export default async function ParentAssessmentsPage({
       <TableRow>
         <TableCell>
           <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-[--muted-foreground]" />
+            <Calendar className="h-4 w-4 text-(--muted-foreground)" />
             <span className="font-medium">{a.title}</span>
           </div>
         </TableCell>
@@ -60,7 +60,7 @@ export default async function ParentAssessmentsPage({
             ? <Badge variant={m.marks / a.maxMarks >= 0.7 ? "success" : m.marks / a.maxMarks >= 0.5 ? "warning" : "destructive"}>
                 {m.marks}/{a.maxMarks} ({Math.round((m.marks / a.maxMarks) * 100)}%)
               </Badge>
-            : <span className="text-[--muted-foreground] text-sm">Not yet marked</span>}
+            : <span className="text-(--muted-foreground) text-sm">Not yet marked</span>}
         </TableCell>
       </TableRow>
     );
@@ -78,11 +78,11 @@ export default async function ParentAssessmentsPage({
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Upcoming Assessments</CardTitle>
-          <p className="text-sm text-[--muted-foreground]">Key assessment dates — June and November periods</p>
+          <p className="text-sm text-(--muted-foreground)">Key assessment dates — June and November periods</p>
         </CardHeader>
         <CardContent>
           {upcoming.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">No upcoming assessments.</p>
+            <p className="text-sm text-(--muted-foreground)">No upcoming assessments.</p>
           ) : (
             <Table>
               <TableHeader>

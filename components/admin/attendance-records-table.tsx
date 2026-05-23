@@ -69,7 +69,7 @@ export function AttendanceRecordsTable({ records, subjects, students }: Attendan
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-[--muted-foreground] py-4">No records match the current filter.</p>
+        <p className="text-sm text-(--muted-foreground) py-4">No records match the current filter.</p>
       ) : (
         <Table>
           <TableHeader>
@@ -85,7 +85,7 @@ export function AttendanceRecordsTable({ records, subjects, students }: Attendan
               <TableRow key={a.id}>
                 <TableCell className="font-medium">{a.student.name}</TableCell>
                 <TableCell>{a.subject.name}</TableCell>
-                <TableCell className="text-[--muted-foreground]">{formatDate(a.sessionDate)}</TableCell>
+                <TableCell className="text-(--muted-foreground)">{formatDate(a.sessionDate)}</TableCell>
                 <TableCell>
                   <Badge variant={a.status === "PRESENT" ? "success" : a.status === "ABSENT" ? "destructive" : "warning"}>
                     {a.status}

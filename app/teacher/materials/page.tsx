@@ -49,7 +49,7 @@ export default async function TeacherMaterialsPage({
         <CardHeader><CardTitle>Uploaded Materials</CardTitle></CardHeader>
         <CardContent>
           {materials.length === 0 ? (
-            <p className="text-sm text-[--muted-foreground]">
+            <p className="text-sm text-(--muted-foreground)">
               No materials{subjectId ? " for this subject" : ""} uploaded yet.
             </p>
           ) : (
@@ -67,14 +67,14 @@ export default async function TeacherMaterialsPage({
                   <TableRow key={m.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
-                        <FileText className="h-4 w-4 text-[--muted-foreground]" />
+                        <FileText className="h-4 w-4 text-(--muted-foreground)" />
                         <span className="font-medium">{m.title}</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary">{m.subject.name}</Badge>
                     </TableCell>
-                    <TableCell className="text-[--muted-foreground]">{formatDate(m.createdAt)}</TableCell>
+                    <TableCell className="text-(--muted-foreground)">{formatDate(m.createdAt)}</TableCell>
                     <TableCell>
                       {m.fileUrl ? (
                         <a

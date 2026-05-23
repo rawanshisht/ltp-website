@@ -72,13 +72,13 @@ export default async function ParentSubjectsPage({
                   <div className="flex items-center gap-3">
                     {average !== null && (
                       <div className="text-right">
-                        <p className="text-xs text-[--muted-foreground]">Average</p>
-                        <p className="text-lg font-bold text-[--foreground]">{average}%</p>
+                        <p className="text-xs text-(--muted-foreground)">Average</p>
+                        <p className="text-lg font-bold text-(--foreground)">{average}%</p>
                       </div>
                     )}
                     {predictedGrade && (
                       <div className="text-right">
-                        <p className="text-xs text-[--muted-foreground]">Predicted GCSE</p>
+                        <p className="text-xs text-(--muted-foreground)">Predicted GCSE</p>
                         <Badge variant="default" className="text-sm px-3 py-1">
                           {gradeLabel(predictedGrade.grade)}
                         </Badge>
@@ -89,7 +89,7 @@ export default async function ParentSubjectsPage({
               </CardHeader>
               <CardContent>
                 {subject.assignments.length === 0 ? (
-                  <p className="text-sm text-[--muted-foreground]">No assignments yet.</p>
+                  <p className="text-sm text-(--muted-foreground)">No assignments yet.</p>
                 ) : (
                   <Table>
                     <TableHeader>
@@ -113,7 +113,7 @@ export default async function ParentSubjectsPage({
                                 {isAssessment ? "Assessment" : "Homework"}
                               </Badge>
                             </TableCell>
-                            <TableCell className="text-[--muted-foreground]">
+                            <TableCell className="text-(--muted-foreground)">
                               {formatDate(assignment.deadline)}
                             </TableCell>
                             <TableCell>
@@ -123,7 +123,7 @@ export default async function ParentSubjectsPage({
                             </TableCell>
                             <TableCell>
                               {isAssessment ? (
-                                <span className="text-[--muted-foreground] text-sm">—</span>
+                                <span className="text-(--muted-foreground) text-sm">—</span>
                               ) : mark ? (
                                 <Badge variant={
                                   mark.handedStatus === "HANDED" ? "success"

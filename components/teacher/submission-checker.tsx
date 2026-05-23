@@ -34,7 +34,7 @@ export function SubmissionChecker({ markId, isHandedIn, isOverdue }: SubmissionC
   return (
     <label className="flex items-center gap-2 cursor-pointer select-none">
       {loading ? (
-        <Loader2 className="h-4 w-4 animate-spin text-[--muted-foreground]" />
+        <Loader2 className="h-4 w-4 animate-spin text-(--muted-foreground)" />
       ) : (
         <input
           type="checkbox"
@@ -43,7 +43,7 @@ export function SubmissionChecker({ markId, isHandedIn, isOverdue }: SubmissionC
           className="h-4 w-4 rounded accent-cyan-600 cursor-pointer"
         />
       )}
-      <span className={`text-sm ${checked ? "text-green-600 font-medium" : isOverdue ? "text-red-500" : "text-[--muted-foreground]"}`}>
+      <span className={`text-sm ${checked ? "text-green-600 font-medium" : isOverdue ? "text-red-500" : "text-(--muted-foreground)"}`}>
         {checked ? "Handed in" : isOverdue ? "Overdue" : "Pending"}
       </span>
     </label>
