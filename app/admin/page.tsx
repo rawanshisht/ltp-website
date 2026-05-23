@@ -34,6 +34,8 @@ export default async function AdminDashboard() {
     }),
   ]);
 
+  const chartHeight = Math.max(200, subjectEnrollments.length * 44);
+
   return (
     <div>
       <Header title="Admin Dashboard" description="Overall centre analytics" />
@@ -53,28 +55,26 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Class breakdown */}
         <Card>
           <CardHeader><CardTitle>Students by Class</CardTitle></CardHeader>
           <CardContent>
             <EnrollmentBarChart
               data={classCounts.map((c) => ({ name: classLabel(c.name), count: c._count.students }))}
+              height={chartHeight}
             />
           </CardContent>
         </Card>
 
-        {/* Subject enrollment */}
         <Card>
           <CardHeader><CardTitle>Subject Enrollments</CardTitle></CardHeader>
           <CardContent>
             <EnrollmentBarChart
               data={subjectEnrollments.map((s) => ({ name: s.name, count: s._count.studentSubjects }))}
-              height={Math.max(200, subjectEnrollments.length * 44)}
+              height={chartHeight}
             />
           </CardContent>
         </Card>
 
-        {/* Recent students */}
         <Card className="md:col-span-2">
           <CardHeader><CardTitle>Recently Added Students</CardTitle></CardHeader>
           <CardContent>
