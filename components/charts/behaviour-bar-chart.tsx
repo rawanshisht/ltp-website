@@ -30,8 +30,8 @@ export function BehaviourBarChart({ data }: { data: BehaviourDataPoint[] }) {
         <Tooltip formatter={(v) => (typeof v === "number" ? v.toFixed(1) : v)} />
         <Legend />
         <Bar dataKey="behaviour" name="Behaviour" fill="#00dcde" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="attentive" name="Attentive" fill="#10b981" radius={[3, 3, 0, 0]} />
-        <Bar dataKey="engagement" name="Engagement" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+        <Bar dataKey="attentive" name="Attentive" fill="#ff00bf" radius={[3, 3, 0, 0]} />
+        <Bar dataKey="engagement" name="Engagement" fill="#ff9752" radius={[3, 3, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

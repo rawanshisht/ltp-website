@@ -101,11 +101,11 @@ export default async function ParentBehaviourPage({
                 </div>
                 <div>
                   <p className="text-xs text-(--muted-foreground) mb-1">Attentive</p>
-                  <MiniBarChart value={avgA} color="bg-emerald-500" />
+                  <MiniBarChart value={avgA} color="bg-[#ff00bf]" />
                 </div>
                 <div>
                   <p className="text-xs text-(--muted-foreground) mb-1">Engagement</p>
-                  <MiniBarChart value={avgE} color="bg-amber-500" />
+                  <MiniBarChart value={avgE} color="bg-[#ff9752]" />
                 </div>
               </CardContent>
             </Card>

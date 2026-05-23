@@ -41,7 +41,7 @@ export function MarksBarChart({ data }: { data: MarksDataPoint[] }) {
           {data.map((entry) => (
             <Cell
               key={entry.subject}
-              fill={entry.avg >= 70 ? "#22c55e" : entry.avg >= 50 ? "#f59e0b" : "#ef4444"}
+              fill={entry.avg >= 70 ? "#00dcde" : entry.avg >= 50 ? "#ff9752" : "#ef4444"}
             />
           ))}
         </Bar>

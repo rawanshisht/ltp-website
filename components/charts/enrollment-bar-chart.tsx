@@ -52,7 +52,7 @@ export function AttendanceBarChart({ data }: { data: { name: string; pct: number
         />
         <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
         <Tooltip formatter={(v) => [`${v}%`, "Attendance"]} />
-        <Bar dataKey="pct" name="Attendance %" fill="#22c55e" radius={[0, 4, 4, 0]} />
+        <Bar dataKey="pct" name="Attendance %" fill="#00dcde" radius={[0, 4, 4, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );

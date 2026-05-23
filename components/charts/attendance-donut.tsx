@@ -2,7 +2,7 @@
 
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
 
-const COLORS = { Present: "#22c55e", Absent: "#ef4444", Late: "#f59e0b" };
+const COLORS = { Present: "#00dcde", Absent: "#ef4444", Late: "#ff9752" };
 
 export function AttendanceDonut({
   present,
