@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BehaviourRecordsTable } from "@/components/admin/behaviour-records-table";
-import { BehaviourBarChart } from "@/components/charts/behaviour-bar-chart";
+import { StudentBehaviourChart } from "@/components/admin/student-behaviour-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -47,8 +47,9 @@ export default async function AdminBehaviourPage() {
     acc[key].n++;
     return acc;
   }, {});
-  const behaviourChartData = Object.entries(chartByStudent).map(([name, { b, a, e, n }]) => ({
-    name: name.split(" ")[0],
+  const behaviourChartData = Object.entries(chartByStudent).map(([fullName, { b, a, e, n }]) => ({
+    name: fullName.split(" ")[0],
+    fullName,
     behaviour: parseFloat((b / n).toFixed(1)),
     attentive: parseFloat((a / n).toFixed(1)),
     engagement: parseFloat((e / n).toFixed(1)),
@@ -62,7 +63,7 @@ export default async function AdminBehaviourPage() {
         <Card className="mb-6">
           <CardHeader><CardTitle>School-wide Behaviour Overview</CardTitle></CardHeader>
           <CardContent>
-            <BehaviourBarChart data={behaviourChartData} />
+            <StudentBehaviourChart data={behaviourChartData} />
           </CardContent>
         </Card>
       )}

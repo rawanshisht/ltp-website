@@ -6,7 +6,7 @@ import { AttendanceRecordsTable } from "@/components/admin/attendance-records-ta
 import { attendancePercent } from "@/lib/utils";
 import { CalendarCheck, CalendarX, Clock, Users } from "lucide-react";
 import { AttendanceDonut } from "@/components/charts/attendance-donut";
-import { AttendanceBarChart } from "@/components/charts/enrollment-bar-chart";
+import { StudentAttendanceChart } from "@/components/admin/student-attendance-chart";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +40,11 @@ export default async function AdminAttendancePage() {
     return acc;
   }, {});
   const studentAttendanceData = Object.entries(byStudent)
-    .map(([name, { present, total }]) => ({ name, pct: Math.round((present / total) * 100) }))
+    .map(([fullName, { present, total }]) => ({
+      name: fullName.split(" ")[0],
+      fullName,
+      pct: Math.round((present / total) * 100),
+    }))
     .sort((a, b) => b.pct - a.pct);
 
   return (
@@ -64,7 +68,7 @@ export default async function AdminAttendancePage() {
         <Card>
           <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
           <CardContent>
-            <AttendanceBarChart data={studentAttendanceData} />
+            <StudentAttendanceChart data={studentAttendanceData} />
           </CardContent>
         </Card>
       </div>
