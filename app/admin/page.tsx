@@ -69,7 +69,7 @@ export default async function AdminDashboard() {
           <CardContent>
             <EnrollmentBarChart
               data={subjectEnrollments.map((s) => ({ name: s.name, count: s._count.studentSubjects }))}
-              height={Math.max(200, subjectEnrollments.length * 32)}
+              height={Math.max(200, subjectEnrollments.length * 44)}
             />
           </CardContent>
         </Card>

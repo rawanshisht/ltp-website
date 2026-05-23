@@ -19,7 +19,7 @@ export interface MarksDataPoint {
 export function MarksBarChart({ data }: { data: MarksDataPoint[] }) {
   if (!data.length) return null;
 
-  const height = Math.max(180, data.length * 52);
+  const height = Math.max(180, data.length * 44);
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -35,7 +35,7 @@ export function MarksBarChart({ data }: { data: MarksDataPoint[] }) {
           tickFormatter={(v) => `${v}%`}
           tick={{ fontSize: 12 }}
         />
-        <YAxis type="category" dataKey="subject" width={96} tick={{ fontSize: 12 }} />
+        <YAxis type="category" dataKey="subject" width={120} tick={{ fontSize: 12 }} />
         <Tooltip formatter={(v) => [`${v}%`, "Average"]} />
         <Bar dataKey="avg" radius={[0, 4, 4, 0]}>
           {data.map((entry) => (

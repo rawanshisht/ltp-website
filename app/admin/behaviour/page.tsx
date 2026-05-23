@@ -19,13 +19,16 @@ function MiniBarChart({ value, max = 5, color }: { value: number; max?: number; 
 }
 
 export default async function AdminBehaviourPage() {
-  const [subjects, students, behaviours] = await Promise.all([
+  const [subjects, students, behaviours, allBehavioursForChart] = await Promise.all([
     prisma.subject.findMany({ orderBy: { name: "asc" } }),
     prisma.student.findMany({ where: { isActive: true }, orderBy: { name: "asc" } }),
     prisma.behaviour.findMany({
       include: { student: true, subject: true, teacher: { include: { user: true } } },
       orderBy: { lessonDate: "desc" },
       take: 300,
+    }),
+    prisma.behaviour.findMany({
+      select: { behaviourStars: true, attentiveStars: true, engagementStars: true, student: { select: { name: true } } },
     }),
   ]);
 
@@ -35,11 +38,20 @@ export default async function AdminBehaviourPage() {
     return acc;
   }, {});
 
-  const behaviourChartData = Object.entries(byStudent).map(([name, records]) => ({
+  const chartByStudent = allBehavioursForChart.reduce<Record<string, { b: number; a: number; e: number; n: number }>>((acc, r) => {
+    const key = r.student.name;
+    acc[key] = acc[key] ?? { b: 0, a: 0, e: 0, n: 0 };
+    acc[key].b += r.behaviourStars;
+    acc[key].a += r.attentiveStars;
+    acc[key].e += r.engagementStars;
+    acc[key].n++;
+    return acc;
+  }, {});
+  const behaviourChartData = Object.entries(chartByStudent).map(([name, { b, a, e, n }]) => ({
     name: name.split(" ")[0],
-    behaviour: parseFloat((records.reduce((s, r) => s + r.behaviourStars, 0) / records.length).toFixed(1)),
-    attentive: parseFloat((records.reduce((s, r) => s + r.attentiveStars, 0) / records.length).toFixed(1)),
-    engagement: parseFloat((records.reduce((s, r) => s + r.engagementStars, 0) / records.length).toFixed(1)),
+    behaviour: parseFloat((b / n).toFixed(1)),
+    attentive: parseFloat((a / n).toFixed(1)),
+    engagement: parseFloat((e / n).toFixed(1)),
   }));
 
   return (

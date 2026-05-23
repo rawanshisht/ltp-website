@@ -11,7 +11,7 @@ import { AttendanceBarChart } from "@/components/charts/enrollment-bar-chart";
 export const dynamic = "force-dynamic";
 
 export default async function AdminAttendancePage() {
-  const [subjects, students, attendances] = await Promise.all([
+  const [subjects, students, attendances, allAttendancesForChart] = await Promise.all([
     prisma.subject.findMany({ orderBy: { name: "asc" } }),
     prisma.student.findMany({ where: { isActive: true }, orderBy: { name: "asc" } }),
     prisma.attendance.findMany({
@@ -19,13 +19,20 @@ export default async function AdminAttendancePage() {
       orderBy: { sessionDate: "desc" },
       take: 300,
     }),
+    prisma.attendance.findMany({
+      select: { status: true, student: { select: { name: true } } },
+    }),
   ]);
 
   const present = attendances.filter((a) => a.status === "PRESENT").length;
   const absent = attendances.filter((a) => a.status === "ABSENT").length;
   const late = attendances.filter((a) => a.status === "LATE").length;
 
-  const byStudent = attendances.reduce<Record<string, { present: number; total: number }>>((acc, a) => {
+  const chartPresent = allAttendancesForChart.filter((a) => a.status === "PRESENT").length;
+  const chartAbsent = allAttendancesForChart.filter((a) => a.status === "ABSENT").length;
+  const chartLate = allAttendancesForChart.filter((a) => a.status === "LATE").length;
+
+  const byStudent = allAttendancesForChart.reduce<Record<string, { present: number; total: number }>>((acc, a) => {
     const key = a.student.name;
     acc[key] = acc[key] ?? { present: 0, total: 0 };
     acc[key].total++;
@@ -51,7 +58,7 @@ export default async function AdminAttendancePage() {
         <Card>
           <CardHeader><CardTitle>Attendance Breakdown</CardTitle></CardHeader>
           <CardContent>
-            <AttendanceDonut present={present} absent={absent} late={late} />
+            <AttendanceDonut present={chartPresent} absent={chartAbsent} late={chartLate} />
           </CardContent>
         </Card>
         <Card>

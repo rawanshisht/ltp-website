@@ -15,7 +15,7 @@ export interface EnrollmentDataPoint {
   count: number;
 }
 
-export function EnrollmentBarChart({ data, height = 200 }: { data: EnrollmentDataPoint[]; height?: number }) {
+export function EnrollmentBarChart({ data, height = 200 }: { data: EnrollmentDataPoint[]; height?: number; }) {
   if (!data.length) return null;
 
   return (
@@ -34,7 +34,7 @@ export function EnrollmentBarChart({ data, height = 200 }: { data: EnrollmentDat
 export function AttendanceBarChart({ data }: { data: { name: string; pct: number }[] }) {
   if (!data.length) return null;
 
-  const height = Math.max(160, data.length * 40);
+  const height = Math.max(160, data.length * 44);
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -50,7 +50,7 @@ export function AttendanceBarChart({ data }: { data: { name: string; pct: number
           tickFormatter={(v) => `${v}%`}
           tick={{ fontSize: 12 }}
         />
-        <YAxis type="category" dataKey="name" width={96} tick={{ fontSize: 12 }} />
+        <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 12 }} />
         <Tooltip formatter={(v) => [`${v}%`, "Attendance"]} />
         <Bar dataKey="pct" name="Attendance %" fill="#22c55e" radius={[0, 4, 4, 0]} />
       </BarChart>

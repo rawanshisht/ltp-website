@@ -87,6 +87,26 @@ export default async function TeacherDashboard() {
     }),
   ]);
 
+  const studentAttendanceData = students.map((s) => ({
+    name: s.name.split(" ")[0],
+    pct: attendancePercent(
+      s.attendances.filter((a) => a.status === "PRESENT").length,
+      s.attendances.length
+    ),
+  }));
+
+  const studentBehaviourData = students
+    .filter((s) => s.behaviours.length > 0)
+    .map((s) => {
+      const n = s.behaviours.length;
+      return {
+        name: s.name.split(" ")[0],
+        behaviour: parseFloat((s.behaviours.reduce((sum, r) => sum + r.behaviourStars, 0) / n).toFixed(1)),
+        attentive: parseFloat((s.behaviours.reduce((sum, r) => sum + r.attentiveStars, 0) / n).toFixed(1)),
+        engagement: parseFloat((s.behaviours.reduce((sum, r) => sum + r.engagementStars, 0) / n).toFixed(1)),
+      };
+    });
+
   return (
     <div>
       <Header title="Dashboard" description={`Welcome back, ${session!.user.name}`} />
@@ -152,40 +172,20 @@ export default async function TeacherDashboard() {
       </div>
 
       {/* Student charts */}
-      {students.length > 0 && (() => {
-        const attendanceData = students.map((s) => ({
-          name: s.name.split(" ")[0],
-          pct: attendancePercent(
-            s.attendances.filter((a) => a.status === "PRESENT").length,
-            s.attendances.length
-          ),
-        }));
-        const behaviourData = students
-          .filter((s) => s.behaviours.length > 0)
-          .map((s) => {
-            const n = s.behaviours.length;
-            return {
-              name: s.name.split(" ")[0],
-              behaviour: parseFloat((s.behaviours.reduce((sum, r) => sum + r.behaviourStars, 0) / n).toFixed(1)),
-              attentive: parseFloat((s.behaviours.reduce((sum, r) => sum + r.attentiveStars, 0) / n).toFixed(1)),
-              engagement: parseFloat((s.behaviours.reduce((sum, r) => sum + r.engagementStars, 0) / n).toFixed(1)),
-            };
-          });
-        return (
-          <div className="grid gap-6 md:grid-cols-2 mb-8">
+      {students.length > 0 && (
+        <div className="grid gap-6 md:grid-cols-2 mb-8">
+          <Card>
+            <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
+            <CardContent><AttendanceBarChart data={studentAttendanceData} /></CardContent>
+          </Card>
+          {studentBehaviourData.length > 0 && (
             <Card>
-              <CardHeader><CardTitle>Attendance by Student</CardTitle></CardHeader>
-              <CardContent><AttendanceBarChart data={attendanceData} /></CardContent>
+              <CardHeader><CardTitle>Behaviour by Student</CardTitle></CardHeader>
+              <CardContent><BehaviourBarChart data={studentBehaviourData} /></CardContent>
             </Card>
-            {behaviourData.length > 0 && (
-              <Card>
-                <CardHeader><CardTitle>Behaviour by Student</CardTitle></CardHeader>
-                <CardContent><BehaviourBarChart data={behaviourData} /></CardContent>
-              </Card>
-            )}
-          </div>
-        );
-      })()}
+          )}
+        </div>
+      )}
 
       {/* Student Progress */}
       <h2 className="text-lg font-semibold text-(--foreground) mb-4">Student Progress</h2>
