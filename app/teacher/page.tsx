@@ -38,8 +38,6 @@ export default async function TeacherDashboard() {
 
   const subjects = teacher.teacherSubjects.map((ts) => ts.subject);
   const classes = teacher.teacherClasses.map((tc) => tc.class);
-  const studentIds = classes.flatMap((c) => c.students.map((s) => s.id));
-  const uniqueStudentCount = new Set(studentIds).size;
   const subjectIds = teacher.teacherSubjects.map((ts) => ts.subjectId);
 
   const [recentNotices, pendingDeadlines, students] = await Promise.all([
@@ -52,12 +50,18 @@ export default async function TeacherDashboard() {
     prisma.studentMark.count({
       where: {
         handedStatus: "PENDING",
-        studentId: { in: studentIds },
         assignment: { teacherId: teacher.id, deadline: { lt: new Date() } },
+        student: {
+          isActive: true,
+          studentSubjects: { some: { subjectId: { in: subjectIds }, droppedAt: null } },
+        },
       },
     }),
     prisma.student.findMany({
-      where: { id: { in: studentIds }, isActive: true },
+      where: {
+        isActive: true,
+        studentSubjects: { some: { subjectId: { in: subjectIds }, droppedAt: null } },
+      },
       include: {
         class: true,
         studentSubjects: {
@@ -67,9 +71,9 @@ export default async function TeacherDashboard() {
               include: {
                 assignments: {
                   where: { teacherId: teacher.id },
-                  include: { marks: { where: { studentId: { in: studentIds } } } },
+                  include: { marks: true },
                 },
-                predictedGrades: { where: { studentId: { in: studentIds } } },
+                predictedGrades: true,
               },
             },
           },
@@ -86,6 +90,8 @@ export default async function TeacherDashboard() {
       orderBy: { name: "asc" },
     }),
   ]);
+
+  const uniqueStudentCount = students.length;
 
   const studentAttendanceData = students.map((s) => ({
     name: s.name.split(" ")[0],

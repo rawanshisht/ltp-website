@@ -19,16 +19,10 @@ export default async function TeacherMarksPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: {
-        include: { class: { include: { students: true } } },
-      },
     },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const classStudentIds = teacher!.teacherClasses.flatMap((tc) =>
-    tc.class.students.map((s) => s.id)
-  );
 
   const assignments = subjectId
     ? await prisma.assignment.findMany({
@@ -52,7 +46,7 @@ export default async function TeacherMarksPage({
   const studentsWithMarks = selectedAssignment
     ? await prisma.student.findMany({
         where: {
-          id: { in: classStudentIds },
+          isActive: true,
           studentSubjects: {
             some: { subjectId: selectedAssignment.subjectId, droppedAt: null },
           },
