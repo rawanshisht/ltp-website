@@ -18,11 +18,18 @@ export interface EnrollmentDataPoint {
 export function EnrollmentBarChart({ data, height = 200 }: { data: EnrollmentDataPoint[]; height?: number; }) {
   if (!data.length) return null;
 
+  const rotateLabels = data.length > 6;
+
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+    <ResponsiveContainer width="100%" height={rotateLabels ? height + 40 : height}>
+      <BarChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: rotateLabels ? 40 : 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-        <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+        <XAxis
+          dataKey="name"
+          tick={{ fontSize: 11 }}
+          interval={0}
+          {...(rotateLabels ? { angle: -35, textAnchor: "end" } : {})}
+        />
         <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
         <Tooltip formatter={(v) => [v, "Students"]} />
         <Bar dataKey="count" name="Students" fill="#00dcde" radius={[4, 4, 0, 0]} />
