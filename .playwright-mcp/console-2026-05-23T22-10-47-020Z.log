@@ -1,0 +1,7 @@
+[     171ms] [ERROR] ClientFetchError: Failed to fetch. Read more at https://errors.authjs.dev#autherror
+    at fetchData (http://localhost:3000/_next/static/chunks/node_modules_0qsw.3r._.js:552:22)
+    at async signIn (http://localhost:3000/_next/static/chunks/node_modules_0qsw.3r._.js:742:23)
+    at async handleSubmit (http://localhost:3000/_next/static/chunks/_092gt9r._.js:341:25) @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3318
+[     262ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[     292ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477
+[  518146ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2477

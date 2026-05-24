@@ -1,0 +1,248 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - complementary [ref=e3]:
+      - generic [ref=e4]:
+        - img [ref=e6]
+        - generic [ref=e9]:
+          - paragraph [ref=e10]: LTP Centre
+          - paragraph [ref=e11]: Learning Portal
+      - navigation [ref=e12]:
+        - list [ref=e13]:
+          - listitem [ref=e14]:
+            - link "Dashboard" [ref=e15] [cursor=pointer]:
+              - /url: /admin
+              - img [ref=e16]
+              - text: Dashboard
+          - listitem [ref=e21]:
+            - link "Teachers" [ref=e22] [cursor=pointer]:
+              - /url: /admin/teachers
+              - img [ref=e23]
+              - text: Teachers
+          - listitem [ref=e35]:
+            - link "Students" [ref=e36] [cursor=pointer]:
+              - /url: /admin/students
+              - img [ref=e37]
+              - text: Students
+              - img [ref=e42]
+          - listitem [ref=e44]:
+            - link "Behaviour" [ref=e45] [cursor=pointer]:
+              - /url: /admin/behaviour
+              - img [ref=e46]
+              - text: Behaviour
+          - listitem [ref=e48]:
+            - link "Attendance" [ref=e49] [cursor=pointer]:
+              - /url: /admin/attendance
+              - img [ref=e50]
+              - text: Attendance
+          - listitem [ref=e52]:
+            - link "Assessments" [ref=e53] [cursor=pointer]:
+              - /url: /admin/assessments
+              - img [ref=e54]
+              - text: Assessments
+          - listitem [ref=e58]:
+            - link "Incidents" [ref=e59] [cursor=pointer]:
+              - /url: /admin/incidents
+              - img [ref=e60]
+              - text: Incidents
+      - generic [ref=e62]:
+        - generic [ref=e63]:
+          - generic [ref=e64]: A
+          - generic [ref=e65]:
+            - paragraph [ref=e66]: Admin User
+            - generic [ref=e67]: Admin
+        - button "Sign out" [ref=e68]:
+          - img [ref=e69]
+          - text: Sign out
+    - main [ref=e72]:
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]:
+            - heading "Students" [level=1] [ref=e76]
+            - paragraph [ref=e77]: Manage student enrollment and subjects
+          - generic [ref=e79]:
+            - link "Show inactive" [ref=e80] [cursor=pointer]:
+              - /url: /admin/students?inactive=true
+            - button "Add Student" [ref=e81]:
+              - img [ref=e82]
+              - text: Add Student
+        - table [ref=e86]:
+          - rowgroup [ref=e87]:
+            - row "Name Class Subjects Parent / Guardian Contact Status" [ref=e88]:
+              - columnheader "Name" [ref=e89]
+              - columnheader "Class" [ref=e90]
+              - columnheader "Subjects" [ref=e91]
+              - columnheader "Parent / Guardian" [ref=e92]
+              - columnheader "Contact" [ref=e93]
+              - columnheader "Status" [ref=e94]
+              - columnheader [ref=e95]
+          - rowgroup [ref=e96]:
+            - row "Aisha Johnson-Edited Older Boys English Maths Science Ali Al-Rashid parent2@example.com +44 7700 900456 Active" [ref=e511]:
+              - cell "Aisha Johnson-Edited" [ref=e98]
+              - cell "Older Boys" [ref=e351]
+              - cell "English Maths Science" [ref=e450]:
+                - generic [ref=e101]:
+                  - generic [ref=e102]: English
+                  - generic [ref=e103]: Maths
+                  - generic [ref=e104]: Science
+              - cell "Ali Al-Rashid" [ref=e512]:
+                - paragraph [ref=e513]: Ali Al-Rashid
+              - cell "parent2@example.com +44 7700 900456" [ref=e514]:
+                - generic [ref=e515]:
+                  - link "parent2@example.com" [ref=e516] [cursor=pointer]:
+                    - /url: mailto:parent2@example.com
+                    - img [ref=e517]
+                    - text: parent2@example.com
+                  - link "+44 7700 900456" [ref=e520] [cursor=pointer]:
+                    - /url: tel:+44 7700 900456
+                    - img [ref=e521]
+                    - text: +44 7700 900456
+              - cell "Active" [ref=e118]:
+                - generic [ref=e119]: Active
+              - cell [ref=e120]:
+                - button [active] [ref=e121]:
+                  - img [ref=e122]
+            - row "Ibrahim Al-Rashid Older Boys Science Computer Science Electronics Ali Al-Rashid parent2@example.com +44 7700 900456 Active" [ref=e125]:
+              - cell "Ibrahim Al-Rashid" [ref=e126]
+              - cell "Older Boys" [ref=e127]
+              - cell "Science Computer Science Electronics" [ref=e128]:
+                - generic [ref=e129]:
+                  - generic [ref=e130]: Science
+                  - generic [ref=e131]: Computer Science
+                  - generic [ref=e132]: Electronics
+              - cell "Ali Al-Rashid" [ref=e133]:
+                - paragraph [ref=e135]: Ali Al-Rashid
+              - cell "parent2@example.com +44 7700 900456" [ref=e136]:
+                - generic [ref=e138]:
+                  - link "parent2@example.com" [ref=e139] [cursor=pointer]:
+                    - /url: mailto:parent2@example.com
+                    - img [ref=e140]
+                    - text: parent2@example.com
+                  - link "+44 7700 900456" [ref=e143] [cursor=pointer]:
+                    - /url: tel:+44 7700 900456
+                    - img [ref=e144]
+                    - text: +44 7700 900456
+              - cell "Active" [ref=e146]:
+                - generic [ref=e147]: Active
+              - cell [ref=e148]:
+                - button [ref=e149]:
+                  - img [ref=e150]
+            - row "Yusuf Al-Rashid Older Boys Science Computer Science Maths Ali Al-Rashid parent2@example.com +44 7700 900456 Active" [ref=e153]:
+              - cell "Yusuf Al-Rashid" [ref=e154]
+              - cell "Older Boys" [ref=e155]
+              - cell "Science Computer Science Maths" [ref=e156]:
+                - generic [ref=e157]:
+                  - generic [ref=e158]: Science
+                  - generic [ref=e159]: Computer Science
+                  - generic [ref=e160]: Maths
+              - cell "Ali Al-Rashid" [ref=e161]:
+                - paragraph [ref=e163]: Ali Al-Rashid
+              - cell "parent2@example.com +44 7700 900456" [ref=e164]:
+                - generic [ref=e166]:
+                  - link "parent2@example.com" [ref=e167] [cursor=pointer]:
+                    - /url: mailto:parent2@example.com
+                    - img [ref=e168]
+                    - text: parent2@example.com
+                  - link "+44 7700 900456" [ref=e171] [cursor=pointer]:
+                    - /url: tel:+44 7700 900456
+                    - img [ref=e172]
+                    - text: +44 7700 900456
+              - cell "Active" [ref=e174]:
+                - generic [ref=e175]: Active
+              - cell [ref=e176]:
+                - button [ref=e177]:
+                  - img [ref=e178]
+            - row "Zainab Ali Girls English Maths Mandarin — — Active" [ref=e181]:
+              - cell "Zainab Ali" [ref=e182]
+              - cell "Girls" [ref=e183]
+              - cell "English Maths Mandarin" [ref=e184]:
+                - generic [ref=e185]:
+                  - generic [ref=e186]: English
+                  - generic [ref=e187]: Maths
+                  - generic [ref=e188]: Mandarin
+              - cell "—" [ref=e189]
+              - cell "—" [ref=e190]
+              - cell "Active" [ref=e191]:
+                - generic [ref=e192]: Active
+              - cell [ref=e193]:
+                - button [ref=e194]:
+                  - img [ref=e195]
+            - row "test Older Boys Maths English Ali Al-Rashid parent2@example.com +44 7700 900456 Active" [ref=e198]:
+              - cell "test" [ref=e199]
+              - cell "Older Boys" [ref=e200]
+              - cell "Maths English" [ref=e201]:
+                - generic [ref=e202]:
+                  - generic [ref=e203]: Maths
+                  - generic [ref=e204]: English
+              - cell "Ali Al-Rashid" [ref=e205]:
+                - paragraph [ref=e207]: Ali Al-Rashid
+              - cell "parent2@example.com +44 7700 900456" [ref=e208]:
+                - generic [ref=e210]:
+                  - link "parent2@example.com" [ref=e211] [cursor=pointer]:
+                    - /url: mailto:parent2@example.com
+                    - img [ref=e212]
+                    - text: parent2@example.com
+                  - link "+44 7700 900456" [ref=e215] [cursor=pointer]:
+                    - /url: tel:+44 7700 900456
+                    - img [ref=e216]
+                    - text: +44 7700 900456
+              - cell "Active" [ref=e218]:
+                - generic [ref=e219]: Active
+              - cell [ref=e220]:
+                - button [ref=e221]:
+                  - img [ref=e222]
+            - row "test Older Boys Computer Science Maths English Arabic Sarah Johnson parent@example.com +44 7700 900123 Active" [ref=e225]:
+              - cell "test" [ref=e226]
+              - cell "Older Boys" [ref=e227]
+              - cell "Computer Science Maths English Arabic" [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e230]: Computer Science
+                  - generic [ref=e231]: Maths
+                  - generic [ref=e232]: English
+                  - generic [ref=e233]: Arabic
+              - cell "Sarah Johnson" [ref=e234]:
+                - paragraph [ref=e236]: Sarah Johnson
+              - cell "parent@example.com +44 7700 900123" [ref=e237]:
+                - generic [ref=e239]:
+                  - link "parent@example.com" [ref=e240] [cursor=pointer]:
+                    - /url: mailto:parent@example.com
+                    - img [ref=e241]
+                    - text: parent@example.com
+                  - link "+44 7700 900123" [ref=e244] [cursor=pointer]:
+                    - /url: tel:+44 7700 900123
+                    - img [ref=e245]
+                    - text: +44 7700 900123
+              - cell "Active" [ref=e247]:
+                - generic [ref=e248]: Active
+              - cell [ref=e249]:
+                - button [ref=e250]:
+                  - img [ref=e251]
+            - row "test2 Girls Science Ali Al-Rashid parent2@example.com +44 7700 900456 Active" [ref=e254]:
+              - cell "test2" [ref=e255]
+              - cell "Girls" [ref=e256]
+              - cell "Science" [ref=e257]:
+                - generic [ref=e259]: Science
+              - cell "Ali Al-Rashid" [ref=e260]:
+                - paragraph [ref=e262]: Ali Al-Rashid
+              - cell "parent2@example.com +44 7700 900456" [ref=e263]:
+                - generic [ref=e265]:
+                  - link "parent2@example.com" [ref=e266] [cursor=pointer]:
+                    - /url: mailto:parent2@example.com
+                    - img [ref=e267]
+                    - text: parent2@example.com
+                  - link "+44 7700 900456" [ref=e270] [cursor=pointer]:
+                    - /url: tel:+44 7700 900456
+                    - img [ref=e271]
+                    - text: +44 7700 900456
+              - cell "Active" [ref=e273]:
+                - generic [ref=e274]: Active
+              - cell [ref=e275]:
+                - button [ref=e276]:
+                  - img [ref=e277]
+  - button "Open Next.js Dev Tools" [ref=e572] [cursor=pointer]:
+    - generic [ref=e575]:
+      - text: Rendering
+      - generic [ref=e576]:
+        - generic [ref=e577]: .
+        - generic [ref=e578]: .
+        - generic [ref=e579]: .
+  - alert [ref=e289]

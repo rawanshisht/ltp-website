@@ -1,0 +1,302 @@
+- generic:
+  - generic:
+    - complementary:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - paragraph: LTP Centre
+          - paragraph: Learning Portal
+      - navigation:
+        - list:
+          - listitem:
+            - link:
+              - /url: /admin
+              - img
+              - text: Dashboard
+          - listitem:
+            - link:
+              - /url: /admin/teachers
+              - img
+              - text: Teachers
+          - listitem:
+            - link:
+              - /url: /admin/students
+              - img
+              - text: Students
+              - img
+          - listitem:
+            - link:
+              - /url: /admin/behaviour
+              - img
+              - text: Behaviour
+          - listitem:
+            - link:
+              - /url: /admin/attendance
+              - img
+              - text: Attendance
+          - listitem:
+            - link:
+              - /url: /admin/assessments
+              - img
+              - text: Assessments
+          - listitem:
+            - link:
+              - /url: /admin/incidents
+              - img
+              - text: Incidents
+      - generic:
+        - generic:
+          - generic: A
+          - generic:
+            - paragraph: Admin User
+            - generic: Admin
+        - button:
+          - img
+          - text: Sign out
+    - main:
+      - generic:
+        - generic:
+          - generic:
+            - heading [level=1]: Students
+            - paragraph: Manage student enrollment and subjects
+          - generic:
+            - generic:
+              - link:
+                - /url: /admin/students?inactive=true
+                - text: Show inactive
+              - button:
+                - img
+                - text: Add Student
+        - generic:
+          - generic:
+            - generic:
+              - table:
+                - rowgroup:
+                  - row:
+                    - columnheader: Name
+                    - columnheader: Class
+                    - columnheader: Subjects
+                    - columnheader: Parent / Guardian
+                    - columnheader: Contact
+                    - columnheader: Status
+                    - columnheader
+                - rowgroup:
+                  - row:
+                    - cell: Aisha Johnson-Edited
+                    - cell: Older Boys
+                    - cell:
+                      - generic:
+                        - generic: English
+                        - generic: Maths
+                        - generic: Science
+                    - cell:
+                      - generic:
+                        - paragraph: Sarah Johnson
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent@example.com
+                            - img
+                            - text: parent@example.com
+                          - link:
+                            - /url: tel:+44 7700 900123
+                            - img
+                            - text: +44 7700 900123
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button [expanded]:
+                        - img
+                  - row:
+                    - cell: Ibrahim Al-Rashid
+                    - cell: Older Boys
+                    - cell:
+                      - generic:
+                        - generic: Science
+                        - generic: Computer Science
+                        - generic: Electronics
+                    - cell:
+                      - generic:
+                        - paragraph: Ali Al-Rashid
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent2@example.com
+                            - img
+                            - text: parent2@example.com
+                          - link:
+                            - /url: tel:+44 7700 900456
+                            - img
+                            - text: +44 7700 900456
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+                  - row:
+                    - cell: Yusuf Al-Rashid
+                    - cell: Older Boys
+                    - cell:
+                      - generic:
+                        - generic: Science
+                        - generic: Computer Science
+                        - generic: Maths
+                    - cell:
+                      - generic:
+                        - paragraph: Ali Al-Rashid
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent2@example.com
+                            - img
+                            - text: parent2@example.com
+                          - link:
+                            - /url: tel:+44 7700 900456
+                            - img
+                            - text: +44 7700 900456
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+                  - row:
+                    - cell: Zainab Ali
+                    - cell: Girls
+                    - cell:
+                      - generic:
+                        - generic: English
+                        - generic: Maths
+                        - generic: Mandarin
+                    - cell: —
+                    - cell: —
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+                  - row:
+                    - cell: test
+                    - cell: Older Boys
+                    - cell:
+                      - generic:
+                        - generic: Maths
+                        - generic: English
+                    - cell:
+                      - generic:
+                        - paragraph: Ali Al-Rashid
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent2@example.com
+                            - img
+                            - text: parent2@example.com
+                          - link:
+                            - /url: tel:+44 7700 900456
+                            - img
+                            - text: +44 7700 900456
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+                  - row:
+                    - cell: test
+                    - cell: Older Boys
+                    - cell:
+                      - generic:
+                        - generic: Computer Science
+                        - generic: Maths
+                        - generic: English
+                        - generic: Arabic
+                    - cell:
+                      - generic:
+                        - paragraph: Sarah Johnson
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent@example.com
+                            - img
+                            - text: parent@example.com
+                          - link:
+                            - /url: tel:+44 7700 900123
+                            - img
+                            - text: +44 7700 900123
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+                  - row:
+                    - cell: test2
+                    - cell: Girls
+                    - cell:
+                      - generic:
+                        - generic: Science
+                    - cell:
+                      - generic:
+                        - paragraph: Ali Al-Rashid
+                    - cell:
+                      - generic:
+                        - generic:
+                          - link:
+                            - /url: mailto:parent2@example.com
+                            - img
+                            - text: parent2@example.com
+                          - link:
+                            - /url: tel:+44 7700 900456
+                            - img
+                            - text: +44 7700 900456
+                    - cell:
+                      - generic: Active
+                    - cell:
+                      - button:
+                        - img
+  - button "Open Next.js Dev Tools" [ref=e285] [cursor=pointer]:
+    - img [ref=e286]
+  - alert
+  - dialog "Edit Student" [ref=e452]:
+    - heading "Edit Student" [level=2] [ref=e454]
+    - generic [ref=e455]:
+      - generic [ref=e456]:
+        - text: Full Name
+        - textbox [ref=e457]: Aisha Johnson-Edited
+      - generic [ref=e458]:
+        - text: Class
+        - combobox [ref=e459]:
+          - generic: Older Boys
+          - img [ref=e460]
+        - combobox [ref=e462]
+      - generic [ref=e463]:
+        - text: Parent / Guardian
+        - combobox [active] [ref=e464]:
+          - generic: Ali Al-Rashid
+          - img [ref=e465]
+        - combobox [ref=e467]
+      - generic [ref=e468]:
+        - text: Subjects
+        - generic [ref=e469]:
+          - button "Arabic" [ref=e470]
+          - button "BCS" [ref=e471]
+          - button "Computer Science" [ref=e472]
+          - button "Electronics" [ref=e473]
+          - button "English" [ref=e474]
+          - button "Mandarin" [ref=e475]
+          - button "Maths" [ref=e476]
+          - button "Science" [ref=e477]
+      - generic [ref=e478]:
+        - text: Status
+        - combobox [ref=e479]:
+          - generic: Active
+          - img [ref=e480]
+        - combobox [ref=e482]
+      - generic [ref=e483]:
+        - button "Cancel" [ref=e484]
+        - button "Save Changes" [ref=e485]
+    - button [ref=e486]:
+      - img [ref=e487]

@@ -99,7 +99,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
       <DialogTrigger asChild>
         <Button><Plus className="h-4 w-4" />Add Student</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg" onPointerDownOutside={(e) => e.preventDefault()} onInteractOutside={(e) => e.preventDefault()}>
         <DialogHeader><DialogTitle>Add Student</DialogTitle></DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           {/* Student info */}
