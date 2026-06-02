@@ -276,6 +276,48 @@ async function main() {
     },
   });
 
+  // Past English assessment — Autumn term
+  await prisma.assignment.upsert({
+    where: { id: "seed-eng-assess-past1" },
+    update: {},
+    create: {
+      id: "seed-eng-assess-past1",
+      title: "Autumn Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: english.id,
+      teacherId: teacher1.id,
+      maxMarks: 100,
+      deadline: daysAgo(90),
+      marks: {
+        create: [
+          { studentId: aisha.id, marks: 78, handedStatus: "HANDED" },
+          { studentId: zainab.id, marks: 62, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
+  // Past English mid-term assessment
+  await prisma.assignment.upsert({
+    where: { id: "seed-eng-assess-past2" },
+    update: {},
+    create: {
+      id: "seed-eng-assess-past2",
+      title: "Spring Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: english.id,
+      teacherId: teacher1.id,
+      maxMarks: 100,
+      deadline: daysAgo(45),
+      marks: {
+        create: [
+          { studentId: aisha.id, marks: 84, handedStatus: "HANDED" },
+          { studentId: zainab.id, marks: 58, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
   // End-of-year English assessment — end of June before summer break
   await prisma.assignment.upsert({
     where: { id: "seed-eng-assess1" },
@@ -337,6 +379,47 @@ async function main() {
     },
   });
 
+  // Past Maths assessments
+  await prisma.assignment.upsert({
+    where: { id: "seed-math-assess-past1" },
+    update: {},
+    create: {
+      id: "seed-math-assess-past1",
+      title: "Autumn Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: maths.id,
+      teacherId: teacher1.id,
+      maxMarks: 100,
+      deadline: daysAgo(88),
+      marks: {
+        create: [
+          { studentId: aisha.id, marks: 72, handedStatus: "HANDED" },
+          { studentId: zainab.id, marks: 81, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: "seed-math-assess-past2" },
+    update: {},
+    create: {
+      id: "seed-math-assess-past2",
+      title: "Spring Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: maths.id,
+      teacherId: teacher1.id,
+      maxMarks: 100,
+      deadline: daysAgo(43),
+      marks: {
+        create: [
+          { studentId: aisha.id, marks: 88, handedStatus: "HANDED" },
+          { studentId: zainab.id, marks: 76, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
   // June Maths assessment
   await prisma.assignment.upsert({
     where: { id: "seed-math-assess1" },
@@ -375,6 +458,47 @@ async function main() {
         create: [
           { studentId: yusuf.id, marks: 25, handedStatus: "HANDED" },
           { studentId: ibrahim.id, marks: 22, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
+  // Past Science assessments
+  await prisma.assignment.upsert({
+    where: { id: "seed-sci-assess-past1" },
+    update: {},
+    create: {
+      id: "seed-sci-assess-past1",
+      title: "Autumn Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: science.id,
+      teacherId: teacher2.id,
+      maxMarks: 100,
+      deadline: daysAgo(85),
+      marks: {
+        create: [
+          { studentId: yusuf.id, marks: 91, handedStatus: "HANDED" },
+          { studentId: ibrahim.id, marks: 55, handedStatus: "HANDED" },
+        ],
+      },
+    },
+  });
+
+  await prisma.assignment.upsert({
+    where: { id: "seed-sci-assess-past2" },
+    update: {},
+    create: {
+      id: "seed-sci-assess-past2",
+      title: "Spring Term Assessment",
+      type: "ASSESSMENT",
+      subjectId: science.id,
+      teacherId: teacher2.id,
+      maxMarks: 100,
+      deadline: daysAgo(40),
+      marks: {
+        create: [
+          { studentId: yusuf.id, marks: 87, handedStatus: "HANDED" },
+          { studentId: ibrahim.id, marks: 63, handedStatus: "HANDED" },
         ],
       },
     },

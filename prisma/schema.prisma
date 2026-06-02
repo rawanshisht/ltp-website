@@ -160,6 +160,7 @@ model Teacher {
   notices          Notice[]
   classMaterials   ClassMaterial[]
   incidentLogs     IncidentLog[]
+  studentReports   StudentReport[]
 }
 
 model TeacherSubject {
@@ -208,6 +209,7 @@ model Student {
   predictedGrades      PredictedGrade[]
   incidentLogs         IncidentLog[]
   homeworkSubmissions  HomeworkSubmission[]
+  studentReports       StudentReport[]
 }
 
 model ParentStudent {
@@ -391,4 +393,20 @@ model Notice {
 
   teacher Teacher @relation(fields: [teacherId], references: [id])
   subject Subject @relation(fields: [subjectId], references: [id])
+}
+
+// ─── Student reports ──────────────────────────────────────────────────────────
+
+model StudentReport {
+  id        String   @id @default(cuid())
+  teacherId String
+  studentId String
+  title     String
+  notes     String?
+  fileUrl   String?
+  fileKey   String?
+  createdAt DateTime @default(now())
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }

@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { formatDate } from "@/lib/utils";
 import { Calendar } from "lucide-react";
+import { AssessmentBarChart } from "@/components/charts/assessment-bar-chart";
 
 export default async function ParentAssessmentsPage({
   searchParams,
@@ -37,6 +38,14 @@ export default async function ParentAssessmentsPage({
 
   const upcoming = assessmentMarks.filter((m) => new Date(m.assignment.deadline) >= new Date());
   const past = assessmentMarks.filter((m) => new Date(m.assignment.deadline) < new Date());
+
+  const scoreChartData = past
+    .filter((m) => m.marks !== null && m.marks !== undefined)
+    .map((m) => ({
+      label: `${m.assignment.subject.name} — ${m.assignment.title}`,
+      pct: Math.round((m.marks! / m.assignment.maxMarks) * 100),
+    }))
+    .reverse();
 
   function AssessmentRow({ m }: { m: (typeof assessmentMarks)[0] }) {
     const a = m.assignment;
@@ -100,6 +109,15 @@ export default async function ParentAssessmentsPage({
           )}
         </CardContent>
       </Card>
+
+      {scoreChartData.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader><CardTitle>Assessment Scores</CardTitle></CardHeader>
+          <CardContent>
+            <AssessmentBarChart data={scoreChartData} />
+          </CardContent>
+        </Card>
+      )}
 
       {/* Past */}
       {past.length > 0 && (

@@ -17,10 +17,11 @@ import {
   LogOut,
   ChevronRight,
   FolderOpen,
-  TrendingUp,
   AlertTriangle,
   FileCheck,
   Upload,
+  FileText,
+  Settings,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import type { Role } from "@prisma/client";
@@ -32,11 +33,13 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Behaviour", href: "/parent/behaviour", icon: Activity },
     { label: "Attendance", href: "/parent/attendance", icon: CalendarCheck },
     { label: "Assessments", href: "/parent/assessments", icon: FileCheck },
+    { label: "Reports", href: "/parent/reports", icon: FileText },
     { label: "Class Materials", href: "/parent/materials", icon: FolderOpen },
     { label: "Homework", href: "/parent/homework", icon: Upload },
     { label: "Deadlines", href: "/parent/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/parent/notices", icon: Bell },
     { label: "Incidents", href: "/parent/incidents", icon: AlertTriangle },
+    { label: "Settings", href: "/parent/settings", icon: Settings },
   ],
   TEACHER: [
     { label: "Dashboard", href: "/teacher", icon: LayoutDashboard },
@@ -45,9 +48,11 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Behaviour", href: "/teacher/behaviour", icon: Activity },
     { label: "Attendance", href: "/teacher/attendance", icon: CalendarCheck },
     { label: "Class Materials", href: "/teacher/materials", icon: FolderOpen },
+    { label: "Reports", href: "/teacher/reports", icon: FileText },
     { label: "Deadlines", href: "/teacher/deadlines", icon: ClipboardList },
     { label: "Notices", href: "/teacher/notices", icon: Bell },
     { label: "Incidents", href: "/teacher/incidents", icon: AlertTriangle },
+    { label: "Settings", href: "/teacher/settings", icon: Settings },
   ],
   ADMIN: [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -57,6 +62,7 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Attendance", href: "/admin/attendance", icon: BarChart3 },
     { label: "Assessments", href: "/admin/assessments", icon: FileCheck },
     { label: "Incidents", href: "/admin/incidents", icon: AlertTriangle },
+    { label: "Settings", href: "/admin/settings", icon: Settings },
   ],
 };
 
@@ -69,16 +75,21 @@ export function Sidebar({ role, userName }: SidebarProps) {
   const pathname = usePathname();
   const items = navConfig[role];
 
-  const roleLabel = role === "PARENT" ? "Parent" : role === "TEACHER" ? "Teacher" : "Admin";
-  const roleColor =
-    role === "PARENT" ? "bg-cyan-100 text-cyan-800" :
-      role === "TEACHER" ? "bg-orange-100 text-orange-800" :
-        "bg-pink-100 text-pink-800";
+  const roleLabel = role === "PARENT" ? "Parent Portal" : role === "TEACHER" ? "Teacher Portal" : "Admin Portal";
+  const roleBg =
+    role === "PARENT" ? "bg-cyan-500" :
+      role === "TEACHER" ? "bg-orange-500" :
+        "bg-pink-500";
 
   return (
     <aside className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
+      {/* Portal banner */}
+      <div className={cn("px-4 py-2 text-center", roleBg)}>
+        <p className="text-xs font-semibold tracking-wide text-white uppercase">{roleLabel}</p>
+      </div>
+
       {/* Logo */}
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-200">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-slate-200">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#00dcde]">
           <GraduationCap className="h-5 w-5 text-[#0f172a]" />
         </div>
@@ -122,9 +133,6 @@ export function Sidebar({ role, userName }: SidebarProps) {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-slate-900">{userName}</p>
-            <span className={cn("inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium", roleColor)}>
-              {roleLabel}
-            </span>
           </div>
         </div>
         <button

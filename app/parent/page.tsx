@@ -8,6 +8,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { BookOpen, Activity, CalendarCheck, ClipboardList } from "lucide-react";
 import { formatDate, gradeLabel, attendancePercent } from "@/lib/utils";
 import { ChildSwitcher } from "@/components/parent/child-switcher";
+import { MarksBarChart } from "@/components/charts/marks-bar-chart";
+import { AttendanceDonut } from "@/components/charts/attendance-donut";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +85,19 @@ export default async function ParentDashboard({
 
   const totalSessions = attendances.length;
   const presentCount = attendances.filter((a) => a.status === "PRESENT").length;
+  const absentCount = attendances.filter((a) => a.status === "ABSENT").length;
+  const lateCount = attendances.filter((a) => a.status === "LATE").length;
   const avgBehaviour = starAvg(behaviours);
+
+  const marksChartData = enrollments.flatMap((en) => {
+    const marksWithValues = en.subject.assignments.flatMap((a) =>
+      a.marks.filter((m) => m.marks !== null).map((m) => ({ marks: m.marks!, maxMarks: a.maxMarks }))
+    );
+    const earned = marksWithValues.reduce((s, m) => s + m.marks, 0);
+    const possible = marksWithValues.reduce((s, m) => s + m.maxMarks, 0);
+    if (possible === 0) return [];
+    return [{ subject: en.subject.name, avg: Math.round((earned / possible) * 100) }];
+  });
 
   const className =
     selected.class.name === "YOUNGER_BOYS" ? "Younger Boys"
@@ -118,6 +132,28 @@ export default async function ParentDashboard({
         />
         <StatCard label="Pending Homework" value={upcomingDeadlines.length} icon={ClipboardList} color="red" />
       </div>
+
+      {/* Charts */}
+      {(marksChartData.length > 0 || totalSessions > 0) && (
+        <div className="grid gap-6 md:grid-cols-2 mb-6">
+          {marksChartData.length > 0 && (
+            <Card>
+              <CardHeader><CardTitle>Average Marks by Subject</CardTitle></CardHeader>
+              <CardContent>
+                <MarksBarChart data={marksChartData} />
+              </CardContent>
+            </Card>
+          )}
+          {totalSessions > 0 && (
+            <Card>
+              <CardHeader><CardTitle>Attendance Breakdown</CardTitle></CardHeader>
+              <CardContent>
+                <AttendanceDonut present={presentCount} absent={absentCount} late={lateCount} />
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      )}
 
       {/* Predicted grades + upcoming deadlines */}
       <div className="grid gap-6 md:grid-cols-2 mb-8">
