@@ -4,6 +4,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AddTeacherDialog } from "@/components/admin/add-teacher-dialog";
+import { EditTeacherDialog, DeleteTeacherButton } from "@/components/admin/edit-teacher-dialog";
+
+export const dynamic = "force-dynamic";
+
+const classLabel = (name: string) =>
+  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
 export default async function AdminTeachersPage() {
   const [teachers, subjects, classes] = await Promise.all([
@@ -18,9 +24,6 @@ export default async function AdminTeachersPage() {
     prisma.subject.findMany({ orderBy: { name: "asc" } }),
     prisma.class.findMany(),
   ]);
-
-  const classLabel = (name: string) =>
-    name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
   return (
     <div>
@@ -39,6 +42,7 @@ export default async function AdminTeachersPage() {
                 <TableHead>Email</TableHead>
                 <TableHead>Subjects</TableHead>
                 <TableHead>Classes</TableHead>
+                <TableHead className="w-24">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -60,11 +64,26 @@ export default async function AdminTeachersPage() {
                       ))}
                     </div>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1">
+                      <EditTeacherDialog
+                        teacher={{
+                          id: t.id,
+                          user: { firstName: t.user.firstName, lastName: t.user.lastName, email: t.user.email },
+                          teacherSubjects: t.teacherSubjects.map((ts) => ({ subjectId: ts.subjectId })),
+                          teacherClasses: t.teacherClasses.map((tc) => ({ classId: tc.classId })),
+                        }}
+                        subjects={subjects}
+                        classes={classes}
+                      />
+                      <DeleteTeacherButton teacherId={t.id} />
+                    </div>
+                  </TableCell>
                 </TableRow>
               ))}
               {teachers.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-(--muted-foreground) py-8">
+                  <TableCell colSpan={5} className="text-center text-(--muted-foreground) py-8">
                     No teachers yet. Add one above.
                   </TableCell>
                 </TableRow>

@@ -57,8 +57,20 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
     setError("");
   }
 
+  const hasParent =
+    (parentTab === "existing" && parentId !== "") ||
+    (parentTab === "new" &&
+      npFirstName.trim() !== "" &&
+      npLastName.trim() !== "" &&
+      npEmail.trim() !== "" &&
+      npPassword.trim() !== "");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!hasParent) {
+      setError("A parent or guardian is required.");
+      return;
+    }
     setLoading(true);
     setError("");
 
@@ -104,11 +116,11 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
         <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           {/* Student info */}
           <div className="space-y-1.5">
-            <Label>Full Name</Label>
+            <Label>Full Name <span className="text-red-500">*</span></Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Student name" />
           </div>
           <div className="space-y-1.5">
-            <Label>Class</Label>
+            <Label>Class <span className="text-red-500">*</span></Label>
             <Select value={classId} onValueChange={setClassId} required>
               <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
               <SelectContent>
@@ -119,7 +131,9 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
 
           {/* Parent section */}
           <div className="space-y-2">
-            <Label>Parent / Guardian (optional)</Label>
+            <Label>
+              Parent / Guardian <span className="text-red-500">*</span>
+            </Label>
             <Tabs value={parentTab} onValueChange={(v) => setParentTab(v as "existing" | "new")}>
               <TabsList className="h-8">
                 <TabsTrigger value="existing" className="text-xs px-3 py-1">Select existing</TabsTrigger>
@@ -128,9 +142,8 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
 
               <TabsContent value="existing" className="mt-2">
                 <Select value={parentId} onValueChange={setParentId}>
-                  <SelectTrigger><SelectValue placeholder="Select parent" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder="Select a parent" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">— None —</SelectItem>
                     {parents.map((p) => (
                       <SelectItem key={p.id} value={p.id}>
                         {p.user.firstName} {p.user.lastName}
@@ -143,21 +156,21 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
               <TabsContent value="new" className="mt-2 space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs">First Name</Label>
+                    <Label className="text-xs">First Name <span className="text-red-500">*</span></Label>
                     <Input value={npFirstName} onChange={(e) => setNpFirstName(e.target.value)} placeholder="First name" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Last Name</Label>
+                    <Label className="text-xs">Last Name <span className="text-red-500">*</span></Label>
                     <Input value={npLastName} onChange={(e) => setNpLastName(e.target.value)} placeholder="Last name" />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-xs">Email</Label>
+                  <Label className="text-xs">Email <span className="text-red-500">*</span></Label>
                   <Input type="email" value={npEmail} onChange={(e) => setNpEmail(e.target.value)} placeholder="parent@example.com" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label className="text-xs">Password</Label>
+                    <Label className="text-xs">Password <span className="text-red-500">*</span></Label>
                     <Input type="password" value={npPassword} onChange={(e) => setNpPassword(e.target.value)} placeholder="Temporary password" />
                   </div>
                   <div className="space-y-1.5">
@@ -199,7 +212,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading || !classId || !name}>
+            <Button type="submit" disabled={loading || !classId || !name || !hasParent}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Add Student
             </Button>
