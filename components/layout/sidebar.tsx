@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import type { Role } from "@prisma/client";
+import { AppTour } from "@/components/tour/app-tour";
 
 const navConfig: Record<Role, { label: string; href: string; icon: React.ElementType }[]> = {
   PARENT: [
@@ -82,7 +83,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
         "bg-pink-500";
 
   return (
-    <aside className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
+    <aside id="tour-sidebar" className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
       {/* Portal banner */}
       <div className={cn("px-4 py-2 text-center", roleBg)}>
         <p className="text-xs font-semibold tracking-wide text-white uppercase">{roleLabel}</p>
@@ -107,6 +108,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
             return (
               <li key={item.href}>
                 <Link
+                  id={`tour-nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
@@ -126,7 +128,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
       </nav>
 
       {/* User footer */}
-      <div className="border-t border-slate-200 p-4">
+      <div id="tour-user-section" className="border-t border-slate-200 p-4">
         <div className="mb-3 flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-slate-700">
             {userName.charAt(0).toUpperCase()}
@@ -135,6 +137,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
             <p className="truncate text-sm font-medium text-slate-900">{userName}</p>
           </div>
         </div>
+        <AppTour role={role} />
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
