@@ -16,6 +16,10 @@ async function main() {
     prisma.subject.upsert({ where: { name: "Mandarin" }, update: {}, create: { name: "Mandarin", type: "OPTIONAL" } }),
     prisma.subject.upsert({ where: { name: "BCS" }, update: {}, create: { name: "BCS", type: "OPTIONAL" } }),
     prisma.subject.upsert({ where: { name: "Arabic" }, update: {}, create: { name: "Arabic", type: "OPTIONAL" } }),
+    prisma.subject.upsert({ where: { name: "Biology" }, update: {}, create: { name: "Biology", type: "CORE" } }),
+    prisma.subject.upsert({ where: { name: "The Forge" }, update: {}, create: { name: "The Forge", type: "OPTIONAL" } }),
+    prisma.subject.upsert({ where: { name: "Misbah" }, update: {}, create: { name: "Misbah", type: "OPTIONAL" } }),
+
   ]);
 
   // Classes
