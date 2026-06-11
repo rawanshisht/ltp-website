@@ -8,19 +8,27 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Loader2 } from "lucide-react";
-import type { Subject } from "@prisma/client";
+import type { Subject, Class } from "@prisma/client";
+
+const classLabels: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
 
 interface CreateAssignmentDialogProps {
   subjects: Subject[];
+  classes: Class[];
   teacherId: string;
 }
 
-export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignmentDialogProps) {
+export function CreateAssignmentDialog({ subjects, classes, teacherId }: CreateAssignmentDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState("");
+  const [classId, setClassId] = useState("ALL");
   const [type, setType] = useState<"HOMEWORK" | "ASSESSMENT">("HOMEWORK");
   const [maxMarks, setMaxMarks] = useState("");
   const [deadline, setDeadline] = useState("");
@@ -33,6 +41,7 @@ export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignment
     const formData = new FormData();
     formData.append("title", title);
     formData.append("subjectId", subjectId);
+    if (classId !== "ALL") formData.append("classId", classId);
     formData.append("type", type);
     formData.append("maxMarks", maxMarks);
     formData.append("deadline", deadline);
@@ -45,6 +54,7 @@ export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignment
     setOpen(false);
     setTitle("");
     setSubjectId("");
+    setClassId("ALL");
     setMaxMarks("");
     setDeadline("");
     setFile(null);
@@ -81,6 +91,20 @@ export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignment
               </Select>
             </div>
             <div className="space-y-1.5">
+              <Label>Class</Label>
+              <Select value={classId} onValueChange={setClassId}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">All my classes</SelectItem>
+                  {classes.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{classLabels[c.name] ?? c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
               <Label>Type</Label>
               <Select value={type} onValueChange={(v) => setType(v as typeof type)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
@@ -90,16 +114,14 @@ export function CreateAssignmentDialog({ subjects, teacherId }: CreateAssignment
                 </SelectContent>
               </Select>
             </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
               <Label>Max Marks</Label>
               <Input type="number" min="1" value={maxMarks} onChange={(e) => setMaxMarks(e.target.value)} required placeholder="100" />
             </div>
-            <div className="space-y-1.5">
-              <Label>Deadline</Label>
-              <Input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
-            </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Deadline</Label>
+            <Input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)} required />
           </div>
           <div className="space-y-1.5">
             <Label>Resource File (optional)</Label>

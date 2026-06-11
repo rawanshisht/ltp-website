@@ -20,6 +20,7 @@ type Incident = {
   title: string;
   description: string;
   severity: "MINOR" | "MODERATE" | "MAJOR";
+  action: string | null;
   student: Student;
   subject: Subject | null;
 };
@@ -158,6 +159,7 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
               <TableHead>Subject</TableHead>
               <TableHead>Severity</TableHead>
               <TableHead>Description</TableHead>
+              <TableHead>Action Taken</TableHead>
               <TableHead className="w-20">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -174,6 +176,11 @@ export function IncidentsTable({ incidents, students, subjects }: IncidentsTable
                   </Badge>
                 </TableCell>
                 <TableCell className="text-(--muted-foreground) text-sm max-w-xs truncate">{inc.description}</TableCell>
+                <TableCell className="text-sm max-w-xs">
+                  {inc.action
+                    ? <span className="text-(--muted-foreground)">{inc.action}</span>
+                    : <span className="text-xs italic text-(--muted-foreground)">Pending</span>}
+                </TableCell>
                 <TableCell>
                   <div className="flex gap-1">
                     <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => openEdit(inc)}>

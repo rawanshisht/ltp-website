@@ -10,6 +10,12 @@ import { formatDate } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
+const classLabels: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
+
 export default async function TeacherAssignmentsPage({
   searchParams,
 }: {
@@ -22,17 +28,7 @@ export default async function TeacherAssignmentsPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: {
-        include: {
-          class: {
-            include: {
-              students: {
-                include: { studentSubjects: { where: { droppedAt: null } } },
-              },
-            },
-          },
-        },
-      },
+      teacherClasses: { include: { class: true } },
     },
   });
 
@@ -42,11 +38,12 @@ export default async function TeacherAssignmentsPage({
       ...(subjectId && { subjectId }),
       ...(type === "HOMEWORK" || type === "ASSESSMENT" ? { type } : {}),
     },
-    include: { subject: true, marks: true },
+    include: { subject: true, class: true, marks: true },
     orderBy: { deadline: "desc" },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
+  const classes = teacher!.teacherClasses.map((tc) => tc.class);
 
   const homework = assignments.filter((a) => a.type === "HOMEWORK");
   const assessments = assignments.filter((a) => a.type === "ASSESSMENT");
@@ -56,12 +53,11 @@ export default async function TeacherAssignmentsPage({
       <Header
         title="Assignments"
         description="Manage homework and assessments"
-        actions={<CreateAssignmentDialog subjects={subjects} teacherId={teacher!.id} />}
+        actions={<CreateAssignmentDialog subjects={subjects} classes={classes} teacherId={teacher!.id} />}
       />
 
       <AssignmentFilters subjects={subjects} currentSubjectId={subjectId ?? ""} />
 
-      {/* Homework */}
       <Card className="mb-6">
         <CardHeader><CardTitle>Homework ({homework.length})</CardTitle></CardHeader>
         <CardContent>
@@ -73,7 +69,6 @@ export default async function TeacherAssignmentsPage({
         </CardContent>
       </Card>
 
-      {/* Assessments */}
       <Card>
         <CardHeader>
           <CardTitle>Assessments ({assessments.length})</CardTitle>
@@ -98,6 +93,7 @@ type Assignment = {
   deadline: Date;
   fileUrl: string | null;
   subject: { name: string };
+  class: { name: string } | null;
   marks: { handedStatus: string; marks: number | null }[];
 };
 
@@ -108,6 +104,7 @@ function AssignmentTable({ assignments, isAssessment = false }: { assignments: A
         <TableRow>
           <TableHead>Title</TableHead>
           <TableHead>Subject</TableHead>
+          <TableHead>Class</TableHead>
           <TableHead>Max Marks</TableHead>
           <TableHead>Deadline</TableHead>
           <TableHead>File</TableHead>
@@ -128,6 +125,9 @@ function AssignmentTable({ assignments, isAssessment = false }: { assignments: A
             <TableRow key={a.id}>
               <TableCell className="font-medium">{a.title}</TableCell>
               <TableCell>{a.subject.name}</TableCell>
+              <TableCell className="text-(--muted-foreground) text-sm">
+                {a.class ? (classLabels[a.class.name] ?? a.class.name) : "All classes"}
+              </TableCell>
               <TableCell>{a.maxMarks}</TableCell>
               <TableCell>
                 <Badge variant={isPast ? "destructive" : "warning"}>

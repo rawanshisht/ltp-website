@@ -6,10 +6,10 @@ import { AttendanceEntry } from "@/components/teacher/attendance-entry";
 export default async function TeacherAttendancePage({
   searchParams,
 }: {
-  searchParams: Promise<{ subject?: string; date?: string }>;
+  searchParams: Promise<{ subject?: string; date?: string; view?: string; month?: string }>;
 }) {
   const session = await auth();
-  const { subject: subjectId, date } = await searchParams;
+  const { subject: subjectId, date, view, month } = await searchParams;
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -30,13 +30,14 @@ export default async function TeacherAttendancePage({
   endOfDay.setHours(23, 59, 59, 999);
 
   const studentsForSubject =
-    subjectId
+    subjectId && view !== "monthly"
       ? await prisma.student.findMany({
           where: {
             isActive: true,
             studentSubjects: { some: { subjectId, droppedAt: null } },
           },
           include: {
+            class: true,
             attendances: {
               where: {
                 subjectId,
@@ -48,6 +49,31 @@ export default async function TeacherAttendancePage({
         })
       : [];
 
+  const monthStr = month ?? new Date().toISOString().slice(0, 7);
+  const [yearNum, monthNum] = monthStr.split("-").map(Number);
+  const startOfMonth = new Date(yearNum, monthNum - 1, 1);
+  const endOfMonth = new Date(yearNum, monthNum, 0, 23, 59, 59, 999);
+
+  const monthlyRecords =
+    subjectId && view === "monthly"
+      ? (
+          await prisma.attendance.findMany({
+            where: {
+              subjectId,
+              sessionDate: { gte: startOfMonth, lte: endOfMonth },
+            },
+            include: { student: { select: { id: true, name: true, class: { select: { name: true } } } } },
+            orderBy: [{ student: { name: "asc" } }, { sessionDate: "asc" }],
+          })
+        ).map((r) => ({
+          studentId: r.studentId,
+          studentName: r.student.name,
+          className: r.student.class.name as string,
+          date: r.sessionDate.toISOString().split("T")[0],
+          status: r.status as "PRESENT" | "ABSENT" | "LATE",
+        }))
+      : [];
+
   return (
     <div>
       <Header title="Attendance" description="Mark attendance per class session" />
@@ -57,6 +83,9 @@ export default async function TeacherAttendancePage({
         teacherId={teacher!.id}
         selectedSubjectId={subjectId ?? ""}
         selectedDate={sessionDate.toISOString().split("T")[0]}
+        selectedView={view ?? "mark"}
+        selectedMonth={monthStr}
+        monthlyRecords={monthlyRecords}
       />
     </div>
   );

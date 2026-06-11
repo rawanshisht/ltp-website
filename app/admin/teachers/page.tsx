@@ -5,15 +5,30 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AddTeacherDialog } from "@/components/admin/add-teacher-dialog";
 import { EditTeacherDialog, DeleteTeacherButton } from "@/components/admin/edit-teacher-dialog";
+import { SearchBar } from "@/components/admin/search-bar";
 
 export const dynamic = "force-dynamic";
 
 const classLabel = (name: string) =>
   name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
-export default async function AdminTeachersPage() {
+export default async function AdminTeachersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const { search } = await searchParams;
+
   const [teachers, subjects, classes] = await Promise.all([
     prisma.teacher.findMany({
+      where: search
+        ? {
+            OR: [
+              { user: { firstName: { contains: search, mode: "insensitive" } } },
+              { user: { lastName: { contains: search, mode: "insensitive" } } },
+            ],
+          }
+        : undefined,
       include: {
         user: true,
         teacherSubjects: { include: { subject: true } },
@@ -32,6 +47,8 @@ export default async function AdminTeachersPage() {
         description="Manage teacher accounts and assignments"
         actions={<AddTeacherDialog subjects={subjects} classes={classes} />}
       />
+
+      <SearchBar placeholder="Search teachers…" />
 
       <Card>
         <CardContent className="p-0">

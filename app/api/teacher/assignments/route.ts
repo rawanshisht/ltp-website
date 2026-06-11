@@ -11,6 +11,7 @@ export async function POST(req: Request) {
   const formData = await req.formData();
   const title = formData.get("title") as string;
   const subjectId = formData.get("subjectId") as string;
+  const classId = (formData.get("classId") as string | null) || null;
   const type = formData.get("type") as "HOMEWORK" | "ASSESSMENT";
   const maxMarks = parseInt(formData.get("maxMarks") as string);
   const deadline = new Date(formData.get("deadline") as string);
@@ -35,7 +36,9 @@ export async function POST(req: Request) {
   const classStudentIds = (
     await prisma.student.findMany({
       where: {
-        class: { teacherClasses: { some: { teacherId: teacher!.id } } },
+        ...(classId
+          ? { classId }
+          : { class: { teacherClasses: { some: { teacherId: teacher!.id } } } }),
         studentSubjects: { some: { subjectId, droppedAt: null } },
       },
       select: { id: true },
@@ -46,6 +49,7 @@ export async function POST(req: Request) {
     data: {
       title,
       subjectId,
+      classId,
       type,
       maxMarks,
       deadline,

@@ -126,6 +126,7 @@ model Class {
 
   students       Student[]
   teacherClasses TeacherClass[]
+  assignments    Assignment[]
 }
 
 model Subject {
@@ -243,6 +244,7 @@ model Assignment {
   type      AssignmentType
   subjectId String
   teacherId String
+  classId   String?
   maxMarks  Int
   deadline  DateTime
   fileUrl   String?
@@ -252,6 +254,7 @@ model Assignment {
 
   subject             Subject              @relation(fields: [subjectId], references: [id])
   teacher             Teacher              @relation(fields: [teacherId], references: [id])
+  class               Class?               @relation(fields: [classId], references: [id])
   marks               StudentMark[]
   homeworkSubmissions HomeworkSubmission[]
 }
@@ -372,6 +375,7 @@ model IncidentLog {
   title       String
   description String
   severity    IncidentSeverity @default(MINOR)
+  action      String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 

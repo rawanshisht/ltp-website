@@ -5,19 +5,23 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AddStudentDialog } from "@/components/admin/add-student-dialog";
 import { EditStudentDialog } from "@/components/admin/edit-student-dialog";
+import { SearchBar } from "@/components/admin/search-bar";
 import { Phone, Mail } from "lucide-react";
 
 export default async function AdminStudentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ inactive?: string }>;
+  searchParams: Promise<{ inactive?: string; search?: string }>;
 }) {
-  const { inactive } = await searchParams;
+  const { inactive, search } = await searchParams;
   const showInactive = inactive === "true";
 
   const [students, subjects, classes, parents] = await Promise.all([
     prisma.student.findMany({
-      where: showInactive ? {} : { isActive: true },
+      where: {
+        ...(showInactive ? {} : { isActive: true }),
+        ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
+      },
       include: {
         class: true,
         studentSubjects: {
@@ -55,6 +59,8 @@ export default async function AdminStudentsPage({
           </div>
         }
       />
+
+      <SearchBar placeholder="Search students…" />
 
       <Card>
         <CardContent className="p-0">
