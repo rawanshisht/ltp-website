@@ -39,3 +39,40 @@ export async function POST(req: Request) {
   revalidatePath("/teacher/deadlines");
   return NextResponse.json({ ok: true });
 }
+
+export async function PATCH(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { studentId, assignmentId, marks } = await req.json() as {
+    studentId: string;
+    assignmentId: string;
+    marks: number | null;
+  };
+
+  await prisma.studentMark.upsert({
+    where: { studentId_assignmentId: { studentId, assignmentId } },
+    update: { marks, handedStatus: marks !== null ? "HANDED" : "PENDING" },
+    create: { studentId, assignmentId, marks, handedStatus: marks !== null ? "HANDED" : "PENDING" },
+  });
+
+  revalidatePath("/teacher/marks");
+  revalidatePath("/teacher/deadlines");
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { studentId, assignmentId } = await req.json() as { studentId: string; assignmentId: string };
+
+  await prisma.studentMark.updateMany({
+    where: { studentId, assignmentId },
+    data: { marks: null, handedStatus: "PENDING" },
+  });
+
+  revalidatePath("/teacher/marks");
+  revalidatePath("/teacher/deadlines");
+  return NextResponse.json({ ok: true });
+}

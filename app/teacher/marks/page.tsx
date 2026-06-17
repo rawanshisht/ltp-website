@@ -8,10 +8,10 @@ export const dynamic = "force-dynamic";
 export default async function TeacherMarksPage({
   searchParams,
 }: {
-  searchParams: Promise<{ assignment?: string; subject?: string; mode?: string }>;
+  searchParams: Promise<{ assignment?: string; subject?: string; mode?: string; class?: string }>;
 }) {
   const session = await auth();
-  const { assignment: assignmentId, subject: subjectId, mode } = await searchParams;
+  const { assignment: assignmentId, subject: subjectId, mode, class: classId } = await searchParams;
 
   const isAssessmentMode = mode === "assessment";
 
@@ -23,6 +23,7 @@ export default async function TeacherMarksPage({
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
+  const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
   const assignments = subjectId
     ? await prisma.assignment.findMany({
@@ -30,6 +31,7 @@ export default async function TeacherMarksPage({
           teacherId: teacher!.id,
           subjectId,
           type: isAssessmentMode ? "ASSESSMENT" : "HOMEWORK",
+          ...(classId ? { OR: [{ classId }, { classId: null }] } : {}),
         },
         include: { subject: true },
         orderBy: { deadline: "desc" },
@@ -47,6 +49,7 @@ export default async function TeacherMarksPage({
     ? await prisma.student.findMany({
         where: {
           isActive: true,
+          ...(classId ? { classId } : {}),
           studentSubjects: {
             some: { subjectId: selectedAssignment.subjectId, droppedAt: null },
           },
@@ -66,6 +69,7 @@ export default async function TeacherMarksPage({
       />
       <MarksEntry
         subjects={subjects}
+        classes={classes}
         assignments={assignments}
         selectedAssignment={selectedAssignment}
         studentsWithMarks={studentsWithMarks}

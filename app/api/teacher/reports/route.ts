@@ -32,10 +32,50 @@ export async function POST(req: Request) {
     }
   }
 
-  const report = await prisma.studentReport.create({
-    data: { title, studentId, teacherId, notes, fileUrl, fileKey },
-  });
+  let report;
+  try {
+    report = await prisma.studentReport.create({
+      data: { title, studentId, teacherId, notes, fileUrl, fileKey },
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to save report." }, { status: 500 });
+  }
 
   revalidatePath("/teacher/reports");
   return NextResponse.json({ id: report.id });
+}
+
+export async function PATCH(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id, title, notes } = await req.json() as { id: string; title: string; notes?: string };
+
+  try {
+    await prisma.studentReport.update({
+      where: { id },
+      data: { title, notes: notes || null },
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to update report." }, { status: 500 });
+  }
+
+  revalidatePath("/teacher/reports");
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await req.json() as { id: string };
+
+  try {
+    await prisma.studentReport.delete({ where: { id } });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete report." }, { status: 500 });
+  }
+
+  revalidatePath("/teacher/reports");
+  return NextResponse.json({ ok: true });
 }

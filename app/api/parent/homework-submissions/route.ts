@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/auth";
-import { put } from "@vercel/blob";
+import { storeFile } from "@/lib/file-storage";
 
 export async function POST(req: Request) {
   const session = await auth();
@@ -23,12 +23,20 @@ export async function POST(req: Request) {
     : null;
   if (!link) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const blob = await put(`homework/${Date.now()}-${file.name}`, file, { access: "public" });
+  let fileUrl: string;
+  let fileKey: string;
+  try {
+    const stored = await storeFile(file, "homework");
+    fileUrl = stored.url;
+    fileKey = stored.key;
+  } catch {
+    return NextResponse.json({ error: "File upload failed." }, { status: 500 });
+  }
 
   const submission = await prisma.homeworkSubmission.upsert({
     where: { studentId_assignmentId: { studentId, assignmentId } },
-    update: { fileUrl: blob.url, fileKey: blob.pathname, submittedAt: new Date() },
-    create: { studentId, assignmentId, fileUrl: blob.url, fileKey: blob.pathname },
+    update: { fileUrl, fileKey, submittedAt: new Date() },
+    create: { studentId, assignmentId, fileUrl, fileKey },
   });
 
   // Update mark status to HANDED

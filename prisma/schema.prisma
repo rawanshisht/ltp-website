@@ -127,6 +127,7 @@ model Class {
   students       Student[]
   teacherClasses TeacherClass[]
   assignments    Assignment[]
+  classMaterials ClassMaterial[]
 }
 
 model Subject {
@@ -355,6 +356,7 @@ model ClassMaterial {
   id        String   @id @default(cuid())
   teacherId String
   subjectId String
+  classId   String?
   title     String
   fileUrl   String?
   fileKey   String?
@@ -362,6 +364,7 @@ model ClassMaterial {
 
   teacher Teacher @relation(fields: [teacherId], references: [id])
   subject Subject @relation(fields: [subjectId], references: [id])
+  class   Class?  @relation(fields: [classId], references: [id])
 }
 
 // ─── Incident log ─────────────────────────────────────────────────────────────

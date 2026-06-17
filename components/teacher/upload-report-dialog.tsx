@@ -53,7 +53,7 @@ export function UploadReportDialog({ students, teacherId }: UploadReportDialogPr
     const res = await fetch("/api/teacher/reports", { method: "POST", body: formData });
 
     if (!res.ok) {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Upload failed.");
       setLoading(false);
       return;

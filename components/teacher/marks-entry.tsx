@@ -10,15 +10,23 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Label } from "@/components/ui/label";
-import { Loader2, Save } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Loader2, Save, Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import type { Subject, Assignment, Student, StudentMark } from "@prisma/client";
+import type { Subject, Assignment, Student, StudentMark, Class } from "@prisma/client";
+
+const CLASS_LABELS: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
 
 type StudentWithMark = Student & { marks: StudentMark[] };
 type AssignmentWithSubject = Assignment & { subject: Subject };
 
 interface MarksEntryProps {
   subjects: Subject[];
+  classes: Class[];
   assignments: AssignmentWithSubject[];
   selectedAssignment: AssignmentWithSubject | null;
   studentsWithMarks: StudentWithMark[];
@@ -28,6 +36,7 @@ interface MarksEntryProps {
 
 export function MarksEntry({
   subjects,
+  classes,
   assignments,
   selectedAssignment,
   studentsWithMarks,
@@ -46,6 +55,10 @@ export function MarksEntry({
     return initial;
   });
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState<{ studentId: string; name: string; savedMark: string } | null>(null);
+  const [editValue, setEditValue] = useState("");
+  const [editSaving, setEditSaving] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   function navigate(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
@@ -83,7 +96,36 @@ export function MarksEntry({
     router.refresh();
   }
 
+  async function handleEditSave() {
+    if (!editing || !selectedAssignment) return;
+    setEditSaving(true);
+    const parsed = editValue !== "" ? parseFloat(editValue) : null;
+    await fetch("/api/teacher/marks", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId: editing.studentId, assignmentId: selectedAssignment.id, marks: parsed }),
+    });
+    setMarksMap((prev) => ({ ...prev, [editing.studentId]: editValue }));
+    setEditSaving(false);
+    setEditing(null);
+    router.refresh();
+  }
+
+  async function handleDelete(studentId: string) {
+    if (!selectedAssignment) return;
+    setDeleting(studentId);
+    await fetch("/api/teacher/marks", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ studentId, assignmentId: selectedAssignment.id }),
+    });
+    setMarksMap((prev) => ({ ...prev, [studentId]: "" }));
+    setDeleting(null);
+    router.refresh();
+  }
+
   const currentSubject = searchParams.get("subject") ?? "";
+  const currentClass = searchParams.get("class") ?? "";
   const currentAssignment = searchParams.get("assignment") ?? "";
 
   const selectors = (
@@ -95,7 +137,7 @@ export function MarksEntry({
           <Label>Subject</Label>
           <Select
             value={currentSubject}
-            onValueChange={(v) => navigate({ subject: v, assignment: null })}
+            onValueChange={(v) => navigate({ subject: v, class: null, assignment: null })}
           >
             <SelectTrigger><SelectValue placeholder="Select subject" /></SelectTrigger>
             <SelectContent>
@@ -103,6 +145,25 @@ export function MarksEntry({
             </SelectContent>
           </Select>
         </div>
+
+        {/* Class */}
+        {currentSubject && (
+          <div className="space-y-1.5 min-w-44">
+            <Label>Class</Label>
+            <Select
+              value={currentClass || "all"}
+              onValueChange={(v) => navigate({ class: v === "all" ? null : v, assignment: null })}
+            >
+              <SelectTrigger><SelectValue placeholder="All classes" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All classes</SelectItem>
+                {classes.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
 
         {/* Assignment */}
         {assignments.length > 0 && (
@@ -128,7 +189,7 @@ export function MarksEntry({
 
         {currentSubject && assignments.length === 0 && (
           <p className="self-end text-sm text-slate-500 pb-2">
-            No {isAssessmentMode ? "assessments" : "homework"} for this subject yet.
+            No {isAssessmentMode ? "assessments" : "homework"} for this subject{currentClass ? " and class" : ""} yet.
           </p>
         )}
       </CardContent>
@@ -160,12 +221,14 @@ export function MarksEntry({
         {studentsWithMarks.length === 0 ? (
           <p className="text-sm text-slate-500">No students enrolled in this subject.</p>
         ) : (
+          <>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Student</TableHead>
                 <TableHead>Marks (/{selectedAssignment.maxMarks})</TableHead>
                 <TableHead>%</TableHead>
+                <TableHead className="w-24">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -174,6 +237,7 @@ export function MarksEntry({
                 const pct = val && selectedAssignment.maxMarks
                   ? Math.round((parseFloat(val) / selectedAssignment.maxMarks) * 100)
                   : null;
+                const savedMark = student.marks[0]?.marks?.toString() ?? "";
                 return (
                   <TableRow key={student.id}>
                     <TableCell className="font-medium">{student.name}</TableCell>
@@ -194,11 +258,63 @@ export function MarksEntry({
                     <TableCell className="text-slate-500 text-sm">
                       {pct !== null ? `${pct}%` : "—"}
                     </TableCell>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Edit saved mark"
+                          onClick={() => { setEditing({ studentId: student.id, name: student.name, savedMark }); setEditValue(savedMark); }}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title="Clear mark"
+                          disabled={deleting === student.id || !savedMark}
+                          onClick={() => handleDelete(student.id)}
+                        >
+                          {deleting === student.id
+                            ? <Loader2 className="h-4 w-4 animate-spin" />
+                            : <Trash2 className="h-4 w-4 text-red-500" />}
+                        </Button>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
           </Table>
+
+          {/* Edit dialog */}
+          <Dialog open={!!editing} onOpenChange={(o) => { if (!o) setEditing(null); }}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Mark — {editing?.name}</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-2 py-2">
+                <Label>Marks (out of {selectedAssignment.maxMarks})</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max={selectedAssignment.maxMarks}
+                  step="0.5"
+                  value={editValue}
+                  onChange={(e) => setEditValue(e.target.value)}
+                  placeholder="Enter mark"
+                />
+              </div>
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setEditing(null)}>Cancel</Button>
+                <Button onClick={handleEditSave} disabled={editSaving}>
+                  {editSaving && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  Save
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          </>
         )}
       </CardContent>
     </Card>

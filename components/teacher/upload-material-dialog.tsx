@@ -8,20 +8,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Loader2, FileText, AlertCircle } from "lucide-react";
-import type { Subject } from "@prisma/client";
+import type { Subject, Class } from "@prisma/client";
+
+const CLASS_LABELS: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
 
 interface UploadMaterialDialogProps {
   subjects: Subject[];
+  classes: Class[];
   teacherId: string;
 }
 
-export function UploadMaterialDialog({ subjects, teacherId }: UploadMaterialDialogProps) {
+export function UploadMaterialDialog({ subjects, classes, teacherId }: UploadMaterialDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState("");
+  const [classId, setClassId] = useState("");
   const [file, setFile] = useState<File | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -33,12 +41,13 @@ export function UploadMaterialDialog({ subjects, teacherId }: UploadMaterialDial
     formData.append("title", title);
     formData.append("subjectId", subjectId);
     formData.append("teacherId", teacherId);
+    if (classId) formData.append("classId", classId);
     if (file) formData.append("file", file);
 
     const res = await fetch("/api/teacher/materials", { method: "POST", body: formData });
 
     if (!res.ok) {
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       setError(data.error ?? "Upload failed.");
       setLoading(false);
       return;
@@ -48,6 +57,7 @@ export function UploadMaterialDialog({ subjects, teacherId }: UploadMaterialDial
     setOpen(false);
     setTitle("");
     setSubjectId("");
+    setClassId("");
     setFile(null);
     setError("");
     router.refresh();
@@ -75,7 +85,17 @@ export function UploadMaterialDialog({ subjects, teacherId }: UploadMaterialDial
             </Select>
           </div>
           <div className="space-y-1.5">
-            <Label>File (optional — requires Vercel Blob)</Label>
+            <Label>Class (optional)</Label>
+            <Select value={classId || "all"} onValueChange={(v) => setClassId(v === "all" ? "" : v)}>
+              <SelectTrigger><SelectValue placeholder="All classes" /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All classes</SelectItem>
+                {classes.map((c) => <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-1.5">
+            <Label>File (optional)</Label>
             <Input
               type="file"
               accept=".pdf,.doc,.docx,.ppt,.pptx,.png,.jpg"

@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   const title = formData.get("title") as string;
   const subjectId = formData.get("subjectId") as string;
   const teacherId = formData.get("teacherId") as string;
+  const classId = (formData.get("classId") as string | null) || null;
   const file = formData.get("file") as File | null;
 
   let fileUrl: string | undefined;
@@ -27,10 +28,52 @@ export async function POST(req: Request) {
     }
   }
 
-  const material = await prisma.classMaterial.create({
-    data: { title, subjectId, teacherId, fileUrl, fileKey },
-  });
+  let material;
+  try {
+    material = await prisma.classMaterial.create({
+      data: { title, subjectId, teacherId, classId, fileUrl, fileKey },
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to save material." }, { status: 500 });
+  }
 
   revalidatePath("/teacher/materials");
   return NextResponse.json({ id: material.id });
+}
+
+export async function PATCH(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id, title, subjectId, classId } = await req.json() as {
+    id: string; title: string; subjectId: string; classId?: string;
+  };
+
+  try {
+    await prisma.classMaterial.update({
+      where: { id },
+      data: { title, subjectId, classId: classId || null },
+    });
+  } catch {
+    return NextResponse.json({ error: "Failed to update material." }, { status: 500 });
+  }
+
+  revalidatePath("/teacher/materials");
+  return NextResponse.json({ ok: true });
+}
+
+export async function DELETE(req: Request) {
+  const session = await auth();
+  if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await req.json() as { id: string };
+
+  try {
+    await prisma.classMaterial.delete({ where: { id } });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete material." }, { status: 500 });
+  }
+
+  revalidatePath("/teacher/materials");
+  return NextResponse.json({ ok: true });
 }
