@@ -70,9 +70,10 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
 interface SidebarProps {
   role: Role;
   userName: string;
+  onClose?: () => void;
 }
 
-export function Sidebar({ role, userName }: SidebarProps) {
+export function Sidebar({ role, userName, onClose }: SidebarProps) {
   const pathname = usePathname();
   const items = navConfig[role];
 
@@ -83,7 +84,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
         "bg-pink-500";
 
   return (
-    <aside id="tour-sidebar" className="sidebar flex h-screen flex-col border-r border-slate-200 bg-white">
+    <aside id="tour-sidebar" className="sidebar flex h-screen h-dvh flex-col border-r border-slate-200 bg-white">
       {/* Portal banner */}
       <div className={cn("px-4 py-2 text-center", roleBg)}>
         <p className="text-xs font-semibold tracking-wide text-white uppercase">{roleLabel}</p>
@@ -110,6 +111,7 @@ export function Sidebar({ role, userName }: SidebarProps) {
                 <Link
                   id={`tour-nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}
                   href={item.href}
+                  onClick={onClose}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     isActive

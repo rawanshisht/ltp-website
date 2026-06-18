@@ -1,6 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import { Sidebar } from "@/components/layout/sidebar";
+import { Shell } from "@/components/layout/shell";
 
 export const dynamic = "force-dynamic";
 
@@ -9,9 +9,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (!session || session.user.role !== "ADMIN") redirect("/login");
 
   return (
-    <div className="flex h-full">
-      <Sidebar role="ADMIN" userName={session.user.name ?? "Admin"} />
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
-    </div>
+    <Shell role="ADMIN" userName={session.user.name ?? "Admin"}>
+      {children}
+    </Shell>
   );
 }
