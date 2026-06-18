@@ -13,7 +13,12 @@ export async function storeFile(
     return { url: blob.url, key: blob.pathname };
   }
 
-  // Local fallback: save to public/uploads/
+  // Production requires BLOB_READ_WRITE_TOKEN — no writable filesystem on Vercel
+  if (process.env.VERCEL) {
+    throw new Error("BLOB_READ_WRITE_TOKEN must be set for file uploads in production");
+  }
+
+  // Local dev fallback: save to public/uploads/
   const uploadsDir = path.join(process.cwd(), "public", "uploads");
   await fs.mkdir(uploadsDir, { recursive: true });
   const safeName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;

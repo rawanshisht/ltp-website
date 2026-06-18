@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Header } from "@/components/layout/header";
 import { MarksEntry } from "@/components/teacher/marks-entry";
@@ -11,7 +12,13 @@ export default async function TeacherMarksPage({
   searchParams: Promise<{ assignment?: string; subject?: string; mode?: string; class?: string }>;
 }) {
   const session = await auth();
-  const { assignment: assignmentId, subject: subjectId, mode, class: classId } = await searchParams;
+  if (!session || session.user.role !== "TEACHER") redirect("/login");
+
+  const params = await searchParams;
+  const assignmentId = params.assignment;
+  const subjectId = params.subject;
+  const mode = params.mode;
+  const classId = params["class"];
 
   const isAssessmentMode = mode === "assessment";
 
