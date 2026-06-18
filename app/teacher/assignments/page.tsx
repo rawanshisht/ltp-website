@@ -32,7 +32,6 @@ export default async function TeacherAssignmentsPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: { include: { class: true } },
     },
   });
 
@@ -48,7 +47,7 @@ export default async function TeacherAssignmentsPage({
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const classes = teacher!.teacherClasses.map((tc) => tc.class);
+  const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
   const homework = assignments.filter((a) => a.type === "HOMEWORK");
   const assessments = assignments.filter((a) => a.type === "ASSESSMENT");
