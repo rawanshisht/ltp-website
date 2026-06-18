@@ -25,7 +25,7 @@ export default async function TeacherReportsPage() {
   }
   const students = Array.from(studentSet.values()).sort((a, b) => a.name.localeCompare(b.name));
 
-  const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
+  const classes = teacher!.teacherClasses.map((tc) => tc.class);
 
   const reports = await prisma.studentReport.findMany({
     where: { teacherId: teacher!.id },

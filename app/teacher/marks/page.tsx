@@ -26,11 +26,12 @@ export default async function TeacherMarksPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
+  const classes = teacher!.teacherClasses.map((tc) => tc.class);
 
   const assignments = subjectId
     ? await prisma.assignment.findMany({
