@@ -1,3 +1,4 @@
+import "server-only";
 import path from "path";
 import fs from "fs/promises";
 
@@ -27,6 +28,3 @@ export async function storeFile(
   return { url: `/uploads/${safeName}`, key: `local/uploads/${safeName}` };
 }
 
-export function fileDownloadUrl(fileUrl: string): string {
-  return `/api/files/download?url=${encodeURIComponent(fileUrl)}`;
-}

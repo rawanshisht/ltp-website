@@ -8,7 +8,7 @@ import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { HomeworkUploadButton } from "@/components/parent/homework-upload-button";
 import { Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { fileDownloadUrl } from "@/lib/file-storage";
+import { fileDownloadUrl } from "@/lib/file-utils";
 
 export default async function ParentHomeworkPage({
   searchParams,

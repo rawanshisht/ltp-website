@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { fileDownloadUrl } from "@/lib/file-storage";
+import { fileDownloadUrl } from "@/lib/file-utils";
 
 export default async function ParentMaterialsPage({
   searchParams,

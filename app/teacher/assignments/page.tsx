@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CreateAssignmentDialog } from "@/components/teacher/create-assignment-dialog";
 import { AssignmentFilters } from "@/components/teacher/assignment-filters";
 import { formatDate } from "@/lib/utils";
-import { fileDownloadUrl } from "@/lib/file-storage";
+import { fileDownloadUrl } from "@/lib/file-utils";
 
 export const dynamic = "force-dynamic";
 
