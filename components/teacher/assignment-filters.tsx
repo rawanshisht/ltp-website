@@ -3,14 +3,22 @@
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import type { Subject } from "@prisma/client";
+import type { Subject, Class } from "@prisma/client";
+
+const CLASS_LABELS: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
 
 interface AssignmentFiltersProps {
   subjects: Subject[];
+  classes: Class[];
   currentSubjectId: string;
+  currentClassId: string;
 }
 
-export function AssignmentFilters({ subjects, currentSubjectId }: AssignmentFiltersProps) {
+export function AssignmentFilters({ subjects, classes, currentSubjectId, currentClassId }: AssignmentFiltersProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -23,6 +31,8 @@ export function AssignmentFilters({ subjects, currentSubjectId }: AssignmentFilt
     }
     router.push(`${pathname}?${params.toString()}`);
   }
+
+  const hasFilter = currentSubjectId || currentClassId;
 
   return (
     <div className="flex flex-wrap gap-3 mb-6">
@@ -41,7 +51,22 @@ export function AssignmentFilters({ subjects, currentSubjectId }: AssignmentFilt
         </SelectContent>
       </Select>
 
-      {currentSubjectId && (
+      <Select
+        value={currentClassId || "all"}
+        onValueChange={(v) => navigate({ class: v === "all" ? null : v })}
+      >
+        <SelectTrigger className="w-44">
+          <SelectValue placeholder="All classes" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All classes</SelectItem>
+          {classes.map((c) => (
+            <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
+      {hasFilter && (
         <Button variant="outline" onClick={() => router.push(pathname)}>
           Clear
         </Button>

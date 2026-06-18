@@ -20,10 +20,13 @@ const classLabels: Record<string, string> = {
 export default async function TeacherAssignmentsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ subject?: string; type?: string }>;
+  searchParams: Promise<{ subject?: string; type?: string; class?: string }>;
 }) {
   const session = await auth();
-  const { subject: subjectId, type } = await searchParams;
+  const params = await searchParams;
+  const subjectId = params.subject;
+  const type = params.type;
+  const classId = params["class"];
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -38,6 +41,7 @@ export default async function TeacherAssignmentsPage({
       teacherId: teacher!.id,
       ...(subjectId && { subjectId }),
       ...(type === "HOMEWORK" || type === "ASSESSMENT" ? { type } : {}),
+      ...(classId ? { OR: [{ classId }, { classId: null }] } : {}),
     },
     include: { subject: true, class: true, marks: true },
     orderBy: { deadline: "desc" },
@@ -57,7 +61,7 @@ export default async function TeacherAssignmentsPage({
         actions={<CreateAssignmentDialog subjects={subjects} classes={classes} teacherId={teacher!.id} />}
       />
 
-      <AssignmentFilters subjects={subjects} currentSubjectId={subjectId ?? ""} />
+      <AssignmentFilters subjects={subjects} classes={classes} currentSubjectId={subjectId ?? ""} currentClassId={classId ?? ""} />
 
       <Card className="mb-6">
         <CardHeader><CardTitle>Homework ({homework.length})</CardTitle></CardHeader>
