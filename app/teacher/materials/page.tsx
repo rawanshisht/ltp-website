@@ -14,7 +14,9 @@ export default async function TeacherMaterialsPage({
   searchParams: Promise<{ subject?: string; class?: string }>;
 }) {
   const session = await auth();
-  const { subject: subjectId, class: classId } = await searchParams;
+  const params = await searchParams;
+  const subjectId = params.subject;
+  const classId = params["class"];
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -28,9 +30,9 @@ export default async function TeacherMaterialsPage({
     where: {
       teacherId: teacher!.id,
       ...(subjectId && { subjectId }),
-      ...(classId && { classId }),
+      ...(classId && { classes: { some: { classId } } }),
     },
-    include: { subject: true, class: true },
+    include: { subject: true, classes: { include: { class: true } } },
     orderBy: { createdAt: "desc" },
   });
 

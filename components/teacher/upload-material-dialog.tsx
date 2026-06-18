@@ -29,8 +29,14 @@ export function UploadMaterialDialog({ subjects, classes, teacherId }: UploadMat
   const [error, setError] = useState("");
   const [title, setTitle] = useState("");
   const [subjectId, setSubjectId] = useState("");
-  const [classId, setClassId] = useState("");
+  const [selectedClassIds, setSelectedClassIds] = useState<string[]>([]);
   const [file, setFile] = useState<File | null>(null);
+
+  function toggleClass(classId: string) {
+    setSelectedClassIds((prev) =>
+      prev.includes(classId) ? prev.filter((id) => id !== classId) : [...prev, classId]
+    );
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,7 +47,7 @@ export function UploadMaterialDialog({ subjects, classes, teacherId }: UploadMat
     formData.append("title", title);
     formData.append("subjectId", subjectId);
     formData.append("teacherId", teacherId);
-    if (classId) formData.append("classId", classId);
+    selectedClassIds.forEach((id) => formData.append("classIds", id));
     if (file) formData.append("file", file);
 
     const res = await fetch("/api/teacher/materials", { method: "POST", body: formData });
@@ -57,7 +63,7 @@ export function UploadMaterialDialog({ subjects, classes, teacherId }: UploadMat
     setOpen(false);
     setTitle("");
     setSubjectId("");
-    setClassId("");
+    setSelectedClassIds([]);
     setFile(null);
     setError("");
     router.refresh();
@@ -84,15 +90,21 @@ export function UploadMaterialDialog({ subjects, classes, teacherId }: UploadMat
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1.5">
-            <Label>Class (optional)</Label>
-            <Select value={classId || "all"} onValueChange={(v) => setClassId(v === "all" ? "" : v)}>
-              <SelectTrigger><SelectValue placeholder="All classes" /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All classes</SelectItem>
-                {classes.map((c) => <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
+          <div className="space-y-2">
+            <Label>Classes (leave all unchecked for all classes)</Label>
+            <div className="flex flex-col gap-2">
+              {classes.map((c) => (
+                <label key={c.id} className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4 rounded border-slate-300 accent-slate-900"
+                    checked={selectedClassIds.includes(c.id)}
+                    onChange={() => toggleClass(c.id)}
+                  />
+                  <span className="text-sm">{CLASS_LABELS[c.name] ?? c.name}</span>
+                </label>
+              ))}
+            </div>
           </div>
           <div className="space-y-1.5">
             <Label>File (optional)</Label>

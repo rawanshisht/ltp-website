@@ -20,13 +20,15 @@ const CLASS_LABELS: Record<string, string> = {
   GIRLS: "Girls",
 };
 
+type MaterialClass = { class: Class };
+
 type Material = {
   id: string;
   title: string;
   fileUrl: string | null;
   createdAt: Date;
   subject: Subject;
-  class: Class | null;
+  classes: MaterialClass[];
 };
 
 interface MaterialsTableProps {
@@ -42,13 +44,19 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
   const [loading, setLoading] = useState(false);
   const [editTitle, setEditTitle] = useState("");
   const [editSubjectId, setEditSubjectId] = useState("");
-  const [editClassId, setEditClassId] = useState("");
+  const [editClassIds, setEditClassIds] = useState<string[]>([]);
+
+  function toggleClass(classId: string) {
+    setEditClassIds((prev) =>
+      prev.includes(classId) ? prev.filter((id) => id !== classId) : [...prev, classId]
+    );
+  }
 
   function openEdit(m: Material) {
     setEditing(m);
     setEditTitle(m.title);
     setEditSubjectId(m.subject.id);
-    setEditClassId(m.class?.id ?? "");
+    setEditClassIds(m.classes.map((mc) => mc.class.id));
   }
 
   async function handleEdit(e: React.FormEvent) {
@@ -62,7 +70,7 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
         id: editing.id,
         title: editTitle,
         subjectId: editSubjectId,
-        classId: editClassId || undefined,
+        classIds: editClassIds,
       }),
     });
     setLoading(false);
@@ -92,7 +100,7 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Subject</TableHead>
-            <TableHead>Class</TableHead>
+            <TableHead>Classes</TableHead>
             <TableHead>Uploaded</TableHead>
             <TableHead>File</TableHead>
             <TableHead className="w-20">Actions</TableHead>
@@ -111,10 +119,16 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
                 <Badge variant="secondary">{m.subject.name}</Badge>
               </TableCell>
               <TableCell>
-                {m.class ? (
-                  <Badge variant="outline">{CLASS_LABELS[m.class.name] ?? m.class.name}</Badge>
-                ) : (
+                {m.classes.length === 0 ? (
                   <span className="text-xs text-(--muted-foreground)">All classes</span>
+                ) : (
+                  <div className="flex flex-wrap gap-1">
+                    {m.classes.map((mc) => (
+                      <Badge key={mc.class.id} variant="outline">
+                        {CLASS_LABELS[mc.class.name] ?? mc.class.name}
+                      </Badge>
+                    ))}
+                  </div>
                 )}
               </TableCell>
               <TableCell className="text-(--muted-foreground)">{formatDate(m.createdAt)}</TableCell>
@@ -173,15 +187,21 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-1.5">
-              <Label>Class (optional)</Label>
-              <Select value={editClassId || "all"} onValueChange={(v) => setEditClassId(v === "all" ? "" : v)}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All classes</SelectItem>
-                  {classes.map((c) => <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
+            <div className="space-y-2">
+              <Label>Classes (leave all unchecked for all classes)</Label>
+              <div className="flex flex-col gap-2">
+                {classes.map((c) => (
+                  <label key={c.id} className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      className="h-4 w-4 rounded border-slate-300 accent-slate-900"
+                      checked={editClassIds.includes(c.id)}
+                      onChange={() => toggleClass(c.id)}
+                    />
+                    <span className="text-sm">{CLASS_LABELS[c.name] ?? c.name}</span>
+                  </label>
+                ))}
+              </div>
             </div>
             <DialogFooter>
               <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancel</Button>

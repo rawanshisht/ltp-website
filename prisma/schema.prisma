@@ -127,7 +127,7 @@ model Class {
   students       Student[]
   teacherClasses TeacherClass[]
   assignments    Assignment[]
-  classMaterials ClassMaterial[]
+  classMaterials ClassMaterialClass[]
 }
 
 model Subject {
@@ -356,15 +356,24 @@ model ClassMaterial {
   id        String   @id @default(cuid())
   teacherId String
   subjectId String
-  classId   String?
   title     String
   fileUrl   String?
   fileKey   String?
   createdAt DateTime @default(now())
 
-  teacher Teacher @relation(fields: [teacherId], references: [id])
-  subject Subject @relation(fields: [subjectId], references: [id])
-  class   Class?  @relation(fields: [classId], references: [id])
+  teacher Teacher              @relation(fields: [teacherId], references: [id])
+  subject Subject              @relation(fields: [subjectId], references: [id])
+  classes ClassMaterialClass[]
+}
+
+model ClassMaterialClass {
+  materialId String
+  classId    String
+
+  material ClassMaterial @relation(fields: [materialId], references: [id], onDelete: Cascade)
+  class    Class         @relation(fields: [classId], references: [id])
+
+  @@id([materialId, classId])
 }
 
 // ─── Incident log ─────────────────────────────────────────────────────────────

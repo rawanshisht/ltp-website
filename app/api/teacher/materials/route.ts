@@ -12,7 +12,7 @@ export async function POST(req: Request) {
   const title = formData.get("title") as string;
   const subjectId = formData.get("subjectId") as string;
   const teacherId = formData.get("teacherId") as string;
-  const classId = (formData.get("classId") as string | null) || null;
+  const classIds = (formData.getAll("classIds") as string[]).filter(Boolean);
   const file = formData.get("file") as File | null;
 
   let fileUrl: string | undefined;
@@ -31,7 +31,12 @@ export async function POST(req: Request) {
   let material;
   try {
     material = await prisma.classMaterial.create({
-      data: { title, subjectId, teacherId, classId, fileUrl, fileKey },
+      data: {
+        title, subjectId, teacherId, fileUrl, fileKey,
+        classes: classIds.length > 0
+          ? { create: classIds.map((classId) => ({ classId })) }
+          : undefined,
+      },
     });
   } catch {
     return NextResponse.json({ error: "Failed to save material." }, { status: 500 });
@@ -45,14 +50,20 @@ export async function PATCH(req: Request) {
   const session = await auth();
   if (session?.user.role !== "TEACHER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { id, title, subjectId, classId } = await req.json() as {
-    id: string; title: string; subjectId: string; classId?: string;
+  const { id, title, subjectId, classIds } = await req.json() as {
+    id: string; title: string; subjectId: string; classIds: string[];
   };
 
   try {
     await prisma.classMaterial.update({
       where: { id },
-      data: { title, subjectId, classId: classId || null },
+      data: {
+        title, subjectId,
+        classes: {
+          deleteMany: {},
+          create: classIds.map((classId) => ({ classId })),
+        },
+      },
     });
   } catch {
     return NextResponse.json({ error: "Failed to update material." }, { status: 500 });
