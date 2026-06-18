@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fileDownloadUrl } from "@/lib/file-storage";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -120,7 +121,7 @@ export function MaterialsTable({ materials, subjects, classes }: MaterialsTableP
               <TableCell>
                 {m.fileUrl ? (
                   <a
-                    href={m.fileUrl}
+                    href={fileDownloadUrl(m.fileUrl)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-sm text-cyan-700 hover:underline"

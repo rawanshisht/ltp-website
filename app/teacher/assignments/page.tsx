@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CreateAssignmentDialog } from "@/components/teacher/create-assignment-dialog";
 import { AssignmentFilters } from "@/components/teacher/assignment-filters";
 import { formatDate } from "@/lib/utils";
+import { fileDownloadUrl } from "@/lib/file-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -136,7 +137,7 @@ function AssignmentTable({ assignments, isAssessment = false }: { assignments: A
               </TableCell>
               <TableCell>
                 {a.fileUrl ? (
-                  <a href={a.fileUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-(--primary) hover:underline">View</a>
+                  <a href={fileDownloadUrl(a.fileUrl)} target="_blank" rel="noopener noreferrer" className="text-sm text-(--primary) hover:underline">View</a>
                 ) : "—"}
               </TableCell>
               <TableCell className="text-sm">

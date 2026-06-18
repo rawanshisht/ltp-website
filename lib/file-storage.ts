@@ -9,7 +9,7 @@ export async function storeFile(
 
   if (token) {
     const { put } = await import("@vercel/blob");
-    const blob = await put(`${folder}/${Date.now()}-${file.name}`, file, { access: "public" });
+    const blob = await put(`${folder}/${Date.now()}-${file.name}`, file, { access: "private" });
     return { url: blob.url, key: blob.pathname };
   }
 
@@ -25,4 +25,8 @@ export async function storeFile(
   const filepath = path.join(uploadsDir, safeName);
   await fs.writeFile(filepath, Buffer.from(await file.arrayBuffer()));
   return { url: `/uploads/${safeName}`, key: `local/uploads/${safeName}` };
+}
+
+export function fileDownloadUrl(fileUrl: string): string {
+  return `/api/files/download?url=${encodeURIComponent(fileUrl)}`;
 }

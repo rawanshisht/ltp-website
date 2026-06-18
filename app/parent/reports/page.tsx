@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { fileDownloadUrl } from "@/lib/file-storage";
 
 export const dynamic = "force-dynamic";
 
@@ -79,7 +80,7 @@ export default async function ParentReportsPage({
                     <TableCell>
                       {r.fileUrl ? (
                         <a
-                          href={r.fileUrl}
+                          href={fileDownloadUrl(r.fileUrl)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-sm text-cyan-700 hover:underline font-medium"

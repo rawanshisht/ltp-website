@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { fileDownloadUrl } from "@/lib/file-storage";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -140,7 +141,7 @@ export function ReportsTable({ reports, classes }: ReportsTableProps) {
                 <TableCell>
                   {r.fileUrl ? (
                     <a
-                      href={r.fileUrl}
+                      href={fileDownloadUrl(r.fileUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-sm text-cyan-700 hover:underline"

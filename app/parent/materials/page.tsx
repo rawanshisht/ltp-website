@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChildSwitcher } from "@/components/parent/child-switcher";
 import { FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
+import { fileDownloadUrl } from "@/lib/file-storage";
 
 export default async function ParentMaterialsPage({
   searchParams,
@@ -87,7 +88,7 @@ export default async function ParentMaterialsPage({
                         <TableCell>
                           {m.fileUrl ? (
                             <a
-                              href={m.fileUrl}
+                              href={fileDownloadUrl(m.fileUrl)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-sm text-(--primary) hover:underline"
