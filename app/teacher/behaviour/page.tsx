@@ -6,10 +6,13 @@ import { BehaviourEntry } from "@/components/teacher/behaviour-entry";
 export default async function TeacherBehaviourPage({
   searchParams,
 }: {
-  searchParams: Promise<{ subject?: string; date?: string }>;
+  searchParams: Promise<{ subject?: string; date?: string; class?: string }>;
 }) {
   const session = await auth();
-  const { subject: subjectId, date } = await searchParams;
+  const params = await searchParams;
+  const subjectId = params.subject;
+  const date = params.date;
+  const classId = params["class"];
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
@@ -19,6 +22,7 @@ export default async function TeacherBehaviourPage({
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
+  const classes = await prisma.class.findMany({ orderBy: { name: "asc" } });
 
   const lessonDate = date ? new Date(date) : new Date();
   const startOfDay = new Date(lessonDate);
@@ -31,6 +35,7 @@ export default async function TeacherBehaviourPage({
       ? await prisma.student.findMany({
           where: {
             isActive: true,
+            ...(classId ? { classId } : {}),
             studentSubjects: { some: { subjectId, droppedAt: null } },
           },
           include: {
@@ -50,9 +55,11 @@ export default async function TeacherBehaviourPage({
       <Header title="Behaviour" description="Mark student behaviour per lesson" />
       <BehaviourEntry
         subjects={subjects}
+        classes={classes}
         studentsWithBehaviour={studentsForSubject}
         teacherId={teacher!.id}
         selectedSubjectId={subjectId ?? ""}
+        selectedClassId={classId ?? ""}
         selectedDate={lessonDate.toISOString().split("T")[0]}
       />
     </div>

@@ -10,15 +10,23 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Save, Star } from "lucide-react";
-import type { Subject, Student, Behaviour } from "@prisma/client";
+import type { Subject, Student, Behaviour, Class } from "@prisma/client";
+
+const CLASS_LABELS: Record<string, string> = {
+  YOUNGER_BOYS: "Younger Boys",
+  OLDER_BOYS: "Older Boys",
+  GIRLS: "Girls",
+};
 
 type StudentWithBehaviour = Student & { behaviours: Behaviour[] };
 
 interface BehaviourEntryProps {
   subjects: Subject[];
+  classes: Class[];
   studentsWithBehaviour: StudentWithBehaviour[];
   teacherId: string;
   selectedSubjectId: string;
+  selectedClassId: string;
   selectedDate: string;
 }
 
@@ -50,9 +58,11 @@ function StarRating({ value, onChange }: { value: number; onChange: (v: number) 
 
 export function BehaviourEntry({
   subjects,
+  classes,
   studentsWithBehaviour,
   teacherId,
   selectedSubjectId,
+  selectedClassId,
   selectedDate,
 }: BehaviourEntryProps) {
   const router = useRouter();
@@ -81,9 +91,12 @@ export function BehaviourEntry({
   });
   const [saving, setSaving] = useState(false);
 
-  function navigate(key: string, value: string) {
+  function navigate(updates: Record<string, string | null>) {
     const params = new URLSearchParams(searchParams.toString());
-    params.set(key, value);
+    for (const [key, val] of Object.entries(updates)) {
+      if (val === null) params.delete(key);
+      else params.set(key, val);
+    }
     router.push(`${pathname}?${params.toString()}`);
   }
 
@@ -116,16 +129,38 @@ export function BehaviourEntry({
         <CardContent className="flex gap-4 flex-wrap">
           <div className="space-y-1.5 min-w-48">
             <Label>Subject</Label>
-            <Select value={selectedSubjectId} onValueChange={(v) => navigate("subject", v)}>
+            <Select
+              value={selectedSubjectId}
+              onValueChange={(v) => navigate({ subject: v, class: null })}
+            >
               <SelectTrigger><SelectValue placeholder="Select subject" /></SelectTrigger>
               <SelectContent>
                 {subjects.map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
+
+          {selectedSubjectId && (
+            <div className="space-y-1.5 min-w-44">
+              <Label>Class</Label>
+              <Select
+                value={selectedClassId || "all"}
+                onValueChange={(v) => navigate({ class: v === "all" ? null : v })}
+              >
+                <SelectTrigger><SelectValue placeholder="All classes" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All classes</SelectItem>
+                  {classes.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label>Lesson Date</Label>
-            <Input type="date" value={selectedDate} onChange={(e) => navigate("date", e.target.value)} />
+            <Input type="date" value={selectedDate} onChange={(e) => navigate({ date: e.target.value })} />
           </div>
         </CardContent>
       </Card>
