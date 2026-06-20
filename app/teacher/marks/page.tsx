@@ -57,9 +57,8 @@ export default async function TeacherMarksPage({
     ? await prisma.student.findMany({
         where: {
           isActive: true,
-          ...(classId ? { classId } : {}),
           studentSubjects: {
-            some: { subjectId: selectedAssignment.subjectId, droppedAt: null },
+            some: { subjectId: selectedAssignment.subjectId, droppedAt: null, ...(classId ? { classId } : {}) },
           },
         },
         include: {

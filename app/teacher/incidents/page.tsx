@@ -14,12 +14,20 @@ export default async function TeacherIncidentsPage() {
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: { include: { class: { include: { students: true } } } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
-  const students = teacher!.teacherClasses.flatMap((tc) => tc.class.students);
+  const teacherClassIds = teacher!.teacherClasses.map((tc) => tc.classId);
+  const subjectIdsForTeacher = teacher!.teacherSubjects.map((ts) => ts.subjectId);
+  const students = await prisma.student.findMany({
+    where: {
+      isActive: true,
+      studentSubjects: { some: { classId: { in: teacherClassIds }, subjectId: { in: subjectIdsForTeacher }, droppedAt: null } },
+    },
+    orderBy: { name: "asc" },
+  });
 
   const incidents = await prisma.incidentLog.findMany({
     where: { teacherId: teacher!.id },

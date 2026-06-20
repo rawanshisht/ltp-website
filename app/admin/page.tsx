@@ -15,7 +15,7 @@ export default async function AdminDashboard() {
       prisma.behaviour.aggregate({ _avg: { behaviourStars: true, attentiveStars: true, engagementStars: true } }),
       prisma.student.findMany({
         where: { isActive: true },
-        include: { class: true, studentSubjects: { where: { droppedAt: null } } },
+        include: { studentSubjects: { where: { droppedAt: null } } },
         orderBy: { createdAt: "desc" },
         take: 5,
       }),
@@ -24,15 +24,24 @@ export default async function AdminDashboard() {
   const classLabel = (name: string) =>
     name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
-  const [classCounts, subjectEnrollments] = await Promise.all([
-    prisma.class.findMany({
-      include: { _count: { select: { students: true } } },
-    }),
+  const allClasses = await prisma.class.findMany({ select: { id: true, name: true } });
+  const [classCountsRaw, subjectEnrollments] = await Promise.all([
+    Promise.all(
+      allClasses.map(async (c) => ({
+        name: c.name,
+        _count: {
+          students: await prisma.student.count({
+            where: { isActive: true, studentSubjects: { some: { classId: c.id, droppedAt: null } } },
+          }),
+        },
+      }))
+    ),
     prisma.subject.findMany({
       include: { _count: { select: { studentSubjects: true } } },
       orderBy: { name: "asc" },
     }),
   ]);
+  const classCounts = classCountsRaw;
 
   const chartHeight = Math.max(200, subjectEnrollments.length * 44);
 
@@ -83,7 +92,7 @@ export default async function AdminDashboard() {
                 <div key={s.id} className="flex items-center justify-between py-2 border-b border-(--border) last:border-0">
                   <div>
                     <p className="text-sm font-medium">{s.name}</p>
-                    <p className="text-xs text-(--muted-foreground)">{classLabel(s.class.name)}</p>
+                    <p className="text-xs text-(--muted-foreground)">{s.studentSubjects.length} subjects</p>
                   </div>
                   <Badge variant="secondary">{s.studentSubjects.length} subjects</Badge>
                 </div>

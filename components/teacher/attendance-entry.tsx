@@ -13,7 +13,10 @@ import { Loader2, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Subject, Student, Attendance, Class } from "@prisma/client";
 
-type StudentWithAttendance = Student & { attendances: Attendance[]; class: Class };
+type StudentWithAttendance = Student & {
+  attendances: Attendance[];
+  studentSubjects: { class: Class | null }[];
+};
 
 type MonthlyRecord = {
   studentId: string;
@@ -105,14 +108,16 @@ export function AttendanceEntry({
   }
 
   // Derive available classes from whichever tab's data is relevant
-  const markClasses = [...new Set(studentsWithAttendance.map((s) => s.class.name))].sort();
+  const markClasses = [...new Set(studentsWithAttendance.flatMap((s) =>
+    s.studentSubjects.map((ss) => ss.class?.name as string | undefined).filter((n): n is string => n !== undefined)
+  ))].sort();
   const monthlyClasses = [...new Set(monthlyRecords.map((r) => r.className))].sort();
 
   // Filtered students for mark tab
   const filteredStudents =
     classFilter === "ALL"
       ? studentsWithAttendance
-      : studentsWithAttendance.filter((s) => s.class.name === classFilter);
+      : studentsWithAttendance.filter((s) => s.studentSubjects.some((ss) => ss.class?.name === classFilter));
 
   // Monthly view derived data
   const sessionDates = [...new Set(monthlyRecords.map((r) => r.date))].sort();

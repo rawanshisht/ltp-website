@@ -124,10 +124,10 @@ model Class {
   name      ClassName @unique
   createdAt DateTime  @default(now())
 
-  students       Student[]
-  teacherClasses TeacherClass[]
-  assignments    Assignment[]
-  classMaterials ClassMaterialClass[]
+  teacherClasses  TeacherClass[]
+  assignments     Assignment[]
+  classMaterials  ClassMaterialClass[]
+  studentSubjects StudentSubject[]
 }
 
 model Subject {
@@ -197,12 +197,10 @@ model Parent {
 model Student {
   id        String   @id @default(cuid())
   name      String
-  classId   String
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  class                Class                @relation(fields: [classId], references: [id])
   parentStudents       ParentStudent[]
   studentSubjects      StudentSubject[]
   marks                StudentMark[]
@@ -228,11 +226,13 @@ model StudentSubject {
   id         String    @id @default(cuid())
   studentId  String
   subjectId  String
+  classId    String?
   enrolledAt DateTime  @default(now())
   droppedAt  DateTime?
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   subject Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  class   Class?  @relation(fields: [classId], references: [id])
 
   @@unique([studentId, subjectId])
 }

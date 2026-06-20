@@ -36,8 +36,7 @@ export default async function TeacherBehaviourPage({
       ? await prisma.student.findMany({
           where: {
             isActive: true,
-            ...(classId ? { classId } : {}),
-            studentSubjects: { some: { subjectId, droppedAt: null } },
+            studentSubjects: { some: { subjectId, droppedAt: null, ...(classId ? { classId } : {}) } },
           },
           include: {
             behaviours: {

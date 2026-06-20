@@ -12,7 +12,7 @@ export async function PUT(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const { id } = await params;
-  const { name, classId, isActive, subjectIds, parentId, parentDetails, newParent } = await req.json();
+  const { name, isActive, subjectIds, parentId, parentDetails, newParent } = await req.json();
 
   const existing = await prisma.student.findUnique({
     where: { id },
@@ -25,7 +25,7 @@ export async function PUT(
   const toDrop: string[] = currentSubjectIds.filter((sid) => !subjectIds.includes(sid));
 
   await prisma.$transaction([
-    prisma.student.update({ where: { id }, data: { name, classId, isActive } }),
+    prisma.student.update({ where: { id }, data: { name, isActive } }),
     ...toAdd.map((subjectId) =>
       prisma.studentSubject.upsert({
         where: { studentId_subjectId: { studentId: id, subjectId } },

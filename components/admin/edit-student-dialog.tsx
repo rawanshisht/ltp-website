@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Pencil, Loader2, AlertCircle } from "lucide-react";
-import type { Subject, Class, Parent } from "@prisma/client";
+import type { Subject, Parent } from "@prisma/client";
 
 type ParentWithUser = Parent & {
   user: { id: string; firstName: string; lastName: string; email: string; phone: string | null };
@@ -18,7 +18,6 @@ type ParentWithUser = Parent & {
 interface StudentForEdit {
   id: string;
   name: string;
-  classId: string;
   isActive: boolean;
   studentSubjects: { subjectId: string }[];
   parentStudents: { parent: { id: string } }[];
@@ -27,12 +26,8 @@ interface StudentForEdit {
 interface EditStudentDialogProps {
   student: StudentForEdit;
   subjects: Subject[];
-  classes: Class[];
   parents: ParentWithUser[];
 }
-
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
 function getParentState(student: StudentForEdit, parents: ParentWithUser[]) {
   const pid = student.parentStudents[0]?.parent.id ?? "none";
@@ -46,14 +41,13 @@ function getParentState(student: StudentForEdit, parents: ParentWithUser[]) {
   };
 }
 
-export function EditStudentDialog({ student, subjects, classes, parents }: EditStudentDialogProps) {
+export function EditStudentDialog({ student, subjects, parents }: EditStudentDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [name, setName] = useState(student.name);
-  const [classId, setClassId] = useState(student.classId);
   const [isActive, setIsActive] = useState(student.isActive);
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>(
     student.studentSubjects.map((ss) => ss.subjectId)
@@ -77,7 +71,6 @@ export function EditStudentDialog({ student, subjects, classes, parents }: EditS
   function syncFromProps() {
     const ps = getParentState(student, parents);
     setName(student.name);
-    setClassId(student.classId);
     setIsActive(student.isActive);
     setSelectedSubjects(student.studentSubjects.map((ss) => ss.subjectId));
     setParentTab("existing");
@@ -117,7 +110,6 @@ export function EditStudentDialog({ student, subjects, classes, parents }: EditS
 
     const body: Record<string, unknown> = {
       name,
-      classId,
       isActive,
       subjectIds: selectedSubjects,
     };
@@ -177,18 +169,6 @@ export function EditStudentDialog({ student, subjects, classes, parents }: EditS
               <Input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Student name" />
             </div>
 
-            <div className="space-y-1.5">
-              <Label>Class <span className="text-red-500">*</span></Label>
-              <Select value={classId} onValueChange={setClassId}>
-                <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
-                <SelectContent>
-                  {classes.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{classLabel(c.name)}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Parent section */}
             <div className="space-y-2">
               <Label>Parent / Guardian</Label>
@@ -201,7 +181,7 @@ export function EditStudentDialog({ student, subjects, classes, parents }: EditS
                 <TabsContent value="existing" className="mt-2 space-y-2">
                   <Select value={parentId} onValueChange={handleParentChange}>
                     <SelectTrigger><SelectValue placeholder="No parent linked" /></SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-56 overflow-y-auto">
                       <SelectItem value="none">— None —</SelectItem>
                       {parents.map((p) => (
                         <SelectItem key={p.id} value={p.id}>
@@ -308,7 +288,7 @@ export function EditStudentDialog({ student, subjects, classes, parents }: EditS
 
           <DialogFooter className="mt-4">
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading || !classId || !name}>
+            <Button type="submit" disabled={loading || !name}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Save Changes
             </Button>

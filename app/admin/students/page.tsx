@@ -16,14 +16,13 @@ export default async function AdminStudentsPage({
   const { inactive, search } = await searchParams;
   const showInactive = inactive === "true";
 
-  const [students, subjects, classes, parents] = await Promise.all([
+  const [students, subjects, parents] = await Promise.all([
     prisma.student.findMany({
       where: {
         ...(showInactive ? {} : { isActive: true }),
         ...(search ? { name: { contains: search, mode: "insensitive" } } : {}),
       },
       include: {
-        class: true,
         studentSubjects: {
           where: { droppedAt: null },
           include: { subject: true },
@@ -35,12 +34,8 @@ export default async function AdminStudentsPage({
       orderBy: { name: "asc" },
     }),
     prisma.subject.findMany({ orderBy: { name: "asc" } }),
-    prisma.class.findMany(),
     prisma.parent.findMany({ include: { user: true } }),
   ]);
-
-  const classLabel = (name: string) =>
-    name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
   return (
     <div>
@@ -55,7 +50,7 @@ export default async function AdminStudentsPage({
             >
               {showInactive ? "Show active only" : "Show inactive"}
             </a>
-            <AddStudentDialog subjects={subjects} classes={classes} parents={parents} />
+            <AddStudentDialog subjects={subjects} parents={parents} />
           </div>
         }
       />
@@ -68,7 +63,6 @@ export default async function AdminStudentsPage({
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Class</TableHead>
                 <TableHead>Subjects</TableHead>
                 <TableHead>Parent / Guardian</TableHead>
                 <TableHead>Contact</TableHead>
@@ -80,7 +74,6 @@ export default async function AdminStudentsPage({
               {students.map((s) => (
                 <TableRow key={s.id}>
                   <TableCell className="font-medium">{s.name}</TableCell>
-                  <TableCell>{classLabel(s.class.name)}</TableCell>
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {s.studentSubjects.map((ss) => (
@@ -140,7 +133,6 @@ export default async function AdminStudentsPage({
                     <EditStudentDialog
                       student={s}
                       subjects={subjects}
-                      classes={classes}
                       parents={parents}
                     />
                   </TableCell>
@@ -148,7 +140,7 @@ export default async function AdminStudentsPage({
               ))}
               {students.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center text-(--muted-foreground) py-8">
+                  <TableCell colSpan={5} className="text-center text-(--muted-foreground) py-8">
                     No students found.
                   </TableCell>
                 </TableRow>

@@ -24,12 +24,12 @@ export default async function ParentNoticesPage({
   const children = parent!.parentStudents.map((ps) => ps.student);
   const selected = children.find((c) => c.id === childId) ?? children[0];
 
-  const enrolledSubjectIds = (
-    await prisma.studentSubject.findMany({
-      where: { studentId: selected.id, droppedAt: null },
-      select: { subjectId: true },
-    })
-  ).map((s) => s.subjectId);
+  const enrollments = await prisma.studentSubject.findMany({
+    where: { studentId: selected.id, droppedAt: null },
+    select: { subjectId: true, classId: true },
+  });
+  const enrolledSubjectIds = enrollments.map((e) => e.subjectId);
+  const enrolledClassIds = enrollments.map((e) => e.classId).filter((id): id is string => id !== null);
 
   const notices = await prisma.notice.findMany({
     where: { subjectId: { in: enrolledSubjectIds } },
@@ -40,7 +40,9 @@ export default async function ParentNoticesPage({
   const teachers = await prisma.teacher.findMany({
     where: {
       teacherSubjects: { some: { subjectId: { in: enrolledSubjectIds } } },
-      teacherClasses: { some: { classId: selected.classId } },
+      ...(enrolledClassIds.length > 0
+        ? { teacherClasses: { some: { classId: { in: enrolledClassIds } } } }
+        : {}),
     },
     include: { user: true, teacherSubjects: { include: { subject: true } } },
   });

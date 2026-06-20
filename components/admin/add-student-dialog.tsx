@@ -8,21 +8,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+
 import { Plus, Loader2, AlertCircle } from "lucide-react";
-import type { Subject, Class, Parent } from "@prisma/client";
+import type { Subject, Parent } from "@prisma/client";
 
 type ParentWithUser = Parent & { user: { id: string; firstName: string; lastName: string; email: string } };
 
 interface AddStudentDialogProps {
   subjects: Subject[];
-  classes: Class[];
   parents: ParentWithUser[];
 }
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
-export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialogProps) {
+export function AddStudentDialog({ subjects, parents }: AddStudentDialogProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -31,7 +28,6 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
 
   // Student fields
   const [name, setName] = useState("");
-  const [classId, setClassId] = useState("");
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
 
   // Existing parent
@@ -51,7 +47,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
   }
 
   function reset() {
-    setName(""); setClassId(""); setSelectedSubjects([]);
+    setName(""); setSelectedSubjects([]);
     setParentId(""); setParentTab("existing");
     setNpFirstName(""); setNpLastName(""); setNpEmail(""); setNpPassword(""); setNpPhone("");
     setError("");
@@ -74,7 +70,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
     setLoading(true);
     setError("");
 
-    const body: Record<string, unknown> = { name, classId, subjectIds: selectedSubjects };
+    const body: Record<string, unknown> = { name, subjectIds: selectedSubjects };
     if (parentTab === "existing" && parentId) {
       body.parentId = parentId;
     } else if (parentTab === "new" && npEmail) {
@@ -119,15 +115,6 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
             <Label>Full Name <span className="text-red-500">*</span></Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} required placeholder="Student name" />
           </div>
-          <div className="space-y-1.5">
-            <Label>Class <span className="text-red-500">*</span></Label>
-            <Select value={classId} onValueChange={setClassId} required>
-              <SelectTrigger><SelectValue placeholder="Select class" /></SelectTrigger>
-              <SelectContent>
-                {classes.map((c) => <SelectItem key={c.id} value={c.id}>{classLabel(c.name)}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
 
           {/* Parent section */}
           <div className="space-y-2">
@@ -143,7 +130,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
               <TabsContent value="existing" className="mt-2">
                 <Select value={parentId} onValueChange={setParentId}>
                   <SelectTrigger><SelectValue placeholder="Select a parent" /></SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-56 overflow-y-auto">
                     {parents.map((p) => (
                       <SelectItem key={p.id} value={p.id}>
                         {p.user.firstName} {p.user.lastName}
@@ -212,7 +199,7 @@ export function AddStudentDialog({ subjects, classes, parents }: AddStudentDialo
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button type="submit" disabled={loading || !classId || !name || !hasParent}>
+            <Button type="submit" disabled={loading || !name || !hasParent}>
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               Add Student
             </Button>

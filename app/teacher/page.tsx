@@ -28,7 +28,7 @@ export default async function TeacherDashboard() {
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: { include: { class: { include: { students: true } } } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
@@ -39,8 +39,9 @@ export default async function TeacherDashboard() {
   const subjects = teacher.teacherSubjects.map((ts) => ts.subject);
   const classes = teacher.teacherClasses.map((tc) => tc.class);
   const subjectIds = teacher.teacherSubjects.map((ts) => ts.subjectId);
+  const teacherClassIds = teacher.teacherClasses.map((tc) => tc.classId);
 
-  const [recentNotices, pendingDeadlines, students] = await Promise.all([
+  const [recentNotices, pendingDeadlines, students, classStudentCounts] = await Promise.all([
     prisma.notice.findMany({
       where: { teacherId: teacher.id },
       include: { subject: true },
@@ -60,10 +61,9 @@ export default async function TeacherDashboard() {
     prisma.student.findMany({
       where: {
         isActive: true,
-        studentSubjects: { some: { subjectId: { in: subjectIds }, droppedAt: null } },
+        studentSubjects: { some: { subjectId: { in: subjectIds }, classId: { in: teacherClassIds }, droppedAt: null } },
       },
       include: {
-        class: true,
         studentSubjects: {
           where: { droppedAt: null, subjectId: { in: subjectIds } },
           include: {
@@ -89,6 +89,17 @@ export default async function TeacherDashboard() {
       },
       orderBy: { name: "asc" },
     }),
+    Promise.all(
+      teacher.teacherClasses.map(async (tc) => ({
+        classId: tc.classId,
+        count: await prisma.student.count({
+          where: {
+            isActive: true,
+            studentSubjects: { some: { classId: tc.classId, subjectId: { in: subjectIds }, droppedAt: null } },
+          },
+        }),
+      }))
+    ),
   ]);
 
   const uniqueStudentCount = students.length;
@@ -141,12 +152,15 @@ export default async function TeacherDashboard() {
         <Card>
           <CardHeader><CardTitle>My Classes</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            {classes.map((c) => (
-              <div key={c.id} className="flex items-center justify-between">
-                <span className="text-sm font-medium">{classLabel(c.name)}</span>
-                <Badge variant="secondary">{c.students.length} students</Badge>
-              </div>
-            ))}
+            {classes.map((c) => {
+              const cnt = classStudentCounts.find((x) => x.classId === c.id)?.count ?? 0;
+              return (
+                <div key={c.id} className="flex items-center justify-between">
+                  <span className="text-sm font-medium">{classLabel(c.name)}</span>
+                  <Badge variant="secondary">{cnt} students</Badge>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
 
@@ -207,7 +221,6 @@ export default async function TeacherDashboard() {
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <CardTitle>{student.name}</CardTitle>
-                    <p className="text-sm text-(--muted-foreground) mt-0.5">{classLabel(student.class.name)}</p>
                   </div>
                   <div className="flex gap-4 text-sm">
                     <div className="text-center">

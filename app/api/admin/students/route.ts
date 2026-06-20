@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   const session = await auth();
   if (session?.user.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const { name, classId, parentId, newParent, subjectIds } = await req.json();
+  const { name, parentId, newParent, subjectIds } = await req.json();
 
   let resolvedParentId: string | undefined = parentId || undefined;
 
@@ -27,7 +27,6 @@ export async function POST(req: Request) {
   const student = await prisma.student.create({
     data: {
       name,
-      classId,
       studentSubjects: {
         create: subjectIds.map((id: string) => ({ subjectId: id })),
       },

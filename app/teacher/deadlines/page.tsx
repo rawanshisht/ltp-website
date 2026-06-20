@@ -22,12 +22,20 @@ export default async function TeacherDeadlinesPage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: { include: { class: { include: { students: true } } } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
-  const studentIds = teacher!.teacherClasses.flatMap((tc) => tc.class.students.map((s) => s.id));
+  const teacherClassIds = teacher!.teacherClasses.map((tc) => tc.classId);
+  const subjectIdsForTeacher = teacher!.teacherSubjects.map((ts) => ts.subjectId);
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
+  const studentIds = (await prisma.student.findMany({
+    where: {
+      isActive: true,
+      studentSubjects: { some: { classId: { in: teacherClassIds }, subjectId: { in: subjectIdsForTeacher }, droppedAt: null } },
+    },
+    select: { id: true },
+  })).map((s) => s.id);
 
   // Only homework assignments (assessments don't have handed/overdue)
   const assignments = await prisma.assignment.findMany({

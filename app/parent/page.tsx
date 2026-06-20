@@ -30,7 +30,7 @@ export default async function ParentDashboard({
   const parent = await prisma.parent.findUnique({
     where: { userId: session!.user.id },
     include: {
-      parentStudents: { include: { student: { include: { class: true } } } },
+      parentStudents: { include: { student: true } },
     },
   });
 
@@ -99,10 +99,6 @@ export default async function ParentDashboard({
     return [{ subject: en.subject.name, avg: Math.round((earned / possible) * 100) }];
   });
 
-  const className =
-    selected.class.name === "YOUNGER_BOYS" ? "Younger Boys"
-    : selected.class.name === "OLDER_BOYS" ? "Older Boys"
-    : "Girls";
 
   return (
     <div>
@@ -116,7 +112,7 @@ export default async function ParentDashboard({
       <div className="mb-6 rounded-xl bg-[#00dcde] p-6">
         <p className="text-[#0f172a]/70 text-sm mb-1">Currently viewing</p>
         <h2 className="text-xl font-bold text-[#0f172a]">{selected.name}</h2>
-        <p className="text-[#0f172a]/60 text-sm mt-1">{className} Class · {enrollments.length} subjects</p>
+        <p className="text-[#0f172a]/60 text-sm mt-1">{enrollments.length} subjects</p>
       </div>
 
       {/* Stats */}

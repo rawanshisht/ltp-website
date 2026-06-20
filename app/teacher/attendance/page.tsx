@@ -15,13 +15,12 @@ export default async function TeacherAttendancePage({
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: {
-        include: { class: { include: { students: true } } },
-      },
+      teacherClasses: { include: { class: true } },
     },
   });
 
   const subjects = teacher!.teacherSubjects.map((ts) => ts.subject);
+  const teacherClassIds = teacher!.teacherClasses.map((tc) => tc.classId);
 
   const sessionDate = date ? new Date(date) : new Date();
   const startOfDay = new Date(sessionDate);
@@ -34,10 +33,15 @@ export default async function TeacherAttendancePage({
       ? await prisma.student.findMany({
           where: {
             isActive: true,
-            studentSubjects: { some: { subjectId, droppedAt: null } },
+            studentSubjects: {
+              some: { subjectId, droppedAt: null, classId: { in: teacherClassIds } },
+            },
           },
           include: {
-            class: true,
+            studentSubjects: {
+              where: { subjectId, droppedAt: null },
+              include: { class: true },
+            },
             attendances: {
               where: {
                 subjectId,
@@ -61,14 +65,30 @@ export default async function TeacherAttendancePage({
             where: {
               subjectId,
               sessionDate: { gte: startOfMonth, lte: endOfMonth },
+              student: {
+                studentSubjects: {
+                  some: { subjectId, droppedAt: null, classId: { in: teacherClassIds } },
+                },
+              },
             },
-            include: { student: { select: { id: true, name: true, class: { select: { name: true } } } } },
+            include: {
+              student: {
+                select: {
+                  id: true,
+                  name: true,
+                  studentSubjects: {
+                    where: { subjectId, droppedAt: null },
+                    select: { class: { select: { name: true } } },
+                  },
+                },
+              },
+            },
             orderBy: [{ student: { name: "asc" } }, { sessionDate: "asc" }],
           })
         ).map((r) => ({
           studentId: r.studentId,
           studentName: r.student.name,
-          className: r.student.class.name as string,
+          className: (r.student.studentSubjects[0]?.class?.name ?? "") as string,
           date: r.sessionDate.toISOString().split("T")[0],
           status: r.status as "PRESENT" | "ABSENT" | "LATE",
         }))

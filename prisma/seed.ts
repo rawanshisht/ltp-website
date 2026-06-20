@@ -61,7 +61,7 @@ async function main() {
     create: { teacherId: sadaf.id, subjectId: electronics!.id },
   });
 
-  // Students — Older Boys, Electronics
+  // Students — Electronics (class assigned via StudentSubject)
   const olderBoys = await prisma.class.findUnique({ where: { name: "OLDER_BOYS" } });
   const studentNames = ["Imraan", "Yahya Aarif", "Yahya Muhammad", "Abdallah Parkar"];
   for (const name of studentNames) {
@@ -70,8 +70,7 @@ async function main() {
       await prisma.student.create({
         data: {
           name,
-          classId: olderBoys!.id,
-          studentSubjects: { create: { subjectId: electronics!.id } },
+          studentSubjects: { create: { subjectId: electronics!.id, classId: olderBoys!.id } },
         },
       });
     }

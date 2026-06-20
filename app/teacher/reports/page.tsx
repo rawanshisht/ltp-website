@@ -13,23 +13,28 @@ export default async function TeacherReportsPage() {
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session!.user.id },
     include: {
-      teacherClasses: { include: { class: { include: { students: true } } } },
+      teacherSubjects: { include: { subject: true } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
-  const studentSet = new Map<string, { id: string; name: string }>();
-  for (const tc of teacher!.teacherClasses) {
-    for (const student of tc.class.students) {
-      if (student.isActive) studentSet.set(student.id, { id: student.id, name: student.name });
-    }
-  }
-  const students = Array.from(studentSet.values()).sort((a, b) => a.name.localeCompare(b.name));
+  const subjectIds = teacher!.teacherSubjects.map((ts) => ts.subjectId);
+  const teacherClassIds = teacher!.teacherClasses.map((tc) => tc.classId);
 
-  const classes = teacher!.teacherClasses.map((tc) => tc.class);
+  const students = await prisma.student.findMany({
+    where: {
+      isActive: true,
+      studentSubjects: {
+        some: { subjectId: { in: subjectIds }, classId: { in: teacherClassIds }, droppedAt: null },
+      },
+    },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
 
   const reports = await prisma.studentReport.findMany({
     where: { teacherId: teacher!.id },
-    include: { student: { include: { class: true } } },
+    include: { student: true },
     orderBy: { createdAt: "desc" },
   });
 
@@ -44,7 +49,7 @@ export default async function TeacherReportsPage() {
       <Card>
         <CardHeader><CardTitle>Uploaded Reports</CardTitle></CardHeader>
         <CardContent>
-          <ReportsTable reports={reports} classes={classes} />
+          <ReportsTable reports={reports} />
         </CardContent>
       </Card>
     </div>

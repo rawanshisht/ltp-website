@@ -8,18 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Pencil, Trash2, Loader2, FileText, Download } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import type { Class } from "@prisma/client";
-
-const CLASS_LABELS: Record<string, string> = {
-  YOUNGER_BOYS: "Younger Boys",
-  OLDER_BOYS: "Older Boys",
-  GIRLS: "Girls",
-};
 
 type Report = {
   id: string;
@@ -27,17 +19,15 @@ type Report = {
   notes: string | null;
   fileUrl: string | null;
   createdAt: Date;
-  student: { id: string; name: string; class: Class | null };
+  student: { id: string; name: string };
 };
 
 interface ReportsTableProps {
   reports: Report[];
-  classes: Class[];
 }
 
-export function ReportsTable({ reports, classes }: ReportsTableProps) {
+export function ReportsTable({ reports }: ReportsTableProps) {
   const router = useRouter();
-  const [classFilter, setClassFilter] = useState("all");
   const [editing, setEditing] = useState<Report | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -75,38 +65,16 @@ export function ReportsTable({ reports, classes }: ReportsTableProps) {
     router.refresh();
   }
 
-  const filtered = classFilter === "all"
-    ? reports
-    : reports.filter((r) => r.student.class?.id === classFilter);
-
   return (
     <>
-      <div className="flex flex-wrap gap-3 mb-4">
-        <Select value={classFilter} onValueChange={setClassFilter}>
-          <SelectTrigger className="w-44">
-            <SelectValue placeholder="All classes" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All classes</SelectItem>
-            {classes.map((c) => (
-              <SelectItem key={c.id} value={c.id}>{CLASS_LABELS[c.name] ?? c.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        {classFilter !== "all" && (
-          <Button variant="outline" onClick={() => setClassFilter("all")}>Clear</Button>
-        )}
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-sm text-(--muted-foreground)">No reports{classFilter !== "all" ? " for this class" : ""} uploaded yet.</p>
+      {reports.length === 0 ? (
+        <p className="text-sm text-(--muted-foreground)">No reports uploaded yet.</p>
       ) : (
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Report</TableHead>
               <TableHead>Student</TableHead>
-              <TableHead>Class</TableHead>
               <TableHead>Notes</TableHead>
               <TableHead>Uploaded</TableHead>
               <TableHead>File</TableHead>
@@ -114,7 +82,7 @@ export function ReportsTable({ reports, classes }: ReportsTableProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((r) => (
+            {reports.map((r) => (
               <TableRow key={r.id}>
                 <TableCell>
                   <div className="flex items-center gap-2">
@@ -124,13 +92,6 @@ export function ReportsTable({ reports, classes }: ReportsTableProps) {
                 </TableCell>
                 <TableCell>
                   <Badge variant="secondary">{r.student.name}</Badge>
-                </TableCell>
-                <TableCell>
-                  {r.student.class ? (
-                    <Badge variant="outline">{CLASS_LABELS[r.student.class.name] ?? r.student.class.name}</Badge>
-                  ) : (
-                    <span className="text-xs text-(--muted-foreground)">—</span>
-                  )}
                 </TableCell>
                 <TableCell className="text-(--muted-foreground) max-w-xs truncate">
                   {r.notes ?? "—"}

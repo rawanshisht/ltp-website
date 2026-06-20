@@ -12,6 +12,9 @@ function starAvg(records: { behaviourStars: number; attentiveStars: number; enga
   return (total / (records.length * 3)).toFixed(1);
 }
 
+const classLabel = (n: string) =>
+  n === "YOUNGER_BOYS" ? "Younger Boys" : n === "OLDER_BOYS" ? "Older Boys" : "Girls";
+
 export default async function TeacherProgressPage() {
   const session = await auth();
 
@@ -19,27 +22,32 @@ export default async function TeacherProgressPage() {
     where: { userId: session!.user.id },
     include: {
       teacherSubjects: { include: { subject: true } },
-      teacherClasses: { include: { class: { include: { students: true } } } },
+      teacherClasses: { include: { class: true } },
     },
   });
 
   const subjectIds = teacher!.teacherSubjects.map((ts) => ts.subjectId);
-  const classStudentIds = teacher!.teacherClasses.flatMap((tc) => tc.class.students.map((s) => s.id));
+  const teacherClassIds = teacher!.teacherClasses.map((tc) => tc.classId);
 
   const students = await prisma.student.findMany({
-    where: { id: { in: classStudentIds }, isActive: true },
+    where: {
+      isActive: true,
+      studentSubjects: {
+        some: { subjectId: { in: subjectIds }, classId: { in: teacherClassIds }, droppedAt: null },
+      },
+    },
     include: {
-      class: true,
       studentSubjects: {
         where: { droppedAt: null, subjectId: { in: subjectIds } },
         include: {
+          class: true,
           subject: {
             include: {
               assignments: {
                 where: { teacherId: teacher!.id },
-                include: { marks: { where: { studentId: { in: classStudentIds } } } },
+                include: { marks: true },
               },
-              predictedGrades: { where: { studentId: { in: classStudentIds } } },
+              predictedGrades: true,
             },
           },
         },
@@ -55,9 +63,6 @@ export default async function TeacherProgressPage() {
     },
     orderBy: { name: "asc" },
   });
-
-  const classLabel = (n: string) =>
-    n === "YOUNGER_BOYS" ? "Younger Boys" : n === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
   return (
     <div>
@@ -75,7 +80,13 @@ export default async function TeacherProgressPage() {
                 <div className="flex items-center justify-between flex-wrap gap-2">
                   <div>
                     <CardTitle>{student.name}</CardTitle>
-                    <p className="text-sm text-(--muted-foreground) mt-0.5">{classLabel(student.class.name)}</p>
+                    <div className="flex flex-wrap gap-1 mt-0.5">
+                      {student.studentSubjects.map((ss) => ss.class && (
+                        <span key={ss.id} className="text-xs text-(--muted-foreground)">
+                          {ss.subject.name}: {classLabel(ss.class.name)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex gap-4 text-sm">
                     <div className="text-center">
@@ -97,6 +108,7 @@ export default async function TeacherProgressPage() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Subject</TableHead>
+                        <TableHead>Class</TableHead>
                         <TableHead>Assignments</TableHead>
                         <TableHead>Average %</TableHead>
                         <TableHead>Predicted Grade</TableHead>
@@ -118,6 +130,11 @@ export default async function TeacherProgressPage() {
                         return (
                           <TableRow key={ss.subjectId}>
                             <TableCell className="font-medium">{ss.subject.name}</TableCell>
+                            <TableCell>
+                              {ss.class ? (
+                                <Badge variant="outline" className="text-xs">{classLabel(ss.class.name)}</Badge>
+                              ) : <span className="text-(--muted-foreground)">—</span>}
+                            </TableCell>
                             <TableCell className="text-(--muted-foreground)">
                               {ss.subject.assignments.length} total, {subjectMarks.length} marked
                             </TableCell>
@@ -142,7 +159,7 @@ export default async function TeacherProgressPage() {
           );
         })}
         {students.length === 0 && (
-          <Card><CardContent className="p-8 text-center text-(--muted-foreground)">No students in your classes.</CardContent></Card>
+          <Card><CardContent className="p-8 text-center text-(--muted-foreground)">No students assigned to your classes yet.</CardContent></Card>
         )}
       </div>
     </div>

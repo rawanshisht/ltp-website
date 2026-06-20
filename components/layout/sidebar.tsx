@@ -44,6 +44,7 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
   ],
   TEACHER: [
     { label: "Dashboard", href: "/teacher", icon: LayoutDashboard },
+    { label: "Students", href: "/teacher/students", icon: Users },
     { label: "Enter Marks", href: "/teacher/marks", icon: BookOpen },
     { label: "Assignments", href: "/teacher/assignments", icon: ClipboardList },
     { label: "Behaviour", href: "/teacher/behaviour", icon: Activity },
