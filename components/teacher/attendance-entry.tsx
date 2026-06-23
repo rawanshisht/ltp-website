@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import type { Subject, Student, Attendance, Class } from "@prisma/client";
 
 type StudentWithAttendance = Student & {
-  attendances: Attendance[];
+  attendances: (Attendance & { minutesLate: number | null })[];
   studentSubjects: { class: Class | null }[];
 };
 
@@ -24,6 +24,7 @@ type MonthlyRecord = {
   className: string;
   date: string;
   status: "PRESENT" | "ABSENT" | "LATE";
+  minutesLate?: number | null;
 };
 
 interface AttendanceEntryProps {
@@ -52,11 +53,6 @@ const statusShort: Record<AttStatus, string> = {
   LATE: "L",
 };
 
-const classLabels: Record<string, string> = {
-  YOUNGER_BOYS: "Younger Boys",
-  OLDER_BOYS: "Older Boys",
-  GIRLS: "Girls",
-};
 
 export function AttendanceEntry({
   subjects,
@@ -76,6 +72,13 @@ export function AttendanceEntry({
     const initial: Record<string, AttStatus> = {};
     studentsWithAttendance.forEach((s) => {
       initial[s.id] = (s.attendances[0]?.status as AttStatus) ?? "PRESENT";
+    });
+    return initial;
+  });
+  const [minutesLateMap, setMinutesLateMap] = useState<Record<string, number | undefined>>(() => {
+    const initial: Record<string, number | undefined> = {};
+    studentsWithAttendance.forEach((s) => {
+      initial[s.id] = s.attendances[0]?.minutesLate ?? undefined;
     });
     return initial;
   });
@@ -100,6 +103,7 @@ export function AttendanceEntry({
         records: studentsWithAttendance.map((s) => ({
           studentId: s.id,
           status: statusMap[s.id] ?? "PRESENT",
+          minutesLate: statusMap[s.id] === "LATE" ? minutesLateMap[s.id] : undefined,
         })),
       }),
     });
@@ -122,7 +126,7 @@ export function AttendanceEntry({
   // Monthly view derived data
   const sessionDates = [...new Set(monthlyRecords.map((r) => r.date))].sort();
 
-  type StudentGroup = { name: string; byDate: Record<string, AttStatus> };
+  type StudentGroup = { name: string; byDate: Record<string, { status: AttStatus; minutesLate?: number | null }> };
   const studentGroups: Record<string, StudentGroup> = {};
   monthlyRecords
     .filter((r) => classFilter === "ALL" || r.className === classFilter)
@@ -130,7 +134,7 @@ export function AttendanceEntry({
       if (!studentGroups[r.studentId]) {
         studentGroups[r.studentId] = { name: r.studentName, byDate: {} };
       }
-      studentGroups[r.studentId].byDate[r.date] = r.status;
+      studentGroups[r.studentId].byDate[r.date] = { status: r.status, minutesLate: r.minutesLate };
     });
   const studentsInMonth = Object.entries(studentGroups).sort((a, b) =>
     a[1].name.localeCompare(b[1].name)
@@ -158,7 +162,7 @@ export function AttendanceEntry({
           <SelectContent>
             <SelectItem value="ALL">All Classes</SelectItem>
             {classes.map((c) => (
-              <SelectItem key={c} value={c}>{classLabels[c] ?? c}</SelectItem>
+              <SelectItem key={c} value={c}>{c}</SelectItem>
             ))}
           </SelectContent>
         </Select>
@@ -223,7 +227,7 @@ export function AttendanceEntry({
                           <TableRow key={student.id}>
                             <TableCell className="font-medium">{student.name}</TableCell>
                             <TableCell>
-                              <div className="flex gap-2">
+                              <div className="flex items-center gap-2 flex-wrap">
                                 {statuses.map((status) => (
                                   <button
                                     key={status}
@@ -238,6 +242,25 @@ export function AttendanceEntry({
                                     {status}
                                   </button>
                                 ))}
+                                {statusMap[student.id] === "LATE" && (
+                                  <div className="flex items-center gap-1.5">
+                                    <Input
+                                      type="number"
+                                      min={1}
+                                      max={120}
+                                      placeholder="min"
+                                      className="w-16 h-7 text-xs"
+                                      value={minutesLateMap[student.id] ?? ""}
+                                      onChange={(e) =>
+                                        setMinutesLateMap((prev) => ({
+                                          ...prev,
+                                          [student.id]: e.target.value ? parseInt(e.target.value) : undefined,
+                                        }))
+                                      }
+                                    />
+                                    <span className="text-xs text-(--muted-foreground)">min late</span>
+                                  </div>
+                                )}
                               </div>
                             </TableCell>
                           </TableRow>
@@ -299,21 +322,25 @@ export function AttendanceEntry({
                         </TableHeader>
                         <TableBody>
                           {studentsInMonth.map(([studentId, { name, byDate }]) => {
-                            const present = Object.values(byDate).filter((s) => s === "PRESENT").length;
-                            const absent = Object.values(byDate).filter((s) => s === "ABSENT").length;
-                            const late = Object.values(byDate).filter((s) => s === "LATE").length;
+                            const present = Object.values(byDate).filter((r) => r.status === "PRESENT").length;
+                            const absent = Object.values(byDate).filter((r) => r.status === "ABSENT").length;
+                            const late = Object.values(byDate).filter((r) => r.status === "LATE").length;
                             const total = sessionDates.length;
                             const rate = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
                             return (
                               <TableRow key={studentId}>
                                 <TableCell className="font-medium sticky left-0 bg-white z-10 whitespace-nowrap">{name}</TableCell>
                                 {sessionDates.map((d) => {
-                                  const status = byDate[d];
+                                  const record = byDate[d];
                                   return (
                                     <TableCell key={d} className="text-center p-1">
-                                      {status ? (
-                                        <span className={cn("inline-block rounded px-1.5 py-0.5 text-xs font-semibold border", statusStyles[status])}>
-                                          {statusShort[status]}
+                                      {record ? (
+                                        <span
+                                          className={cn("inline-block rounded px-1.5 py-0.5 text-xs font-semibold border", statusStyles[record.status])}
+                                          title={record.status === "LATE" && record.minutesLate ? `${record.minutesLate} min late` : undefined}
+                                        >
+                                          {statusShort[record.status]}
+                                          {record.status === "LATE" && record.minutesLate ? `(${record.minutesLate})` : ""}
                                         </span>
                                       ) : (
                                         <span className="text-(--muted-foreground) text-xs">—</span>

@@ -21,9 +21,6 @@ export default async function AdminDashboard() {
       }),
     ]);
 
-  const classLabel = (name: string) =>
-    name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
   const allClasses = await prisma.class.findMany({ select: { id: true, name: true } });
   const [classCountsRaw, subjectEnrollments] = await Promise.all([
     Promise.all(
@@ -68,7 +65,7 @@ export default async function AdminDashboard() {
           <CardHeader><CardTitle>Students by Class</CardTitle></CardHeader>
           <CardContent>
             <EnrollmentBarChart
-              data={classCounts.map((c) => ({ name: classLabel(c.name), count: c._count.students }))}
+              data={classCounts.map((c) => ({ name: c.name, count: c._count.students }))}
               height={chartHeight}
             />
           </CardContent>

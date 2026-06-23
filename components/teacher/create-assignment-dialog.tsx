@@ -10,12 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Loader2 } from "lucide-react";
 import type { Subject, Class } from "@prisma/client";
 
-const classLabels: Record<string, string> = {
-  YOUNGER_BOYS: "Younger Boys",
-  OLDER_BOYS: "Older Boys",
-  GIRLS: "Girls",
-};
-
 interface CreateAssignmentDialogProps {
   subjects: Subject[];
   classes: Class[];
@@ -97,7 +91,7 @@ export function CreateAssignmentDialog({ subjects, classes, teacherId }: CreateA
                 <SelectContent>
                   <SelectItem value="ALL">All my classes</SelectItem>
                   {classes.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{classLabels[c.name] ?? c.name}</SelectItem>
+                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>

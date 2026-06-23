@@ -18,9 +18,6 @@ function starAvg(records: { behaviourStars: number; attentiveStars: number; enga
   return (total / (records.length * 3)).toFixed(1);
 }
 
-const classLabel = (n: string) =>
-  n === "YOUNGER_BOYS" ? "Younger Boys" : n === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 export default async function TeacherDashboard() {
   const session = await auth();
 
@@ -156,7 +153,7 @@ export default async function TeacherDashboard() {
               const cnt = classStudentCounts.find((x) => x.classId === c.id)?.count ?? 0;
               return (
                 <div key={c.id} className="flex items-center justify-between">
-                  <span className="text-sm font-medium">{classLabel(c.name)}</span>
+                  <span className="text-sm font-medium">{c.name}</span>
                   <Badge variant="secondary">{cnt} students</Badge>
                 </div>
               );

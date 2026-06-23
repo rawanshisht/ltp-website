@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     subjectId: string;
     teacherId: string;
     date: string;
-    records: { studentId: string; status: "PRESENT" | "ABSENT" | "LATE" }[];
+    records: { studentId: string; status: "PRESENT" | "ABSENT" | "LATE"; minutesLate?: number }[];
   };
 
   const sessionDate = new Date(date);
@@ -19,8 +19,8 @@ export async function POST(req: Request) {
     records.map((r) =>
       prisma.attendance.upsert({
         where: { studentId_subjectId_sessionDate: { studentId: r.studentId, subjectId, sessionDate } },
-        update: { status: r.status, teacherId },
-        create: { studentId: r.studentId, subjectId, teacherId, sessionDate, status: r.status },
+        update: { status: r.status, teacherId, minutesLate: r.status === "LATE" ? (r.minutesLate ?? null) : null },
+        create: { studentId: r.studentId, subjectId, teacherId, sessionDate, status: r.status, minutesLate: r.status === "LATE" ? (r.minutesLate ?? null) : null },
       })
     )
   );

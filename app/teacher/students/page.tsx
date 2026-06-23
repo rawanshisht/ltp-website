@@ -10,9 +10,6 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 export default async function TeacherStudentsPage({
   searchParams,
 }: {
@@ -99,7 +96,7 @@ export default async function TeacherStudentsPage({
                 : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
             }`}
           >
-            {classLabel(c.name)}
+            {(c.name)}
           </Link>
         ))}
       </div>
@@ -134,7 +131,7 @@ export default async function TeacherStudentsPage({
                             {ss.subject.name}
                           </Badge>
                           {ss.class ? (
-                            <span className="text-xs text-(--muted-foreground) mr-1">{classLabel(ss.class.name)}</span>
+                            <span className="text-xs text-(--muted-foreground) mr-1">{(ss.class.name)}</span>
                           ) : (
                             <span className="text-xs text-amber-600 mr-1">Unassigned</span>
                           )}

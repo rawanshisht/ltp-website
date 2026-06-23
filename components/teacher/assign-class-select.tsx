@@ -11,9 +11,6 @@ interface AssignClassSelectProps {
   classes: { id: string; name: string }[];
 }
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 export function AssignClassSelect({ studentSubjectId, currentClassId, classes }: AssignClassSelectProps) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
@@ -39,7 +36,7 @@ export function AssignClassSelect({ studentSubjectId, currentClassId, classes }:
         <SelectContent>
           <SelectItem value="none">— Unassigned —</SelectItem>
           {classes.map((c) => (
-            <SelectItem key={c.id} value={c.id}>{classLabel(c.name)}</SelectItem>
+            <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
           ))}
         </SelectContent>
       </Select>

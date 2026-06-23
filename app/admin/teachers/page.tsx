@@ -9,9 +9,6 @@ import { SearchBar } from "@/components/admin/search-bar";
 
 export const dynamic = "force-dynamic";
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 export default async function AdminTeachersPage({
   searchParams,
 }: {
@@ -77,7 +74,7 @@ export default async function AdminTeachersPage({
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {t.teacherClasses.map((tc) => (
-                        <Badge key={tc.classId} variant="outline">{classLabel(tc.class.name)}</Badge>
+                        <Badge key={tc.classId} variant="outline">{tc.class.name}</Badge>
                       ))}
                     </div>
                   </TableCell>

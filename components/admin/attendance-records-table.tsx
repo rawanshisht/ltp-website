@@ -12,6 +12,7 @@ type AttendanceRecord = {
   id: string;
   sessionDate: Date;
   status: string;
+  minutesLate: number | null;
   student: Student;
   subject: Subject;
 };
@@ -88,7 +89,7 @@ export function AttendanceRecordsTable({ records, subjects, students }: Attendan
                 <TableCell className="text-(--muted-foreground)">{formatDate(a.sessionDate)}</TableCell>
                 <TableCell>
                   <Badge variant={a.status === "PRESENT" ? "success" : a.status === "ABSENT" ? "destructive" : "warning"}>
-                    {a.status}
+                    {a.status === "LATE" && a.minutesLate ? `LATE (${a.minutesLate} min)` : a.status}
                   </Badge>
                 </TableCell>
               </TableRow>

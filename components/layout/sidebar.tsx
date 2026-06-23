@@ -22,6 +22,7 @@ import {
   Upload,
   FileText,
   Settings,
+  LayoutList,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import type { Role } from "@prisma/client";
@@ -60,6 +61,8 @@ const navConfig: Record<Role, { label: string; href: string; icon: React.Element
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { label: "Teachers", href: "/admin/teachers", icon: UserCog },
     { label: "Students", href: "/admin/students", icon: Users },
+    { label: "Subjects", href: "/admin/subjects", icon: BookOpen },
+    { label: "Classes", href: "/admin/classes", icon: LayoutList },
     { label: "Behaviour", href: "/admin/behaviour", icon: Activity },
     { label: "Attendance", href: "/admin/attendance", icon: BarChart3 },
     { label: "Assessments", href: "/admin/assessments", icon: FileCheck },

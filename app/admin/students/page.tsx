@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AddStudentDialog } from "@/components/admin/add-student-dialog";
 import { EditStudentDialog } from "@/components/admin/edit-student-dialog";
+import { DeleteStudentButton } from "@/components/admin/delete-student-button";
 import { SearchBar } from "@/components/admin/search-bar";
 import { Phone, Mail } from "lucide-react";
 
@@ -130,11 +131,14 @@ export default async function AdminStudentsPage({
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <EditStudentDialog
-                      student={s}
-                      subjects={subjects}
-                      parents={parents}
-                    />
+                    <div className="flex items-center gap-1">
+                      <EditStudentDialog
+                        student={s}
+                        subjects={subjects}
+                        parents={parents}
+                      />
+                      <DeleteStudentButton studentId={s.id} studentName={s.name} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

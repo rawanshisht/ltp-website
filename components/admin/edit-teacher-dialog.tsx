@@ -9,9 +9,6 @@ import { Label } from "@/components/ui/label";
 import { Pencil, Loader2, Trash2, AlertCircle } from "lucide-react";
 import type { Subject, Class } from "@prisma/client";
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 interface Teacher {
   id: string;
   user: { firstName: string; lastName: string; email: string };
@@ -134,7 +131,7 @@ export function EditTeacherDialog({ teacher, subjects, classes }: Props) {
                       : "bg-white border-(--border) text-(--foreground) hover:bg-(--secondary)"
                   }`}
                 >
-                  {classLabel(c.name)}
+                  {c.name}
                 </button>
               ))}
             </div>

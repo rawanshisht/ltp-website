@@ -14,12 +14,6 @@ enum Role {
   PARENT
 }
 
-enum ClassName {
-  YOUNGER_BOYS
-  OLDER_BOYS
-  GIRLS
-}
-
 enum SubjectType {
   CORE
   OPTIONAL
@@ -120,9 +114,9 @@ model VerificationToken {
 // ─── Core domain ─────────────────────────────────────────────────────────────
 
 model Class {
-  id        String    @id @default(cuid())
-  name      ClassName @unique
-  createdAt DateTime  @default(now())
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
 
   teacherClasses  TeacherClass[]
   assignments     Assignment[]
@@ -322,6 +316,7 @@ model Attendance {
   teacherId   String
   sessionDate DateTime
   status      AttendanceStatus
+  minutesLate Int?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 

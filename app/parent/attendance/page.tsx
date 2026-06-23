@@ -112,7 +112,7 @@ export default async function ParentAttendancePage({
                             : "warning"
                         }
                       >
-                        {a.status}
+                        {a.status === "LATE" && a.minutesLate ? `LATE (${a.minutesLate} min)` : a.status}
                       </Badge>
                     </TableCell>
                   </TableRow>

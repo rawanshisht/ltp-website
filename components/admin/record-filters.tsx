@@ -6,9 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { Subject, Student, Class } from "@prisma/client";
 
-const classLabel = (n: string) =>
-  n === "YOUNGER_BOYS" ? "Younger Boys" : n === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 interface RecordFiltersProps {
   subjects: Subject[];
   students: Student[];
@@ -78,7 +75,7 @@ export function RecordFilters({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All classes</SelectItem>
-            {classes.map((c) => <SelectItem key={c.id} value={c.id}>{classLabel(c.name)}</SelectItem>)}
+            {classes.map((c) => <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>)}
           </SelectContent>
         </Select>
       )}

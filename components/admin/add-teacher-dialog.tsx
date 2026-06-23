@@ -14,8 +14,6 @@ interface AddTeacherDialogProps {
   classes: Class[];
 }
 
-const classLabel = (name: string) =>
-  name === "YOUNGER_BOYS" ? "Younger Boys" : name === "OLDER_BOYS" ? "Older Boys" : "Girls";
 
 export function AddTeacherDialog({ subjects, classes }: AddTeacherDialogProps) {
   const router = useRouter();
@@ -112,7 +110,7 @@ export function AddTeacherDialog({ subjects, classes }: AddTeacherDialogProps) {
                       : "bg-white border-(--border) text-(--foreground) hover:bg-(--secondary)"
                   }`}
                 >
-                  {classLabel(c.name)}
+                  {c.name}
                 </button>
               ))}
             </div>

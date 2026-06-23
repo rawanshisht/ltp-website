@@ -11,12 +11,6 @@ import { fileDownloadUrl } from "@/lib/file-utils";
 
 export const dynamic = "force-dynamic";
 
-const classLabels: Record<string, string> = {
-  YOUNGER_BOYS: "Younger Boys",
-  OLDER_BOYS: "Older Boys",
-  GIRLS: "Girls",
-};
-
 export default async function TeacherAssignmentsPage({
   searchParams,
 }: {
@@ -131,7 +125,7 @@ function AssignmentTable({ assignments, isAssessment = false }: { assignments: A
               <TableCell className="font-medium">{a.title}</TableCell>
               <TableCell>{a.subject.name}</TableCell>
               <TableCell className="text-(--muted-foreground) text-sm">
-                {a.class ? (classLabels[a.class.name] ?? a.class.name) : "All classes"}
+                {a.class ? a.class.name : "All classes"}
               </TableCell>
               <TableCell>{a.maxMarks}</TableCell>
               <TableCell>

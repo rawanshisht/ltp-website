@@ -12,9 +12,6 @@ function starAvg(records: { behaviourStars: number; attentiveStars: number; enga
   return (total / (records.length * 3)).toFixed(1);
 }
 
-const classLabel = (n: string) =>
-  n === "YOUNGER_BOYS" ? "Younger Boys" : n === "OLDER_BOYS" ? "Older Boys" : "Girls";
-
 export default async function TeacherProgressPage() {
   const session = await auth();
 
@@ -83,7 +80,7 @@ export default async function TeacherProgressPage() {
                     <div className="flex flex-wrap gap-1 mt-0.5">
                       {student.studentSubjects.map((ss) => ss.class && (
                         <span key={ss.id} className="text-xs text-(--muted-foreground)">
-                          {ss.subject.name}: {classLabel(ss.class.name)}
+                          {ss.subject.name}: {ss.class.name}
                         </span>
                       ))}
                     </div>
@@ -132,7 +129,7 @@ export default async function TeacherProgressPage() {
                             <TableCell className="font-medium">{ss.subject.name}</TableCell>
                             <TableCell>
                               {ss.class ? (
-                                <Badge variant="outline" className="text-xs">{classLabel(ss.class.name)}</Badge>
+                                <Badge variant="outline" className="text-xs">{ss.class.name}</Badge>
                               ) : <span className="text-(--muted-foreground)">—</span>}
                             </TableCell>
                             <TableCell className="text-(--muted-foreground)">

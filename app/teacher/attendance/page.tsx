@@ -91,6 +91,7 @@ export default async function TeacherAttendancePage({
           className: (r.student.studentSubjects[0]?.class?.name ?? "") as string,
           date: r.sessionDate.toISOString().split("T")[0],
           status: r.status as "PRESENT" | "ABSENT" | "LATE",
+          minutesLate: r.minutesLate,
         }))
       : [];
 

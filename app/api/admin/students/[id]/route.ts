@@ -93,3 +93,15 @@ export async function PUT(
 
   return NextResponse.json({ ok: true });
 }
+
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (session?.user.role !== "ADMIN") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await params;
+  const student = await prisma.student.findUnique({ where: { id } });
+  if (!student) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  await prisma.student.delete({ where: { id } });
+  return NextResponse.json({ ok: true });
+}
